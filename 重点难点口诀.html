@@ -23,6 +23,64 @@ tailwind.config = {
 .collapsible-content.open { display: block; }
 .mnemonic-box { background: linear-gradient(135deg, #fff0e8 0%, #e8fbf4 100%); color: #2F8F7C; font-size: 1.25rem; line-height: 1.8; padding: 1.25rem 1.5rem; border: 1px solid #ffd6c7; border-radius: 1rem; box-shadow: 0 12px 26px rgba(255,159,132,.12); }
 .exam-tip { border-left: 4px solid #FF9F84; background: #FFF1F0; padding: 0.75rem 1rem; border-radius: 0.5rem; }
+html, body { overflow-x: clip; }
+table { max-width: 100%; }
+section { max-width: 100%; }
+@media (max-width: 640px) {
+  body { min-width: 0; }
+  .sticky-nav > div { align-items: flex-start; gap: 0.55rem; }
+  .sticky-nav h1 { width: 100%; font-size: 1rem; line-height: 1.25; }
+  .sticky-nav .flex.gap-1 { width: 100%; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0.25rem; }
+  .sticky-nav a { min-width: 0; text-align: center; padding-left: 0.25rem !important; padding-right: 0.25rem !important; }
+  header { padding: 2rem 1rem !important; }
+  header h1 { font-size: 2rem !important; line-height: 1.15; }
+  header p { font-size: 1rem !important; }
+  header span { white-space: normal; }
+  main { padding: 1.25rem 1rem !important; }
+  section { border-radius: 0.85rem !important; }
+  .toggle-btn { align-items: flex-start; gap: 0.6rem; padding: 0.9rem 1rem !important; }
+  .toggle-btn > div { min-width: 0; display: flex; flex-wrap: wrap; gap: 0.35rem; }
+  .toggle-btn .text-xl { font-size: 1.08rem !important; }
+  .toggle-btn .text-lg { margin-left: 0 !important; font-size: 0.95rem !important; }
+  .collapsible-content { padding: 1rem !important; }
+  .mnemonic-box { padding: 1rem; font-size: 1.02rem; line-height: 1.7; }
+  .exam-tip ul { list-style-position: outside; padding-left: 1rem; }
+  p.flex { flex-wrap: wrap; gap: 0.45rem !important; font-size: 0.95rem !important; }
+  .overflow-x-auto { overflow-x: visible; }
+  table { display: block; border: 0 !important; }
+  thead { display: none; }
+  tbody,
+  tr,
+  td { display: block; width: 100% !important; }
+  tr {
+    margin-bottom: 0.85rem;
+    overflow: hidden;
+    border: 1px solid #d8efe7;
+    border-radius: 0.75rem;
+    background: #fff;
+    box-shadow: 0 8px 18px rgba(47, 143, 124, 0.07);
+  }
+  td {
+    border: 0 !important;
+    border-bottom: 1px solid #edf7f3 !important;
+    padding: 0.6rem 0.75rem !important;
+    text-align: left !important;
+    overflow-wrap: anywhere;
+  }
+  td:last-child { border-bottom: 0 !important; }
+}
+@media (max-width: 380px) {
+  .sticky-nav > div,
+  main { padding-left: 0.75rem !important; padding-right: 0.75rem !important; }
+  .sticky-nav > div { display: block !important; }
+  .sticky-nav h1 { margin-bottom: 0.5rem; font-size: 1.05rem; }
+  .sticky-nav .flex.gap-1 { grid-template-columns: repeat(7, minmax(0, 1fr)); }
+  .sticky-nav a { min-height: 2rem; display: inline-flex; align-items: center; justify-content: center; }
+  header { padding-left: 0.75rem !important; padding-right: 0.75rem !important; }
+  .collapsible-content { padding: 0.85rem !important; }
+  .mnemonic-box { font-size: 0.96rem; overflow-wrap: anywhere; }
+  .toggle-btn { padding: 0.8rem 0.85rem !important; }
+}
 </style>
 </head>
 <body class="bg-tcm-cream text-tcm-dark font-sans leading-relaxed">

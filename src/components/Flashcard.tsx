@@ -1,4 +1,4 @@
-import { useState, type CSSProperties } from 'react';
+import { useState } from 'react';
 import { Check, Rotate3D, Sparkles, Undo2, X } from 'lucide-react';
 import { chapterNames, type StudyCard } from '../data/cards';
 
@@ -6,22 +6,17 @@ type MasteryStatus = 'mastered' | 'unmastered';
 
 interface FlashcardProps {
   card: StudyCard;
-  index?: number;
   status?: MasteryStatus;
   onSetStatus: (id: number, status: MasteryStatus) => void;
   onClearStatus: (id: number) => void;
 }
 
-export function Flashcard({ card, index = 0, status, onSetStatus, onClearStatus }: FlashcardProps) {
+export function Flashcard({ card, status, onSetStatus, onClearStatus }: FlashcardProps) {
   const [flipped, setFlipped] = useState(status === 'mastered');
   const statusClass = status === 'mastered' ? 'is-mastered' : status === 'unmastered' ? 'is-unmastered' : '';
-  const cardStyle = {
-    '--flow-x': `${(index % 4) * 22}%`,
-    '--flow-y': `${(Math.floor(index / 4) % 5) * 18}%`
-  } as CSSProperties;
 
   return (
-    <article className={`flashcard ${statusClass}`} style={cardStyle}>
+    <article className={`flashcard ${statusClass}`}>
       <button className="flashcard-stage" type="button" onClick={() => setFlipped((value) => !value)} aria-pressed={flipped}>
         <div className={flipped ? 'flashcard-inner is-flipped' : 'flashcard-inner'}>
           <section className="flashcard-face flashcard-front">
@@ -46,7 +41,7 @@ export function Flashcard({ card, index = 0, status, onSetStatus, onClearStatus 
         </div>
       </button>
 
-      <div className="grid grid-cols-[1fr_1fr_auto] gap-2">
+      <div className="flashcard-actions">
         <button className="success-button" type="button" onClick={() => onSetStatus(card.id, 'mastered')}>
           <Check size={16} aria-hidden="true" />
           通关

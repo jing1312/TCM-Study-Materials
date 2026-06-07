@@ -32,16 +32,13 @@ tailwind.config = {
 <style>
   body {
     font-family: 'Noto Sans SC', sans-serif;
-    background: linear-gradient(135deg, #FFF9F2 0%, #E8FBF4 42%, #FFF0E8 100%);
+    background:
+      url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0L60 30L30 60L0 30Z' fill='none' stroke='%23FF9F8420' stroke-width='0.5'/%3E%3C/svg%3E"),
+      linear-gradient(135deg, #FFF9F2 0%, #E8FBF4 42%, #FFF0E8 100%);
     min-height: 100vh;
   }
   body::before {
-    content: '';
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 0L60 30L30 60L0 30Z' fill='none' stroke='%23FF9F8420' stroke-width='0.5'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 0;
+    display: none;
   }
   .font-serif-cn { font-family: 'Noto Serif SC', serif; }
   .card-hover { transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
@@ -108,6 +105,10 @@ tailwind.config = {
   ::-webkit-scrollbar { width: 8px; }
   ::-webkit-scrollbar-track { background: #FFF9F2; }
   ::-webkit-scrollbar-thumb { background: #FF9F84; border-radius: 4px; }
+  html, body { overflow-x: clip; }
+  table { max-width: 100%; }
+  .card-hover { max-width: 100%; }
+  .check-animate { min-width: 0; }
   @media print {
     body::before { display: none; }
     body { background: white !important; }
@@ -120,6 +121,88 @@ tailwind.config = {
     .day-section { page-break-inside: avoid; }
     nav { display: none !important; }
     .fade-in { opacity: 1; transform: none; }
+  }
+  @media (max-width: 640px) {
+    body { min-width: 0; }
+    #mainNav > div { flex-wrap: wrap; align-items: center; gap: 0.5rem; padding: 0.65rem 1rem; }
+    #mainNav > div > div:first-child { min-width: 0; flex: 1 1 100%; }
+    #mainNav > div > div:first-child span { font-size: 1rem; white-space: normal; }
+    #mainNav > div > div:nth-child(2) { order: 3; width: 100%; justify-content: space-between; gap: 0.25rem; font-size: 0.78rem; }
+    #mainNav button { order: 2; margin-left: auto; }
+    header { padding-top: 8.25rem !important; padding-bottom: 1.75rem !important; }
+    header .absolute.top-8 { display: none; }
+    header h1 { font-size: 2rem !important; line-height: 1.15; }
+    header h2 { font-size: 1.35rem !important; }
+    header .grid { grid-template-columns: 1fr !important; gap: 0.75rem; }
+    header .grid > div { min-width: 0; }
+    header .grid > div,
+    .day-section > div:first-child,
+    .card-hover { min-width: 0; }
+    main, footer > div { padding-left: 1rem !important; padding-right: 1rem !important; }
+    .day-section > div:first-child { padding: 1rem !important; border-radius: 1rem !important; }
+    .card-hover { display: block !important; }
+    .day-section > div:first-child .flex,
+    .card-hover .flex.items-center.justify-between { align-items: flex-start; flex-wrap: wrap; gap: 0.75rem; }
+    .day-section > div:first-child .flex > div:last-child,
+    .card-hover .flex.items-center.justify-between > div { min-width: 0; }
+    .card-hover > div { padding: 1rem !important; }
+    .card-hover .w-12,
+    .day-section .w-14 { width: 2.6rem !important; height: 2.6rem !important; flex: 0 0 auto; }
+    .font-serif-cn.text-2xl { font-size: 1.28rem !important; line-height: 1.35; }
+    .font-serif-cn.text-lg { font-size: 1rem !important; line-height: 1.35; }
+    .card-hover p,
+    .check-animate span,
+    .kp-table td,
+    #summary table td { overflow-wrap: anywhere; }
+    .tag-float { animation: none; white-space: normal; }
+    .fade-in { opacity: 1; transform: none; }
+    .card-hover .flex.items-center.gap-2,
+    .card-hover .flex.items-center.gap-3 { flex-wrap: wrap; min-width: 0; }
+    .check-animate { align-items: flex-start; flex-wrap: wrap; gap: 0.55rem; }
+    .check-animate span:not(.ml-auto) { min-width: 0; flex: 1 1 calc(100% - 2rem); }
+    .check-animate .ml-auto { margin-left: 1.9rem !important; }
+    .grid.grid-cols-3,
+    .grid.grid-cols-4 { grid-template-columns: 1fr !important; }
+    .kp-table,
+    #summary table { display: block; border: 0; }
+    .kp-table thead,
+    #summary table thead { display: none; }
+    .kp-table tbody,
+    .kp-table tr,
+    .kp-table td,
+    #summary table tbody,
+    #summary table tfoot,
+    #summary table tr,
+    #summary table td { display: block; width: 100% !important; }
+    .kp-table tr,
+    #summary table tbody tr,
+    #summary table tfoot tr {
+      margin-bottom: 0.85rem;
+      overflow: hidden;
+      border: 1px solid #d8efe7;
+      border-radius: 0.75rem;
+      background: #fff;
+      box-shadow: 0 8px 18px rgba(47, 143, 124, 0.07);
+    }
+    .kp-table td,
+    #summary table td { border: 0 !important; border-bottom: 1px solid #edf7f3 !important; padding: 0.55rem 0.75rem !important; text-align: left !important; }
+    .kp-table td:last-child,
+    #summary table td:last-child { border-bottom: 0 !important; }
+    .plan-check-cell { display: flex !important; align-items: center; justify-content: flex-start; width: 100% !important; background: #f0fdfa; }
+    .plan-check-cell::after { content: "完成"; margin-left: 0.45rem; color: #2F8F7C; font-size: 0.78rem; font-weight: 700; }
+    .plan-block-check { width: calc(100% - 2rem); justify-content: center; margin: 0.75rem 1rem 1rem; }
+  }
+  @media (max-width: 380px) {
+    #mainNav > div,
+    main,
+    footer > div { padding-left: 0.75rem !important; padding-right: 0.75rem !important; }
+    header .max-w-7xl { padding-left: 0.75rem !important; padding-right: 0.75rem !important; }
+    header h1 { font-size: 1.72rem !important; overflow-wrap: anywhere; }
+    header .decorative-line { width: 8rem !important; }
+    .card-hover > div,
+    .day-section > div:first-child { padding: 0.85rem !important; }
+    .kp-table td,
+    #summary table td { padding: 0.5rem 0.65rem !important; }
   }
 </style>
 </head>

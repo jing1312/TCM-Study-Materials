@@ -209,11 +209,10 @@ export function FlashcardsPage() {
 
         {filteredCards.length ? (
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {filteredCards.map((card, index) => (
+            {filteredCards.map((card) => (
               <Flashcard
                 key={card.id}
                 card={card}
-                index={index}
                 status={mastery[card.id]}
                 onSetStatus={setCardMastery}
                 onClearStatus={clearCardMastery}
@@ -244,7 +243,7 @@ function SegmentedControl({ label, options, value, onChange }: SegmentedControlP
   return (
     <div className="grid gap-2 md:grid-cols-[3rem_1fr] md:items-center">
       <div className="text-xs font-medium text-slate-500">{label}</div>
-      <div className="flex gap-1.5 overflow-x-auto pb-1">
+      <div className="segment-options">
         {options.map((option) => {
           const selected = String(option.id) === String(value);
           return (
