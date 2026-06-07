@@ -21,19 +21,19 @@ export function Flashcard({ card, status, onSetStatus, onClearStatus }: Flashcar
         <div className={flipped ? 'flashcard-inner is-flipped' : 'flashcard-inner'}>
           <section className="flashcard-face bg-white">
             <CardHeader card={card} status={status} />
-            <div className="grid flex-1 place-items-center px-1 text-center text-[15px] font-semibold leading-7 text-stone-950">
+            <div className="grid flex-1 place-items-center px-1 text-center text-[15px] font-semibold leading-7 text-slate-950">
               {card.front}
             </div>
-            <div className="flex items-center justify-center gap-1.5 text-xs font-medium text-stone-500">
+            <div className="flex items-center justify-center gap-1.5 text-xs font-medium text-slate-500">
               <Rotate3D size={15} aria-hidden="true" />
               题面
             </div>
           </section>
 
-          <section className="flashcard-face flashcard-back bg-stone-950 text-stone-50">
+          <section className="flashcard-face flashcard-back bg-indigo-950 text-indigo-50">
             <CardHeader card={card} status={status} inverted />
             <div className="flashcard-answer" dangerouslySetInnerHTML={{ __html: card.back }} />
-            <div className="flex items-center justify-center gap-1.5 text-xs font-medium text-stone-400">
+            <div className="flex items-center justify-center gap-1.5 text-xs font-medium text-indigo-200">
               <Rotate3D size={15} aria-hidden="true" />
               答案
             </div>
@@ -50,7 +50,7 @@ export function Flashcard({ card, status, onSetStatus, onClearStatus }: Flashcar
           <X size={16} aria-hidden="true" />
           未掌握
         </button>
-        <button className="icon-button h-9 w-9 border border-stone-300 bg-white" type="button" onClick={() => onClearStatus(card.id)} title="取消标记" aria-label="取消标记">
+        <button className="icon-button h-9 w-9 border border-sky-200 bg-white" type="button" onClick={() => onClearStatus(card.id)} title="取消标记" aria-label="取消标记">
           <Undo2 size={16} />
         </button>
       </div>
@@ -64,7 +64,7 @@ function CardHeader({ card, status, inverted = false }: { card: StudyCard; statu
 
   return (
     <div className="flex items-start justify-between gap-2">
-      <div className={inverted ? 'text-xs font-semibold text-amber-300' : 'text-xs font-semibold text-rose-700'}>
+      <div className={inverted ? 'text-xs font-semibold text-cyan-200' : 'text-xs font-semibold text-indigo-700'}>
         {chapterNames[card.ch]}
       </div>
       <span className={inverted ? 'status-pill status-pill-dark' : 'status-pill'}>{label}</span>
