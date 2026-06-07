@@ -26,6 +26,105 @@ button {
   -webkit-tap-highlight-color: transparent;
 }
 
+.suite-shell {
+  display: grid;
+  height: 100vh;
+  min-height: 600px;
+  grid-template-rows: auto 1fr;
+  background: rgb(250 250 249);
+}
+
+.suite-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  border-bottom: 1px solid rgb(231 229 228);
+  background: rgb(28 25 23);
+  color: white;
+}
+
+.suite-nav-inner {
+  display: flex;
+  min-height: 3.25rem;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+}
+
+.suite-brand {
+  flex: 0 0 auto;
+  border-radius: 0.5rem;
+  padding: 0.45rem 0.6rem;
+  color: rgb(252 211 77);
+  font-size: 0.95rem;
+  font-weight: 750;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.suite-tabs {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  gap: 0.4rem;
+  overflow-x: auto;
+}
+
+.suite-tab {
+  display: inline-flex;
+  min-height: 2.2rem;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  border: 1px solid rgb(68 64 60);
+  border-radius: 0.5rem;
+  background: rgb(41 37 36);
+  padding: 0.4rem 0.7rem;
+  color: rgb(214 211 209);
+  font-size: 0.875rem;
+  font-weight: 650;
+}
+
+.suite-tab:hover {
+  border-color: rgb(217 119 6);
+  color: white;
+}
+
+.suite-tab-active {
+  border-color: rgb(252 211 77);
+  background: rgb(252 211 77);
+  color: rgb(28 25 23);
+}
+
+.suite-tab-active:hover {
+  color: rgb(28 25 23);
+}
+
+.suite-open-link {
+  flex: 0 0 auto;
+  border-radius: 0.5rem;
+  border: 1px solid rgb(68 64 60);
+  padding: 0.45rem 0.65rem;
+  color: rgb(214 211 209);
+  font-size: 0.8125rem;
+  font-weight: 650;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.suite-open-link:hover {
+  border-color: rgb(252 211 77);
+  color: rgb(252 211 77);
+}
+
+.suite-frame {
+  height: 100%;
+  width: 100%;
+  border: 0;
+  background: white;
+}
+
 .secondary-button {
   display: inline-flex;
   min-height: 2.25rem;
@@ -231,6 +330,24 @@ button {
 }
 
 @media (max-width: 640px) {
+  .suite-nav-inner {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+
+  .suite-brand {
+    padding-left: 0.1rem;
+  }
+
+  .suite-open-link {
+    display: none;
+  }
+
+  .suite-shell {
+    min-height: 100vh;
+  }
+
   .flashcard-stage {
     height: 16rem;
   }
