@@ -53,8 +53,53 @@ tailwind.config = {
   .fade-in.visible { opacity: 1; transform: translateY(0); }
   .tag-float { animation: float 3s ease-in-out infinite; }
   @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
-  .check-animate { transition: all 0.3s ease; }
-  .check-animate:hover { transform: scale(1.1); }
+  .check-animate {
+    position: relative;
+    overflow: hidden;
+    transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+  }
+  .check-animate:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 18px rgba(95, 207, 181, 0.12);
+  }
+  .check-animate.is-checked,
+  .plan-check-row.is-checked {
+    background: #ecfdf5 !important;
+  }
+  .check-animate input[type="checkbox"],
+  .plan-check {
+    flex: 0 0 auto;
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+  .plan-check-cell {
+    width: 3.5rem;
+    text-align: center;
+    vertical-align: middle;
+  }
+  .plan-check-row {
+    transition: background-color 0.2s ease;
+  }
+  .plan-block-check {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    width: max-content;
+    margin: 0.75rem 1rem 1rem auto;
+    border: 1px solid #d7f4e8;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 0.3rem 0.55rem;
+    color: #2F8F7C;
+    font-size: 0.75rem;
+    font-weight: 700;
+    box-shadow: 0 6px 16px rgba(95, 207, 181, 0.12);
+  }
+  .plan-block-check.is-checked {
+    border-color: #FFB8A0;
+    background: #FFF0E8;
+    color: #A85640;
+  }
   .star-glow { text-shadow: 0 0 6px rgba(255, 159, 132, 0.45); }
   .decorative-line { background: linear-gradient(90deg, transparent, #FF9F84, transparent); height: 1px; }
   .kp-table th { font-family: 'Noto Serif SC', serif; }
@@ -683,6 +728,65 @@ tailwind.config = {
 </footer>
 
 <script>
+  function planStorageKey(type, index, label) {
+    return 'tcm_plan_' + type + '_' + index + '_' + label.replace(/\s+/g, '').slice(0, 24);
+  }
+
+  function wireCheckbox(input, key, checkedClassTarget) {
+    const saved = localStorage.getItem(key);
+    if (saved === 'true') input.checked = true;
+    const sync = () => {
+      localStorage.setItem(key, input.checked.toString());
+      if (checkedClassTarget) checkedClassTarget.classList.toggle('is-checked', input.checked);
+    };
+    input.addEventListener('change', sync);
+    sync();
+  }
+
+  function addPlanRowChecks() {
+    document.querySelectorAll('.kp-table').forEach((table, tableIndex) => {
+      const headRow = table.querySelector('thead tr');
+      if (headRow && !headRow.querySelector('.plan-check-head')) {
+        const th = document.createElement('th');
+        th.className = 'plan-check-head plan-check-cell';
+        th.textContent = '完成';
+        headRow.insertBefore(th, headRow.firstElementChild);
+      }
+
+      table.querySelectorAll('tbody tr').forEach((row, rowIndex) => {
+        if (row.querySelector('.plan-check')) return;
+        row.classList.add('plan-check-row');
+        const label = row.textContent || 'row';
+        const td = document.createElement('td');
+        td.className = 'plan-check-cell border border-tcm-blue px-2 py-2';
+        const input = document.createElement('input');
+        input.type = 'checkbox';
+        input.className = 'plan-check rounded accent-tcm-accent cursor-pointer';
+        input.setAttribute('aria-label', '标记完成');
+        td.appendChild(input);
+        row.insertBefore(td, row.firstElementChild);
+        wireCheckbox(input, planStorageKey('row', tableIndex + '-' + rowIndex, label), row);
+      });
+    });
+  }
+
+  function addPlanBlockChecks() {
+    document.querySelectorAll('.card-hover').forEach((card, index) => {
+      if (card.querySelector('.plan-block-check')) return;
+      const labelText = card.querySelector('.font-serif-cn')?.textContent || card.textContent || 'block';
+      const label = document.createElement('label');
+      label.className = 'plan-block-check no-print';
+      const input = document.createElement('input');
+      input.type = 'checkbox';
+      input.className = 'rounded accent-tcm-accent cursor-pointer';
+      input.setAttribute('aria-label', '标记本块完成');
+      label.appendChild(input);
+      label.appendChild(document.createTextNode('完成'));
+      card.appendChild(label);
+      wireCheckbox(input, planStorageKey('block', index, labelText), label);
+    });
+  }
+
   lucide.createIcons();
   const nav = document.getElementById('mainNav');
   window.addEventListener('scroll', () => {
@@ -706,11 +810,10 @@ tailwind.config = {
     });
   }, { threshold: 0.2 });
   document.querySelectorAll('.day-section').forEach(el => progressObserver.observe(el));
-  document.querySelectorAll('input[type="checkbox"]').forEach((cb, i) => {
-    const key = 'tcm_check_' + i;
-    const saved = localStorage.getItem(key);
-    if (saved === 'true') cb.checked = true;
-    cb.addEventListener('change', () => { localStorage.setItem(key, cb.checked.toString()); });
+  addPlanRowChecks();
+  addPlanBlockChecks();
+  document.querySelectorAll('.check-animate input[type="checkbox"]').forEach((cb, i) => {
+    wireCheckbox(cb, 'tcm_check_' + i, cb.closest('.check-animate'));
   });
   document.querySelectorAll('nav a[href^="#"]').forEach(link => {
     link.addEventListener('click', (e) => {

@@ -1,6 +1,8 @@
 import { useMemo, useState } from 'react';
 import { CalendarDays, ClipboardList, Layers3, NotebookTabs } from 'lucide-react';
 
+const assetVersion = '20260607-mint-peach-v2';
+
 const modules = [
   {
     id: 'plan',
@@ -31,6 +33,7 @@ const modules = [
 export function SuitePage() {
   const [activeId, setActiveId] = useState(modules[0].id);
   const activeModule = useMemo(() => modules.find((module) => module.id === activeId) ?? modules[0], [activeId]);
+  const activeHref = `${activeModule.href}?v=${assetVersion}`;
 
   return (
     <main className="suite-shell">
@@ -59,13 +62,13 @@ export function SuitePage() {
             })}
           </div>
 
-          <a className="suite-open-link" href={activeModule.href}>
+          <a className="suite-open-link" href={activeHref}>
             新窗口打开
           </a>
         </div>
       </nav>
 
-      <iframe className="suite-frame" title={activeModule.label} src={activeModule.href} />
+      <iframe className="suite-frame" title={activeModule.label} src={activeHref} />
     </main>
   );
 }

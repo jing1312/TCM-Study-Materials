@@ -14,9 +14,10 @@ interface FlashcardProps {
 export function Flashcard({ card, status, onSetStatus, onClearStatus }: FlashcardProps) {
   const [flipped, setFlipped] = useState(status === 'mastered');
   const statusClass = status === 'mastered' ? 'is-mastered' : status === 'unmastered' ? 'is-unmastered' : '';
+  const toneClass = `flashcard-tone-${((card.ch + card.id) % 6) + 1}`;
 
   return (
-    <article className={`flashcard ${statusClass}`}>
+    <article className={`flashcard ${toneClass} ${statusClass}`}>
       <button className="flashcard-stage" type="button" onClick={() => setFlipped((value) => !value)} aria-pressed={flipped}>
         <div className={flipped ? 'flashcard-inner is-flipped' : 'flashcard-inner'}>
           <section className="flashcard-face flashcard-front">
