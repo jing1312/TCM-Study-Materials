@@ -1,0 +1,241 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", "Noto Sans SC", "Microsoft YaHei", ui-sans-serif, system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: #fafaf9;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.secondary-button {
+  display: inline-flex;
+  min-height: 2.25rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgb(214 211 209);
+  background: white;
+  padding: 0.45rem 0.7rem;
+  color: rgb(41 37 36);
+  font-size: 0.875rem;
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgb(28 25 23 / 0.05);
+}
+
+.secondary-button:hover {
+  border-color: rgb(120 113 108);
+}
+
+.icon-button {
+  display: inline-grid;
+  place-items: center;
+  border-radius: 0.5rem;
+  color: rgb(87 83 78);
+}
+
+.icon-button:hover {
+  background: rgb(245 245 244);
+  color: rgb(28 25 23);
+}
+
+.segment-button {
+  display: inline-flex;
+  min-height: 2rem;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgb(231 229 228);
+  background: white;
+  padding: 0.35rem 0.65rem;
+  color: rgb(68 64 60);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.segment-button:hover {
+  border-color: rgb(20 184 166);
+}
+
+.segment-button-active {
+  border-color: rgb(15 118 110);
+  background: rgb(240 253 250);
+  color: rgb(15 118 110);
+}
+
+.flashcard {
+  display: grid;
+  min-width: 0;
+  gap: 0.65rem;
+}
+
+.flashcard-stage {
+  height: 18rem;
+  width: 100%;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  perspective: 1200px;
+  text-align: left;
+}
+
+.flashcard-inner {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  transform-style: preserve-3d;
+  transition: transform 380ms ease;
+}
+
+.flashcard-stage:hover .flashcard-inner {
+  transform: rotateY(5deg) translateY(-1px);
+}
+
+.flashcard-inner.is-flipped,
+.flashcard-stage:hover .flashcard-inner.is-flipped {
+  transform: rotateY(180deg);
+}
+
+.flashcard-face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  overflow: hidden;
+  border: 1px solid rgb(231 229 228);
+  border-radius: 0.5rem;
+  padding: 1rem;
+  backface-visibility: hidden;
+  box-shadow: 0 12px 26px rgb(28 25 23 / 0.08);
+}
+
+.flashcard-back {
+  border-color: rgb(68 64 60);
+  transform: rotateY(180deg);
+}
+
+.flashcard.is-mastered .flashcard-face {
+  border-color: rgb(16 185 129);
+  box-shadow: 0 12px 26px rgb(16 185 129 / 0.14);
+}
+
+.flashcard.is-unmastered .flashcard-face {
+  border-color: rgb(245 158 11);
+  box-shadow: 0 12px 26px rgb(245 158 11 / 0.16);
+}
+
+.flashcard-answer {
+  min-height: 0;
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 0.25rem;
+  color: rgb(250 250 249);
+  font-size: 0.875rem;
+  line-height: 1.72;
+}
+
+.flashcard-answer::-webkit-scrollbar {
+  width: 0.35rem;
+}
+
+.flashcard-answer::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: rgb(217 119 6);
+}
+
+.kw {
+  color: rgb(251 191 36);
+  font-weight: 750;
+}
+
+.kw-gold {
+  color: rgb(252 211 77);
+  font-weight: 750;
+}
+
+.kw-green {
+  color: rgb(45 212 191);
+  font-weight: 750;
+}
+
+.status-pill {
+  display: inline-flex;
+  min-height: 1.45rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: rgb(245 245 244);
+  padding: 0.18rem 0.5rem;
+  color: rgb(87 83 78);
+  font-size: 0.7rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.status-pill-dark {
+  background: rgb(41 37 36);
+  color: rgb(214 211 209);
+}
+
+.success-button,
+.warning-button {
+  display: inline-flex;
+  min-height: 2.25rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  border: 0;
+  border-radius: 0.5rem;
+  color: white;
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.success-button {
+  background: rgb(5 150 105);
+}
+
+.success-button:hover {
+  background: rgb(4 120 87);
+}
+
+.warning-button {
+  background: rgb(217 119 6);
+}
+
+.warning-button:hover {
+  background: rgb(180 83 9);
+}
+
+@media (max-width: 640px) {
+  .flashcard-stage {
+    height: 16rem;
+  }
+
+  .flashcard-face {
+    padding: 0.9rem;
+  }
+}
