@@ -1,0 +1,1326 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>中医学自测模拟题</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config={theme:{extend:{colors:{tcm:{gold:'#D4A017',red:'#C41E3A',brown:'#8B4513',cream:'#FFF8DC',dark:'#2D1810',green:'#5B8C5A'}}}}}
+</script>
+<style>
+::-webkit-scrollbar{width:8px}
+::-webkit-scrollbar-track{background:#FFF8DC}
+::-webkit-scrollbar-thumb{background:#D4A017;border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:#8B4513}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}
+}.fade-in{animation:fadeIn .3s ease-out}
+.answer-reveal{max-height:0;overflow:hidden;transition:max-height .5s ease-out,padding .3s ease}
+.answer-reveal.open{max-height:4000px;padding-top:12px;padding-bottom:12px}
+.nav-link.active{background-color:#D4A017;color:#2D1810}
+.question-card:hover{box-shadow:0 4px 20px rgba(212,160,23,.15)}
+input:focus{outline:none;border-color:#D4A017;box-shadow:0 0 0 3px rgba(212,160,23,.3)}
+.mcq-option{transition:all .2s;cursor:pointer}
+.mcq-option:hover:not(.answered){transform:translateY(-1px);box-shadow:0 2px 8px rgba(0,0,0,.1)}
+.mcq-option.correct{background-color:#5B8C5A!important;color:white!important;border-color:#5B8C5A!important}
+.mcq-option.wrong{background-color:#C41E3A!important;color:white!important;border-color:#C41E3A!important}
+.score-bar{transition:width 1s ease-out}
+</style>
+</head>
+<body class="bg-tcm-cream min-h-screen font-serif">
+
+<nav id="navbar" class="sticky top-0 z-50 bg-tcm-dark shadow-lg">
+<div class="max-w-5xl mx-auto px-4">
+<div class="flex items-center justify-between py-3">
+<h1 class="text-tcm-gold font-bold text-lg tracking-wider">中医学自测模拟题</h1>
+<button onclick="resetAll()" class="text-tcm-cream hover:text-tcm-gold text-sm px-3 py-1 border border-tcm-gold/50 rounded hover:bg-tcm-gold/20 transition">重置答题</button>
+</div>
+<div class="flex flex-wrap gap-2 pb-3">
+<a href="#fill-blank" class="nav-link text-sm px-4 py-2 rounded-lg bg-tcm-brown/80 text-tcm-cream hover:bg-tcm-gold hover:text-tcm-dark transition font-medium">一、填空题</a>
+<a href="#mcq" class="nav-link text-sm px-4 py-2 rounded-lg bg-tcm-brown/80 text-tcm-cream hover:bg-tcm-gold hover:text-tcm-dark transition font-medium">二、选择题</a>
+<a href="#term-def" class="nav-link text-sm px-4 py-2 rounded-lg bg-tcm-brown/80 text-tcm-cream hover:bg-tcm-gold hover:text-tcm-dark transition font-medium">三、名词解释</a>
+<a href="#short-answer" class="nav-link text-sm px-4 py-2 rounded-lg bg-tcm-brown/80 text-tcm-cream hover:bg-tcm-gold hover:text-tcm-dark transition font-medium">四、简答题</a>
+<a href="#essay" class="nav-link text-sm px-4 py-2 rounded-lg bg-tcm-brown/80 text-tcm-cream hover:bg-tcm-gold hover:text-tcm-dark transition font-medium">五、论述题</a>
+</div>
+</div>
+</nav>
+
+<div class="max-w-5xl mx-auto px-4 pt-6 pb-2">
+<div class="flex items-center gap-3 mb-2">
+<div class="w-12 h-12 rounded-full bg-tcm-gold/20 flex items-center justify-center"><span class="text-2xl text-tcm-gold">&#9788;</span></div>
+<div><h2 class="text-tcm-dark text-2xl font-bold">中医基础理论自测模拟题</h2><p class="text-tcm-brown text-sm">覆盖全部72小节知识点 | 填空40题 + 选择20题 + 名词解释15题 + 简答8题 + 论述3题</p></div>
+</div>
+<div class="h-1 bg-gradient-to-r from-tcm-gold via-tcm-red to-tcm-brown rounded-full"></div>
+</div>
+
+<!-- ===== 一、填空题 ===== -->
+<section id="fill-blank" class="max-w-5xl mx-auto px-4 pt-8 pb-4">
+<div class="flex items-center gap-3 mb-6">
+<span class="bg-tcm-red text-white text-sm font-bold px-3 py-1 rounded">一</span>
+<h3 class="text-tcm-dark text-xl font-bold">填空题（40题）</h3>
+<span class="text-tcm-brown text-sm">每题1-2空，填写后可点击显示答案核对</span>
+</div>
+<div id="fill-blank-container" class="space-y-4">
+
+<div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-gold/30 shadow-sm fade-in" data-q="fb1">
+<p class="text-tcm-dark font-medium mb-3">1. 中医学理论体系形成的4个基础条件是：______、医药知识的积累、直接观察与整体观察方法、______。</p>
+<div class="flex flex-wrap gap-3 items-center mb-2">
+<input type="text" id="fb1_0" class="w-48 border-2 border-tcm-brown/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="填写第1空" oninput="saveState()">
+<input type="text" id="fb1_1" class="w-48 border-2 border-tcm-brown/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="填写第2空" oninput="saveState()">
+</div>
+<div id="fb1_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>有利的社会文化背景；古代哲学思想的渗透</div>
+<button onclick="toggleAnswer('fb1_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-gold/20 text-tcm-brown rounded-lg hover:bg-tcm-gold/40 transition">显示答案</button>
+</div>
+
+<div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-gold/30 shadow-sm fade-in" data-q="fb2">
+<p class="text-tcm-dark font-medium mb-3">2. 整体观念的3个层次：人体是一个______、人与______的统一性、人与______的统一性。</p>
+<div class="flex flex-wrap gap-3 items-center mb-2">
+<input type="text" id="fb2_0" class="w-40 border-2 border-tcm-brown/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第1空" oninput="saveState()">
+<input type="text" id="fb2_1" class="w-40 border-2 border-tcm-brown/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第2空" oninput="saveState()">
+<input type="text" id="fb2_2" class="w-40 border-2 border-tcm-brown/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第3空" oninput="saveState()">
+</div>
+<div id="fb2_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>有机整体；自然环境；社会环境</div>
+<button onclick="toggleAnswer('fb2_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-gold/20 text-tcm-brown rounded-lg hover:bg-tcm-gold/40 transition">显示答案</button>
+</div>
+
+<div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-gold/30 shadow-sm fade-in" data-q="fb3">
+<p class="text-tcm-dark font-medium mb-3">3. 辨证论治中，"辨证"的含义是______；"论治"的含义是______。</p>
+<div class="flex flex-wrap gap-3 items-center mb-2">
+<input type="text" id="fb3_0" class="w-52 border-2 border-tcm-brown/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="辨证含义" oninput="saveState()">
+<input type="text" id="fb3_1" class="w-52 border-2 border-tcm-brown/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="论治含义" oninput="saveState()">
+</div>
+<div id="fb3_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>辨别分析证候（将四诊收集的资料进行分析综合，辨别证候）；根据辨证结果确定治疗原则和方法</div>
+<button onclick="toggleAnswer('fb3_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-gold/20 text-tcm-brown rounded-lg hover:bg-tcm-gold/40 transition">显示答案</button>
+</div>
+
+<div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-gold/30 shadow-sm fade-in" data-q="fb4">
+<p class="text-tcm-dark font-medium mb-3">4. 中医学的3种思维方法：______、类比推理、______。</p>
+<div class="flex flex-wrap gap-3 items-center mb-2">
+<input type="text" id="fb4_0" class="w-40 border-2 border-tcm-brown/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第1空" oninput="saveState()">
+<input type="text" id="fb4_1" class="w-40 border-2 border-tcm-brown/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第2空" oninput="saveState()">
+</div>
+<div id="fb4_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>司外揣内（通过观察外在现象推测内在变化）；以表知里（通过表面征象了解内在本质）</div>
+<button onclick="toggleAnswer('fb4_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-gold/20 text-tcm-brown rounded-lg hover:bg-tcm-gold/40 transition">显示答案</button>
+</div>
+
+<div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-gold/30 shadow-sm fade-in" data-q="fb5">
+<p class="text-tcm-dark font-medium mb-3">5. 阴阳学说的2条定义：一般定义是阴阳对自然界______的概括；中医学中阴阳对人体______的概括。</p>
+<div class="flex flex-wrap gap-3 items-center mb-2">
+<input type="text" id="fb5_0" class="w-56 border-2 border-tcm-brown/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="一般定义" oninput="saveState()">
+<input type="text" id="fb5_1" class="w-56 border-2 border-tcm-brown/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="中医定义" oninput="saveState()">
+</div>
+<div id="fb5_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>相互关联的某些事物和现象对立双方；生命现象及各种组织结构对立双方</div>
+<button onclick="toggleAnswer('fb5_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-gold/20 text-tcm-brown rounded-lg hover:bg-tcm-gold/40 transition">显示答案</button>
+</div>
+
+<div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-gold/30 shadow-sm fade-in" data-q="fb6">
+<p class="text-tcm-dark font-medium mb-3">6. 五行制化是指五行之间______与______维持协调平衡的关系。</p>
+<div class="flex flex-wrap gap-3 items-center mb-2">
+<input type="text" id="fb6_0" class="w-40 border-2 border-tcm-brown/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第1空" oninput="saveState()">
+<input type="text" id="fb6_1" class="w-40 border-2 border-tcm-brown/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第2空" oninput="saveState()">
+</div>
+<div id="fb6_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>相互制约；相互生化（生中有克，克中有生，相反相成）</div>
+<button onclick="toggleAnswer('fb6_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-gold/20 text-tcm-brown rounded-lg hover:bg-tcm-gold/40 transition">显示答案</button>
+</div>
+
+<div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-gold/30 shadow-sm fade-in" data-q="fb7">
+<p class="text-tcm-dark font-medium mb-3">7. 五行相乘是指相克______；五行相侮是指______克制。</p>
+<div class="flex flex-wrap gap-3 items-center mb-2">
+<input type="text" id="fb7_0" class="w-40 border-2 border-tcm-brown/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="相乘含义" oninput="saveState()">
+<input type="text" id="fb7_1" class="w-40 border-2 border-tcm-brown/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="相侮含义" oninput="saveState()">
+</div>
+<div id="fb7_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>太过（超过正常限度的克制）；反向（被克者反克克己者）</div>
+<button onclick="toggleAnswer('fb7_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-gold/20 text-tcm-brown rounded-lg hover:bg-tcm-gold/40 transition">显示答案</button>
+</div>
+
+<div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-gold/30 shadow-sm fade-in" data-q="fb8">
+<p class="text-tcm-dark font-medium mb-3">8. 五行补充特性5条：木______、火______、土______、金______、水______。</p>
+<div class="flex flex-wrap gap-2 items-center mb-2">
+<input type="text" id="fb8_0" class="w-28 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="木" oninput="saveState()">
+<input type="text" id="fb8_1" class="w-28 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="火" oninput="saveState()">
+<input type="text" id="fb8_2" class="w-28 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="土" oninput="saveState()">
+<input type="text" id="fb8_3" class="w-28 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="金" oninput="saveState()">
+<input type="text" id="fb8_4" class="w-28 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="水" oninput="saveState()">
+</div>
+<div id="fb8_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>生长升发条达舒畅；温热升腾明亮；生化承载受纳；清洁肃降收敛；寒凉滋润下行闭藏</div>
+<button onclick="toggleAnswer('fb8_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-gold/20 text-tcm-brown rounded-lg hover:bg-tcm-gold/40 transition">显示答案</button>
+</div>
+
+<div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-gold/30 shadow-sm fade-in" data-q="fb9">
+<p class="text-tcm-dark font-medium mb-3">9. 五行学说在人体生理方面的3个应用：______、______、______。</p>
+<div class="flex flex-wrap gap-3 items-center mb-2">
+<input type="text" id="fb9_0" class="w-52 border-2 border-tcm-brown/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第1空" oninput="saveState()">
+<input type="text" id="fb9_1" class="w-52 border-2 border-tcm-brown/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第2空" oninput="saveState()">
+<input type="text" id="fb9_2" class="w-52 border-2 border-tcm-brown/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第3空" oninput="saveState()">
+</div>
+<div id="fb9_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>说明五脏的生理功能及其特性；说明五脏之间的相互关系；说明人与自然环境的统一性</div>
+<button onclick="toggleAnswer('fb9_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-gold/20 text-tcm-brown rounded-lg hover:bg-tcm-gold/40 transition">显示答案</button>
+</div>
+
+<div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-gold/30 shadow-sm fade-in" data-q="fb10">
+<p class="text-tcm-dark font-medium mb-3">10. 气虚是指______；气脱是指______。</p>
+<div class="flex flex-wrap gap-3 items-center mb-2">
+<input type="text" id="fb10_0" class="w-56 border-2 border-tcm-brown/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="气虚定义" oninput="saveState()">
+<input type="text" id="fb10_1" class="w-56 border-2 border-tcm-brown/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="气脱定义" oninput="saveState()">
+</div>
+<div id="fb10_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>气的生成不足或消耗太过导致脏腑功能减退；气的大量外泄导致功能突然衰竭</div>
+<button onclick="toggleAnswer('fb10_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-gold/20 text-tcm-brown rounded-lg hover:bg-tcm-gold/40 transition">显示答案</button>
+</div>
+
+<div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-gold/30 shadow-sm fade-in" data-q="fb11">
+<p class="text-tcm-dark font-medium mb-3">11. 血的2个功能：______和______。</p>
+<div class="flex flex-wrap gap-3 items-center mb-2">
+<input type="text" id="fb11_0" class="w-48 border-2 border-tcm-brown/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第1空" oninput="saveState()">
+<input type="text" id="fb11_1" class="w-48 border-2 border-tcm-brown/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第2空" oninput="saveState()">
+</div>
+<div id="fb11_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>营养滋润全身；为神的主要物质基础（血为神之宅）</div>
+<button onclick="toggleAnswer('fb11_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-gold/20 text-tcm-brown rounded-lg hover:bg-tcm-gold/40 transition">显示答案</button>
+</div>
+
+<div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-gold/30 shadow-sm fade-in" data-q="fb12">
+<p class="text-tcm-dark font-medium mb-3">12. 精的分类：狭义之精指______；广义之精指______。</p>
+<div class="flex flex-wrap gap-3 items-center mb-2">
+<input type="text" id="fb12_0" class="w-48 border-2 border-tcm-brown/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="狭义之精" oninput="saveState()">
+<input type="text" id="fb12_1" class="w-48 border-2 border-tcm-brown/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="广义之精" oninput="saveState()">
+</div>
+<div id="fb12_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>生殖之精（禀受于父母的先天之精）；一切精微物质（包括气、血、津液等）</div>
+<button onclick="toggleAnswer('fb12_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-gold/20 text-tcm-brown rounded-lg hover:bg-tcm-gold/40 transition">显示答案</button>
+</div>
+
+<div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-gold/30 shadow-sm fade-in" data-q="fb13">
+<p class="text-tcm-dark font-medium mb-3">13. 精的4个生理功能：______、______、______、______。</p>
+<div class="flex flex-wrap gap-2 items-center mb-2">
+<input type="text" id="fb13_0" class="w-32 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="功能1" oninput="saveState()">
+<input type="text" id="fb13_1" class="w-32 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="功能2" oninput="saveState()">
+<input type="text" id="fb13_2" class="w-32 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="功能3" oninput="saveState()">
+<input type="text" id="fb13_3" class="w-32 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="功能4" oninput="saveState()">
+</div>
+<div id="fb13_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>繁衍生命；滋养脏腑；化生血液；化气化神</div>
+<button onclick="toggleAnswer('fb13_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-gold/20 text-tcm-brown rounded-lg hover:bg-tcm-gold/40 transition">显示答案</button>
+</div>
+
+<div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-gold/30 shadow-sm fade-in" data-q="fb14">
+<p class="text-tcm-dark font-medium mb-3">14. 津液是指机体______的总称，其中清稀者为______，稠厚者为______。</p>
+<div class="flex flex-wrap gap-3 items-center mb-2">
+<input type="text" id="fb14_0" class="w-40 border-2 border-tcm-brown/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="津液定义" oninput="saveState()">
+<input type="text" id="fb14_1" class="w-28 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="清稀者" oninput="saveState()">
+<input type="text" id="fb14_2" class="w-28 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="稠厚者" oninput="saveState()">
+</div>
+<div id="fb14_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>一切正常水液；津；液</div>
+<button onclick="toggleAnswer('fb14_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-gold/20 text-tcm-brown rounded-lg hover:bg-tcm-gold/40 transition">显示答案</button>
+</div>
+
+<div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-gold/30 shadow-sm fade-in" data-q="fb15">
+<p class="text-tcm-dark font-medium mb-3">15. 血与津液关系3条：______(均由脾胃化生)、______(津液渗入脉中化血)、______(血中津液渗出脉外)。</p>
+<div class="flex flex-wrap gap-3 items-center mb-2">
+<input type="text" id="fb15_0" class="w-40 border-2 border-tcm-brown/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第1条" oninput="saveState()">
+<input type="text" id="fb15_1" class="w-40 border-2 border-tcm-brown/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第2条" oninput="saveState()">
+<input type="text" id="fb15_2" class="w-40 border-2 border-tcm-brown/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第3条" oninput="saveState()">
+</div>
+<div id="fb15_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>津血同源；津可生血（津可化血）；血可化津（血可生津）</div>
+<button onclick="toggleAnswer('fb15_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-gold/20 text-tcm-brown rounded-lg hover:bg-tcm-gold/40 transition">显示答案</button>
+</div>
+
+<div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-gold/30 shadow-sm fade-in" data-q="fb16">
+<p class="text-tcm-dark font-medium mb-3">16. 血与神志的3种异常：______致神志不安、______致神志狂乱、______致神志失常。</p>
+<div class="flex flex-wrap gap-3 items-center mb-2">
+<input type="text" id="fb16_0" class="w-32 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="第1种" oninput="saveState()">
+<input type="text" id="fb16_1" class="w-32 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="第2种" oninput="saveState()">
+<input type="text" id="fb16_2" class="w-32 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="第3种" oninput="saveState()">
+</div>
+<div id="fb16_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>血虚；血热；血瘀</div>
+<button onclick="toggleAnswer('fb16_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-gold/20 text-tcm-brown rounded-lg hover:bg-tcm-gold/40 transition">显示答案</button>
+</div>
+
+<div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-gold/30 shadow-sm fade-in" data-q="fb17">
+<p class="text-tcm-dark font-medium mb-3">17. 奇恒之腑的3个特点：形态似______而功能似______、不与五脏直接配合、不直接传化水谷。</p>
+<div class="flex flex-wrap gap-3 items-center mb-2">
+<input type="text" id="fb17_0" class="w-28 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="形态似" oninput="saveState()">
+<input type="text" id="fb17_1" class="w-28 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="功能似" oninput="saveState()">
+</div>
+<div id="fb17_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>腑（中空有腔）；脏（贮藏精气）</div>
+<button onclick="toggleAnswer('fb17_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-gold/20 text-tcm-brown rounded-lg hover:bg-tcm-gold/40 transition">显示答案</button>
+</div>
+
+<div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-gold/30 shadow-sm fade-in" data-q="fb18">
+<p class="text-tcm-dark font-medium mb-3">18. 肝藏血的3个功能：______、______、______。</p>
+<div class="flex flex-wrap gap-3 items-center mb-2">
+<input type="text" id="fb18_0" class="w-36 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="功能1" oninput="saveState()">
+<input type="text" id="fb18_1" class="w-36 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="功能2" oninput="saveState()">
+<input type="text" id="fb18_2" class="w-36 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="功能3" oninput="saveState()">
+</div>
+<div id="fb18_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>贮藏血液；调节血量（按需分配）；防止出血</div>
+<button onclick="toggleAnswer('fb18_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-gold/20 text-tcm-brown rounded-lg hover:bg-tcm-gold/40 transition">显示答案</button>
+</div>
+
+<div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-gold/30 shadow-sm fade-in" data-q="fb19">
+<p class="text-tcm-dark font-medium mb-3">19. 三焦的功能：______和______。</p>
+<div class="flex flex-wrap gap-3 items-center mb-2">
+<input type="text" id="fb19_0" class="w-44 border-2 border-tcm-brown/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第1功能" oninput="saveState()">
+<input type="text" id="fb19_1" class="w-44 border-2 border-tcm-brown/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第2功能" oninput="saveState()">
+</div>
+<div id="fb19_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>通行元气（元气根于肾，通过三焦通达全身）；运行水液（三焦为水液运行之道路）</div>
+<button onclick="toggleAnswer('fb19_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-gold/20 text-tcm-brown rounded-lg hover:bg-tcm-gold/40 transition">显示答案</button>
+</div>
+
+<div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-gold/30 shadow-sm fade-in" data-q="fb20">
+<p class="text-tcm-dark font-medium mb-3">20. 三焦部位比喻：上焦如______、中焦如______、下焦如______。</p>
+<div class="flex flex-wrap gap-3 items-center mb-2">
+<input type="text" id="fb20_0" class="w-24 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="上焦" oninput="saveState()">
+<input type="text" id="fb20_1" class="w-24 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="中焦" oninput="saveState()">
+<input type="text" id="fb20_2" class="w-24 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="下焦" oninput="saveState()">
+</div>
+<div id="fb20_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>雾（上焦主宣发如雾露弥漫）；沤（中焦主腐熟如沤渍变化）；渎（下焦主排泄如沟渎通利）</div>
+<button onclick="toggleAnswer('fb20_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-gold/20 text-tcm-brown rounded-lg hover:bg-tcm-gold/40 transition">显示答案</button>
+</div>
+
+<div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-gold/30 shadow-sm fade-in" data-q="fb21">
+<p class="text-tcm-dark font-medium mb-3">21. 六腑之间的关系主要是______和______。</p>
+<div class="flex flex-wrap gap-3 items-center mb-2">
+<input type="text" id="fb21_0" class="w-40 border-2 border-tcm-brown/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第1空" oninput="saveState()">
+<input type="text" id="fb21_1" class="w-40 border-2 border-tcm-brown/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第2空" oninput="saveState()">
+</div>
+<div id="fb21_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>传化水谷（六腑以通为用）；虚实交替（进食则腑实脏虚，排空则腑虚脏实）</div>
+<button onclick="toggleAnswer('fb21_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-gold/20 text-tcm-brown rounded-lg hover:bg-tcm-gold/40 transition">显示答案</button>
+</div>
+
+<div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-gold/30 shadow-sm fade-in" data-q="fb22">
+<p class="text-tcm-dark font-medium mb-3">22. 胆的双重归属：既属______又属______；胆的功能是______。</p>
+<div class="flex flex-wrap gap-3 items-center mb-2">
+<input type="text" id="fb22_0" class="w-28 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="归属1" oninput="saveState()">
+<input type="text" id="fb22_1" class="w-28 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="归属2" oninput="saveState()">
+<input type="text" id="fb22_2" class="w-40 border-2 border-tcm-brown/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="功能" oninput="saveState()">
+</div>
+<div id="fb22_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>六腑；奇恒之腑；贮存和排泄胆汁</div>
+<button onclick="toggleAnswer('fb22_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-gold/20 text-tcm-brown rounded-lg hover:bg-tcm-gold/40 transition">显示答案</button>
+</div>
+
+<div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-gold/30 shadow-sm fade-in" data-q="fb23">
+<p class="text-tcm-dark font-medium mb-3">23. 胃的主要功能是______和______。</p>
+<div class="flex flex-wrap gap-3 items-center mb-2">
+<input type="text" id="fb23_0" class="w-40 border-2 border-tcm-brown/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第1功能" oninput="saveState()">
+<input type="text" id="fb23_1" class="w-40 border-2 border-tcm-brown/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第2功能" oninput="saveState()">
+</div>
+<div id="fb23_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>受纳水谷（接受容纳饮食）；腐熟水谷（初步消化饮食）</div>
+<button onclick="toggleAnswer('fb23_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-gold/20 text-tcm-brown rounded-lg hover:bg-tcm-gold/40 transition">显示答案</button>
+</div>
+
+<div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-gold/30 shadow-sm fade-in" data-q="fb24">
+<p class="text-tcm-dark font-medium mb-3">24. 小肠的主要功能是______和______。</p>
+<div class="flex flex-wrap gap-3 items-center mb-2">
+<input type="text" id="fb24_0" class="w-40 border-2 border-tcm-brown/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第1功能" oninput="saveState()">
+<input type="text" id="fb24_1" class="w-40 border-2 border-tcm-brown/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第2功能" oninput="saveState()">
+</div>
+<div id="fb24_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>受盛化物（接受胃传来的食糜进一步消化）；泌别清浊（分清泌浊，吸收精微，排出糟粕）</div>
+<button onclick="toggleAnswer('fb24_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-gold/20 text-tcm-brown rounded-lg hover:bg-tcm-gold/40 transition">显示答案</button>
+</div>
+
+<div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-gold/30 shadow-sm fade-in" data-q="fb25">
+<p class="text-tcm-dark font-medium mb-3">25. 大肠的主要功能是______；膀胱的主要功能是______。</p>
+<div class="flex flex-wrap gap-3 items-center mb-2">
+<input type="text" id="fb25_0" class="w-40 border-2 border-tcm-brown/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="大肠" oninput="saveState()">
+<input type="text" id="fb25_1" class="w-40 border-2 border-tcm-brown/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="膀胱" oninput="saveState()">
+</div>
+<div id="fb25_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>传化糟粕（吸收水分形成粪便排出）；贮尿和排尿</div>
+<button onclick="toggleAnswer('fb25_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-gold/20 text-tcm-brown rounded-lg hover:bg-tcm-gold/40 transition">显示答案</button>
+</div>
+
+<div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-gold/30 shadow-sm fade-in" data-q="fb26">
+<p class="text-tcm-dark font-medium mb-3">26. 十五络脉是从______分出的支脉；浮络是指______；孙络是指______。</p>
+<div class="flex flex-wrap gap-3 items-center mb-2">
+<input type="text" id="fb26_0" class="w-36 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="十五络脉" oninput="saveState()">
+<input type="text" id="fb26_1" class="w-36 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="浮络" oninput="saveState()">
+<input type="text" id="fb26_2" class="w-36 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="孙络" oninput="saveState()">
+</div>
+<div id="fb26_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>经脉分出处的络脉（十二经脉+任督+脾之大络）；浮现于体表的络脉；络脉的最细小分支</div>
+<button onclick="toggleAnswer('fb26_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-gold/20 text-tcm-brown rounded-lg hover:bg-tcm-gold/40 transition">显示答案</button>
+</div>
+
+<div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-gold/30 shadow-sm fade-in" data-q="fb27">
+<p class="text-tcm-dark font-medium mb-3">27. 十二经脉交接的3个规律：______在四肢末端交接、______在头面部交接、______在胸部交接。</p>
+<div class="flex flex-wrap gap-3 items-center mb-2">
+<input type="text" id="fb27_0" class="w-44 border-2 border-tcm-brown/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="规律1" oninput="saveState()">
+<input type="text" id="fb27_1" class="w-44 border-2 border-tcm-brown/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="规律2" oninput="saveState()">
+<input type="text" id="fb27_2" class="w-44 border-2 border-tcm-brown/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="规律3" oninput="saveState()">
+</div>
+<div id="fb27_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>相为表里的阴经与阳经（表里经）；同名的手足阳经；手足阴经</div>
+<button onclick="toggleAnswer('fb27_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-gold/20 text-tcm-brown rounded-lg hover:bg-tcm-gold/40 transition">显示答案</button>
+</div>
+
+<div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-gold/30 shadow-sm fade-in" data-q="fb28">
+<p class="text-tcm-dark font-medium mb-3">28. 奇经八脉称奇经的3个原因：______、______、______。</p>
+<div class="flex flex-wrap gap-3 items-center mb-2">
+<input type="text" id="fb28_0" class="w-40 border-2 border-tcm-brown/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="原因1" oninput="saveState()">
+<input type="text" id="fb28_1" class="w-40 border-2 border-tcm-brown/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="原因2" oninput="saveState()">
+<input type="text" id="fb28_2" class="w-40 border-2 border-tcm-brown/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="原因3" oninput="saveState()">
+</div>
+<div id="fb28_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>不属脏腑（无脏腑属络关系）；无阴阳表里配属关系；除任督外无腧穴配属</div>
+<button onclick="toggleAnswer('fb28_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-gold/20 text-tcm-brown rounded-lg hover:bg-tcm-gold/40 transition">显示答案</button>
+</div>
+
+<div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-gold/30 shadow-sm fade-in" data-q="fb29">
+<p class="text-tcm-dark font-medium mb-3">29. 经络的功能5方面：______、运输渗灌、______、______、保卫机体。</p>
+<div class="flex flex-wrap gap-3 items-center mb-2">
+<input type="text" id="fb29_0" class="w-36 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="第1方面" oninput="saveState()">
+<input type="text" id="fb29_1" class="w-36 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="第3方面" oninput="saveState()">
+<input type="text" id="fb29_2" class="w-36 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="第4方面" oninput="saveState()">
+</div>
+<div id="fb29_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>沟通联络（联络脏腑肢体）；感应传导（传导刺激和病候）；调节功能平衡（调节阴阳保持平衡）</div>
+<button onclick="toggleAnswer('fb29_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-gold/20 text-tcm-brown rounded-lg hover:bg-tcm-gold/40 transition">显示答案</button>
+</div>
+
+<div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-gold/30 shadow-sm fade-in" data-q="fb30">
+<p class="text-tcm-dark font-medium mb-3">30. 七情致病特点4条：______、______、______、______。</p>
+<div class="flex flex-wrap gap-2 items-center mb-2">
+<input type="text" id="fb30_0" class="w-32 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="特点1" oninput="saveState()">
+<input type="text" id="fb30_1" class="w-32 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="特点2" oninput="saveState()">
+<input type="text" id="fb30_2" class="w-32 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="特点3" oninput="saveState()">
+<input type="text" id="fb30_3" class="w-32 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="特点4" oninput="saveState()">
+</div>
+<div id="fb30_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>直接伤及内脏；影响脏腑气机；情志波动影响病情变化；多以相应脏腑为主</div>
+<button onclick="toggleAnswer('fb30_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-gold/20 text-tcm-brown rounded-lg hover:bg-tcm-gold/40 transition">显示答案</button>
+</div>
+
+<div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-gold/30 shadow-sm fade-in" data-q="fb31">
+<p class="text-tcm-dark font-medium mb-3">31. 三因学说由宋代______提出，分为______、______、______三类。</p>
+<div class="flex flex-wrap gap-3 items-center mb-2">
+<input type="text" id="fb31_0" class="w-28 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="提出者" oninput="saveState()">
+<input type="text" id="fb31_1" class="w-32 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="第1类" oninput="saveState()">
+<input type="text" id="fb31_2" class="w-32 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="第2类" oninput="saveState()">
+<input type="text" id="fb31_3" class="w-32 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="第3类" oninput="saveState()">
+</div>
+<div id="fb31_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>陈无择；内因（七情）；外因（六淫）；不内外因（饮食劳倦跌打金刃等）</div>
+<button onclick="toggleAnswer('fb31_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-gold/20 text-tcm-brown rounded-lg hover:bg-tcm-gold/40 transition">显示答案</button>
+</div>
+
+<div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-gold/30 shadow-sm fade-in" data-q="fb32">
+<p class="text-tcm-dark font-medium mb-3">32. 痰饮致病的5个特点：______、______、______、______、______。</p>
+<div class="flex flex-wrap gap-2 items-center mb-2">
+<input type="text" id="fb32_0" class="w-28 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="特点1" oninput="saveState()">
+<input type="text" id="fb32_1" class="w-28 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="特点2" oninput="saveState()">
+<input type="text" id="fb32_2" class="w-28 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="特点3" oninput="saveState()">
+<input type="text" id="fb32_3" class="w-28 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="特点4" oninput="saveState()">
+<input type="text" id="fb32_4" class="w-28 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="特点5" oninput="saveState()">
+</div>
+<div id="fb32_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>阻滞气血运行；影响水液代谢；易于蒙蔽心神；致病广泛变幻多端；病势缠绵病程较长</div>
+<button onclick="toggleAnswer('fb32_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-gold/20 text-tcm-brown rounded-lg hover:bg-tcm-gold/40 transition">显示答案</button>
+</div>
+
+<div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-gold/30 shadow-sm fade-in" data-q="fb33">
+<p class="text-tcm-dark font-medium mb-3">33. 瘀血致病的4个特点：______、______、______、______。</p>
+<div class="flex flex-wrap gap-3 items-center mb-2">
+<input type="text" id="fb33_0" class="w-32 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="特点1" oninput="saveState()">
+<input type="text" id="fb33_1" class="w-32 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="特点2" oninput="saveState()">
+<input type="text" id="fb33_2" class="w-32 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="特点3" oninput="saveState()">
+<input type="text" id="fb33_3" class="w-32 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="特点4" oninput="saveState()">
+</div>
+<div id="fb33_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>易于阻滞气机；影响血脉运行；导致新血生成障碍（瘀血不去新血不生）；病位固定病证繁多</div>
+<button onclick="toggleAnswer('fb33_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-gold/20 text-tcm-brown rounded-lg hover:bg-tcm-gold/40 transition">显示答案</button>
+</div>
+
+<div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-gold/30 shadow-sm fade-in" data-q="fb34">
+<p class="text-tcm-dark font-medium mb-3">34. 发病原理2条：______是发病的内在根据；______是发病的重要条件。</p>
+<div class="flex flex-wrap gap-3 items-center mb-2">
+<input type="text" id="fb34_0" class="w-36 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="内在根据" oninput="saveState()">
+<input type="text" id="fb34_1" class="w-36 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="重要条件" oninput="saveState()">
+</div>
+<div id="fb34_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>正气不足；邪气</div>
+<button onclick="toggleAnswer('fb34_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-gold/20 text-tcm-brown rounded-lg hover:bg-tcm-gold/40 transition">显示答案</button>
+</div>
+
+<div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-gold/30 shadow-sm fade-in" data-q="fb35">
+<p class="text-tcm-dark font-medium mb-3">35. 病机的定义是______。</p>
+<div class="flex flex-wrap gap-3 items-center mb-2">
+<input type="text" id="fb35_0" class="w-56 border-2 border-tcm-brown/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="病机定义" oninput="saveState()">
+</div>
+<div id="fb35_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>疾病发生、发展、变化的基本机理（机制）</div>
+<button onclick="toggleAnswer('fb35_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-gold/20 text-tcm-brown rounded-lg hover:bg-tcm-gold/40 transition">显示答案</button>
+</div>
+
+<div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-gold/30 shadow-sm fade-in" data-q="fb36">
+<p class="text-tcm-dark font-medium mb-3">36. 邪正盛衰5种转归：正胜邪退______、邪胜正衰______、邪正相持______、正虚邪恋______、邪去正虚______。</p>
+<div class="flex flex-wrap gap-2 items-center mb-2">
+<input type="text" id="fb36_0" class="w-20 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="转归1" oninput="saveState()">
+<input type="text" id="fb36_1" class="w-20 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="转归2" oninput="saveState()">
+<input type="text" id="fb36_2" class="w-20 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="转归3" oninput="saveState()">
+<input type="text" id="fb36_3" class="w-20 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="转归4" oninput="saveState()">
+<input type="text" id="fb36_4" class="w-20 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="转归5" oninput="saveState()">
+</div>
+<div id="fb36_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>病向好转/痊愈；病趋恶化/死亡；病势迁延；病势缠绵；病后体虚/恢复期</div>
+<button onclick="toggleAnswer('fb36_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-gold/20 text-tcm-brown rounded-lg hover:bg-tcm-gold/40 transition">显示答案</button>
+</div>
+
+<div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-gold/30 shadow-sm fade-in" data-q="fb37">
+<p class="text-tcm-dark font-medium mb-3">37. 阴阳失调8种类型：阴阳偏盛(______/______)、阴阳偏衰(______/______)、阴阳互损(______/______)、阴阳格拒(______/______)。</p>
+<div class="flex flex-wrap gap-2 items-center mb-2">
+<input type="text" id="fb37_0" class="w-24 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="偏盛1" oninput="saveState()">
+<input type="text" id="fb37_1" class="w-24 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="偏盛2" oninput="saveState()">
+<input type="text" id="fb37_2" class="w-24 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="偏衰1" oninput="saveState()">
+<input type="text" id="fb37_3" class="w-24 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="偏衰2" oninput="saveState()">
+<input type="text" id="fb37_4" class="w-24 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="互损1" oninput="saveState()">
+<input type="text" id="fb37_5" class="w-24 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="互损2" oninput="saveState()">
+<input type="text" id="fb37_6" class="w-24 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="格拒1" oninput="saveState()">
+<input type="text" id="fb37_7" class="w-24 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="格拒2" oninput="saveState()">
+</div>
+<div id="fb37_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>阳偏盛(实热证)；阴偏盛(实寒证)；阳偏衰(虚寒证)；阴偏衰(虚热证)；阳损及阴；阴损及阳；阴盛格阳(真寒假热)；阳盛格阴(真热假寒)</div>
+<button onclick="toggleAnswer('fb37_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-gold/20 text-tcm-brown rounded-lg hover:bg-tcm-gold/40 transition">显示答案</button>
+</div>
+
+<div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-gold/30 shadow-sm fade-in" data-q="fb38">
+<p class="text-tcm-dark font-medium mb-3">38. 气机失常5条：气滞(______)、气逆(______)、气陷(______)、气闭(______)、气脱(______)。</p>
+<div class="flex flex-wrap gap-2 items-center mb-2">
+<input type="text" id="fb38_0" class="w-24 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="气滞" oninput="saveState()">
+<input type="text" id="fb38_1" class="w-24 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="气逆" oninput="saveState()">
+<input type="text" id="fb38_2" class="w-24 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="气陷" oninput="saveState()">
+<input type="text" id="fb38_3" class="w-24 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="气闭" oninput="saveState()">
+<input type="text" id="fb38_4" class="w-24 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="气脱" oninput="saveState()">
+</div>
+<div id="fb38_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>气的运行不畅/局部阻滞；气升举太过/下降不及；气升举无力/下降太过；气外出受阻/闭结于内；气不内守/大量外泄</div>
+<button onclick="toggleAnswer('fb38_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-gold/20 text-tcm-brown rounded-lg hover:bg-tcm-gold/40 transition">显示答案</button>
+</div>
+
+<div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-gold/30 shadow-sm fade-in" data-q="fb39">
+<p class="text-tcm-dark font-medium mb-3">39. 望形体主要观察______和______；望姿态中阳证多______、阴证多______。</p>
+<div class="flex flex-wrap gap-3 items-center mb-2">
+<input type="text" id="fb39_0" class="w-32 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="形体1" oninput="saveState()">
+<input type="text" id="fb39_1" class="w-32 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="形体2" oninput="saveState()">
+<input type="text" id="fb39_2" class="w-24 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="阳证" oninput="saveState()">
+<input type="text" id="fb39_3" class="w-24 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="阴证" oninput="saveState()">
+</div>
+<div id="fb39_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>形体强弱胖瘦；形体畸异；动(仰卧伸足/欲去衣被)；静(蜷卧缩足/欲得衣被)</div>
+<button onclick="toggleAnswer('fb39_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-gold/20 text-tcm-brown rounded-lg hover:bg-tcm-gold/40 transition">显示答案</button>
+</div>
+
+<div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-gold/30 shadow-sm fade-in" data-q="fb40">
+<p class="text-tcm-dark font-medium mb-3">40. 望排出物的原则是观察其______的变化以判断寒热虚实；十问歌全文："一问______二问汗，三问______四问便，五问饮食六问胸，七聋八渴俱当辨，九问旧病十问因，再兼服药参机变。"</p>
+<div class="flex flex-wrap gap-3 items-center mb-2">
+<input type="text" id="fb40_0" class="w-40 border-2 border-tcm-brown/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="排出物原则" oninput="saveState()">
+<input type="text" id="fb40_1" class="w-28 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="一问" oninput="saveState()">
+<input type="text" id="fb40_2" class="w-28 border-2 border-tcm-brown/30 rounded-lg px-2 py-2 text-sm bg-tcm-cream/50" placeholder="三问" oninput="saveState()">
+</div>
+<div id="fb40_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>颜色、质地、量；寒热；头身。十问歌完整版：一问寒热二问汗，三问头身四问便，五问饮食六问胸，七聋八渴俱当辨，九问旧病十问因，再兼服药参机变，妇人尤必问经期，迟速闭崩皆可见。<br><br><strong class="text-tcm-green">补充：</strong>问睡眠2条：1失眠（不寐）——入睡困难或易醒，多属心神不安、阴不制阳；2嗜睡（多寐）——昏昏欲睡，多属脾虚湿困、阳虚阴盛。问二便：问大便（便次、质地、颜色、排便感）、问小便（尿量、次数、颜色、排尿感）。问经带：问月经（周期、量、色、质、经期反应）、问带下（量、色、质、气味）。</div>
+<button onclick="toggleAnswer('fb40_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-gold/20 text-tcm-brown rounded-lg hover:bg-tcm-gold/40 transition">显示答案</button>
+</div>
+
+</div>
+</section>
+
+<!-- ===== 二、选择题 ===== -->
+<section id="mcq" class="max-w-5xl mx-auto px-4 pt-8 pb-4">
+<div class="flex items-center gap-3 mb-6">
+<span class="bg-tcm-red text-white text-sm font-bold px-3 py-1 rounded">二</span>
+<h3 class="text-tcm-dark text-xl font-bold">选择题（20题）</h3>
+<span class="text-tcm-brown text-sm">每题4选项，点击即时反馈</span>
+</div>
+<div id="mcq-container" class="space-y-5">
+
+<div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-gold/30 shadow-sm" data-q="mcq1">
+<p class="text-tcm-dark font-medium mb-4">1. 《黄帝内经》成书年代约为：</p>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq1','A','C')">A. 春秋战国至秦汉</div>
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq1','B','C')">B. 唐宋时期</div>
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq1','C','C')">C. 战国至西汉</div>
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq1','D','C')">D. 东汉末年</div>
+</div>
+<div id="mcq1_explain" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark mt-3"><strong class="text-tcm-green">解析：</strong>《黄帝内经》约成书于战国至西汉时期，是中医理论体系的奠基之作。</div>
+</div>
+
+<div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-gold/30 shadow-sm" data-q="mcq2">
+<p class="text-tcm-dark font-medium mb-4">2. 金元四大家中，主张"寒凉派"的是：</p>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq2','A','A')">A. 刘完素</div>
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq2','B','A')">B. 张从正</div>
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq2','C','A')">C. 李杲</div>
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq2','D','A')">D. 朱丹溪</div>
+</div>
+<div id="mcq2_explain" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark mt-3"><strong class="text-tcm-green">解析：</strong>刘完素-寒凉派/泻火论；张从正-攻下派/攻邪论；李杲-补土派/脾胃论；朱丹溪-滋阴派/相火论。</div>
+</div>
+
+<div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-gold/30 shadow-sm" data-q="mcq3">
+<p class="text-tcm-dark font-medium mb-4">3. 五行中"木克土"属于：</p>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq3','A','A')">A. 正常相克</div>
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq3','B','A')">B. 相乘</div>
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq3','C','A')">C. 相侮</div>
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq3','D','A')">D. 相生</div>
+</div>
+<div id="mcq3_explain" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark mt-3"><strong class="text-tcm-green">解析：</strong>木克土是五行正常相克关系。相克太过为相乘，反向克制为相侮。</div>
+</div>
+
+<div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-gold/30 shadow-sm" data-q="mcq4">
+<p class="text-tcm-dark font-medium mb-4">4. 卫气的主要功能是：</p>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq4','A','C')">A. 推动血液循环</div>
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq4','B','C')">B. 化生血液</div>
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq4','C','C')">C. 保卫机体、温养脏腑</div>
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq4','D','C')">D. 营养全身</div>
+</div>
+<div id="mcq4_explain" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark mt-3"><strong class="text-tcm-green">解析：</strong>卫气行于脉外，功能：保卫机体抵御外邪、温养脏腑肌肉皮毛、调节腠理开合。营气行于脉中，功能：化生血液、营养全身。</div>
+</div>
+
+<div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-gold/30 shadow-sm" data-q="mcq5">
+<p class="text-tcm-dark font-medium mb-4">5. 肝主疏泄的具体表现不包括：</p>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq5','A','D')">A. 调畅气机</div>
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq5','B','D')">B. 促进消化</div>
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq5','C','D')">C. 调畅情志</div>
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq5','D','D')">D. 贮藏血液</div>
+</div>
+<div id="mcq5_explain" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark mt-3"><strong class="text-tcm-green">解析：</strong>肝主疏泄表现：调畅气机、调畅情志、促进消化吸收、促进血液运行和津液代谢、调节生殖功能。贮藏血液属于肝藏血功能。</div>
+</div>
+
+<div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-gold/30 shadow-sm" data-q="mcq6">
+<p class="text-tcm-dark font-medium mb-4">6. 六淫致病的共同特点不包括：</p>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq6','A','D')">A. 外感性</div>
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq6','B','D')">B. 季节性</div>
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq6','C','D')">C. 地域性</div>
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq6','D','D')">D. 情志性</div>
+</div>
+<div id="mcq6_explain" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark mt-3"><strong class="text-tcm-green">解析：</strong>六淫致病共同特点5条：外感性、季节性、地域性、相兼性、转化性。情志性是七情致病特点。</div>
+</div>
+
+<div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-gold/30 shadow-sm" data-q="mcq7">
+<p class="text-tcm-dark font-medium mb-4">7. 望小儿指纹"三关"顺序为：</p>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq7','A','C')">A. 气关、命关、风关</div>
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq7','B','C')">B. 命关、气关、风关</div>
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq7','C','C')">C. 风关、气关、命关</div>
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq7','D','C')">D. 气关、风关、命关</div>
+</div>
+<div id="mcq7_explain" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark mt-3"><strong class="text-tcm-green">解析：</strong>小儿指纹三关：风关(食指第一节)、气关(食指第二节)、命关(食指第三节)，由掌侧向指端依次为风、气、命。</div>
+</div>
+
+<div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-gold/30 shadow-sm" data-q="mcq8">
+<p class="text-tcm-dark font-medium mb-4">8. "伤寒"与"中寒"的区别在于：</p>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq8','A','C')">A. 伤寒为内寒，中寒为外寒</div>
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq8','B','C')">B. 伤寒为热证，中寒为寒证</div>
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq8','C','C')">C. 伤寒为寒邪伤肌表，中寒为寒邪直中于里</div>
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq8','D','C')">D. 伤寒为急证，中寒为缓证</div>
+</div>
+<div id="mcq8_explain" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark mt-3"><strong class="text-tcm-green">解析：</strong>伤寒=寒邪伤于肌表(表寒证)；中寒=寒邪直中于里(里寒证)。区别在于邪犯部位的表里不同。</div>
+</div>
+
+<div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-gold/30 shadow-sm" data-q="mcq9">
+<p class="text-tcm-dark font-medium mb-4">9. 切诊4概念中，不属于切诊的是：</p>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq9','A','D')">A. 脉诊（切脉）</div>
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq9','B','D')">B. 按胸腹</div>
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq9','C','D')">C. 按肌肤</div>
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq9','D','D')">D. 望神色</div>
+</div>
+<div id="mcq9_explain" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark mt-3"><strong class="text-tcm-green">解析：</strong>切诊4概念：脉诊、按胸腹、按肌肤、按手足。望神色属于望诊范畴。脉诊中应注意"真脏脉"——指五脏真气败露后出现的脉象（无胃气之脉），如肝见弦硬、心见坚搏等，为脏气将绝的危候。</div>
+</div>
+
+<div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-gold/30 shadow-sm" data-q="mcq10">
+<p class="text-tcm-dark font-medium mb-4">10. 升降浮沉中，"升浮"药物的作用趋向是：</p>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq10','A','A')">A. 向上向外（升阳发表散寒）</div>
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq10','B','A')">B. 向下向内（泻下利尿收敛）</div>
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq10','C','A')">C. 调和中焦</div>
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq10','D','A')">D. 补益正气</div>
+</div>
+<div id="mcq10_explain" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark mt-3"><strong class="text-tcm-green">解析：</strong>升浮药向上向外，主升阳发表散寒；沉降药向下向内，主泻下利尿清热收敛。</div>
+</div>
+
+<div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-gold/30 shadow-sm" data-q="mcq11">
+<p class="text-tcm-dark font-medium mb-4">11. 中药毒性3概念中，"狭义之毒"是指：</p>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq11','A','B')">A. 药物偏性（广义）</div>
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq11','B','B')">B. 药物的毒副作用及不良反应</div>
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq11','C','B')">C. 毒性剧烈易致死</div>
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq11','D','B')">D. 补益作用</div>
+</div>
+<div id="mcq11_explain" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark mt-3"><strong class="text-tcm-green">解析：</strong>毒性3概念：广义之毒=药物偏性(所有药物均有)；狭义之毒=毒副作用及不良反应；日常之毒=毒性剧烈易致中毒死亡的药物。</div>
+</div>
+
+<div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-gold/30 shadow-sm" data-q="mcq12">
+<p class="text-tcm-dark font-medium mb-4">12. "证"的含义是：</p>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq12','A','B')">A. 疾病的个别症状表现</div>
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq12','B','B')">B. 疾病发展某阶段的病理概括</div>
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq12','C','B')">C. 疾病的全过程</div>
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq12','D','B')">D. 疾病的病因</div>
+</div>
+<div id="mcq12_explain" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark mt-3"><strong class="text-tcm-green">解析：</strong>症=症状(疾病个别表现如头痛发热)；证=证候(某阶段病理概括含病因病位病性)；病=疾病(全过程总概括)。</div>
+</div>
+
+<div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-gold/30 shadow-sm" data-q="mcq13">
+<p class="text-tcm-dark font-medium mb-4">13. 望舌7重点中，判断正气盛衰主要看：</p>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq13','A','C')">A. 舌苔颜色</div>
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq13','B','C')">B. 舌下络脉</div>
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq13','C','C')">C. 舌质色泽和舌体形态</div>
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq13','D','C')">D. 舌苔质地</div>
+</div>
+<div id="mcq13_explain" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark mt-3"><strong class="text-tcm-green">解析：</strong>望舌7重点：舌质色泽、舌体形态、舌体动态、舌苔质地、舌苔颜色、舌下络脉、舌面分区。舌质反映正气盛衰，舌苔反映病邪深浅。</div>
+</div>
+
+<div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-gold/30 shadow-sm" data-q="mcq14">
+<p class="text-tcm-dark font-medium mb-4">14. "十问歌"的作者是：</p>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq14','A','B')">A. 张仲景</div>
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq14','B','B')">B. 张景岳</div>
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq14','C','B')">C. 李时珍</div>
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq14','D','B')">D. 陈无择</div>
+</div>
+<div id="mcq14_explain" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark mt-3"><strong class="text-tcm-green">解析：</strong>十问歌由明代张景岳《景岳全书》提出："一问寒热二问汗，三问头身四问便，五问饮食六问胸，七聋八渴俱当辨，九问旧病十问因，再兼服药参机变。"</div>
+</div>
+
+<div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-gold/30 shadow-sm" data-q="mcq15">
+<p class="text-tcm-dark font-medium mb-4">15. "除中"的含义是：</p>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq15','A','D')">A. 消化正常</div>
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq15','B','D')">B. 饮食减少</div>
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq15','C','D')">C. 饮食增加</div>
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq15','D','D')">D. 久病本不能食突然欲食（胃气将绝假象）</div>
+</div>
+<div id="mcq15_explain" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark mt-3"><strong class="text-tcm-green">解析：</strong>除中指久病之人本不能食突然反而能食，是胃气将绝的假象，属危候。问饮食6条含：食欲、食量、食后感、偏嗜、口味、除中。</div>
+</div>
+
+<div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-gold/30 shadow-sm" data-q="mcq16">
+<p class="text-tcm-dark font-medium mb-4">16. 望头颈肢体皮肤中，"囟填"提示：</p>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq16','A','C')">A. 气虚</div>
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq16','B','C')">B. 血虚</div>
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq16','C','C')">C. 热证或颅内水饮</div>
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq16','D','C')">D. 寒证</div>
+</div>
+<div id="mcq16_explain" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark mt-3"><strong class="text-tcm-green">解析：</strong>囟填(囟门隆起)提示热证或颅内水饮；囟陷(囟门下陷)提示虚证。9种病名含：囟填、囟陷、解颅、面肿、口眼歪斜、瘿瘤、项强、鸡胸、龟背等。</div>
+</div>
+
+<div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-gold/30 shadow-sm" data-q="mcq17">
+<p class="text-tcm-dark font-medium mb-4">17. 下列不属于中医辨证方法的是：</p>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq17','A','D')">A. 八纲辨证</div>
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq17','B','D')">B. 脏腑辨证</div>
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq17','C','D')">C. 六经辨证</div>
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq17','D','D')">D. 症状辨证</div>
+</div>
+<div id="mcq17_explain" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark mt-3"><strong class="text-tcm-green">解析：</strong>中医辨证方法：八纲、脏腑、经络、六经、卫气营血、三焦辨证等。"症状辨证"不是正式辨证方法，症≠证。</div>
+</div>
+
+<div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-gold/30 shadow-sm" data-q="mcq18">
+<p class="text-tcm-dark font-medium mb-4">18. 中药煎煮一般宜用：</p>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq18','A','B')">A. 铁锅</div>
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq18','B','B')">B. 砂锅或陶瓷锅</div>
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq18','C','B')">C. 铝锅</div>
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq18','D','B')">D. 铜锅</div>
+</div>
+<div id="mcq18_explain" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark mt-3"><strong class="text-tcm-green">解析：</strong>煎煮常识6条：1宜用砂锅/陶瓷锅；2先浸泡30-60分钟；3水量浸过药面2-3cm；4火候先武后文；5特殊煎法(先煎/后下/包煎/另煎/烊化/冲服)；6煎药时间一般20-30分钟。<br><br><strong class="text-tcm-green">补充-炮制6目的：</strong>1降低或消除药物毒副作用；2改变或缓和药物性能；3增强药物疗效；4改变或增强药物作用趋向；5便于调剂和制剂；6便于贮藏和保存药效。</div>
+</div>
+
+<div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-gold/30 shadow-sm" data-q="mcq19">
+<p class="text-tcm-dark font-medium mb-4">19. 下列哪组均属于活血化瘀药？</p>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq19','A','B')">A. 麻黄、桂枝、细辛</div>
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq19','B','B')">B. 川芎、丹参、红花</div>
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq19','C','B')">C. 人参、黄芪、白术</div>
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq19','D','B')">D. 半夏、陈皮、茯苓</div>
+</div>
+<div id="mcq19_explain" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark mt-3"><strong class="text-tcm-green">解析：</strong>活血化瘀药12种：川芎、丹参、红花、桃仁、赤芍、乳香、没药、三棱、莪术、延胡索、益母草、郁金。A为解表药，C为补气药，D为化痰药。</div>
+</div>
+
+<div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-gold/30 shadow-sm" data-q="mcq20">
+<p class="text-tcm-dark font-medium mb-4">20. 中成药的定义是：</p>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq20','A','C')">A. 单味中药制成的药物</div>
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq20','B','C')">B. 化学合成药物</div>
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq20','C','C')">C. 以中药为原料按处方制成可直接使用的成品药</div>
+<div class="mcq-option border-2 border-tcm-brown/20 rounded-lg px-4 py-3 text-sm bg-tcm-cream/30" onclick="checkMCQ(this,'mcq20','D','C')">D. 西药配合中药制成</div>
+</div>
+<div id="mcq20_explain" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark mt-3"><strong class="text-tcm-green">解析：</strong>中成药指以中药材为原料，在中医药理论指导下，按规定处方和制剂工艺制成可直接使用的成品药物。</div>
+</div>
+
+</div>
+</section>
+
+<!-- ===== 三、名词解释 ===== -->
+<section id="term-def" class="max-w-5xl mx-auto px-4 pt-8 pb-4">
+<div class="flex items-center gap-3 mb-6">
+<span class="bg-tcm-red text-white text-sm font-bold px-3 py-1 rounded">三</span>
+<h3 class="text-tcm-dark text-xl font-bold">名词解释（15题）</h3>
+<span class="text-tcm-brown text-sm">点击展开答案</span>
+</div>
+<div id="term-container" class="space-y-4">
+
+<div class="question-card bg-white rounded-xl border-2 border-tcm-gold/30 shadow-sm overflow-hidden">
+<div class="px-5 py-4 flex items-center justify-between cursor-pointer hover:bg-tcm-cream/30 transition" onclick="toggleAnswer('td1_ans')">
+<p class="text-tcm-dark font-medium">1. 整体观念</p><span class="text-tcm-gold text-lg">&#9660;</span>
+</div>
+<div id="td1_ans" class="answer-reveal px-5 text-sm text-tcm-dark border-t border-tcm-gold/20">
+<p class="mb-2"><strong class="text-tcm-green">定义：</strong>整体观念是中医学的基本特点之一，认为人体是一个有机的整体，人与自然环境和社会环境密切相关，构成统一的整体。</p>
+<p class="text-tcm-brown">3层次：1人体有机整体(以五脏为中心通过经络联络)；2人与自然环境统一性(天人相应)；3人与社会环境统一性(社会因素影响健康)。</p>
+</div></div>
+
+<div class="question-card bg-white rounded-xl border-2 border-tcm-gold/30 shadow-sm overflow-hidden">
+<div class="px-5 py-4 flex items-center justify-between cursor-pointer hover:bg-tcm-cream/30 transition" onclick="toggleAnswer('td2_ans')">
+<p class="text-tcm-dark font-medium">2. 辨证论治</p><span class="text-tcm-gold text-lg">&#9660;</span>
+</div>
+<div id="td2_ans" class="answer-reveal px-5 text-sm text-tcm-dark border-t border-tcm-gold/20">
+<p class="mb-2"><strong class="text-tcm-green">定义：</strong>辨证论治是中医学的基本特点之一，是中医认识疾病和治疗疾病的基本原则。</p>
+<p class="text-tcm-brown">辨证：将四诊收集的资料进行分析综合，辨别证候。论治：根据辨证结果确定治疗原则和方法。辨证是论治的前提和依据，论治是辨证的目的和检验。</p>
+</div></div>
+
+<div class="question-card bg-white rounded-xl border-2 border-tcm-gold/30 shadow-sm overflow-hidden">
+<div class="px-5 py-4 flex items-center justify-between cursor-pointer hover:bg-tcm-cream/30 transition" onclick="toggleAnswer('td3_ans')">
+<p class="text-tcm-dark font-medium">3. 经络</p><span class="text-tcm-gold text-lg">&#9660;</span>
+</div>
+<div id="td3_ans" class="answer-reveal px-5 text-sm text-tcm-dark border-t border-tcm-gold/20">
+<p class="mb-2"><strong class="text-tcm-green">定义：</strong>经络是运行全身气血、联络脏腑肢节、沟通上下内外的通路，是经脉和络脉的总称。</p>
+<p class="text-tcm-brown">经脉为主干纵行深部；络脉为分支横行浅部。功能5方面：沟通联络、运输渗灌、感应传导、调节功能平衡、保卫机体。</p>
+</div></div>
+
+<div class="question-card bg-white rounded-xl border-2 border-tcm-gold/30 shadow-sm overflow-hidden">
+<div class="px-5 py-4 flex items-center justify-between cursor-pointer hover:bg-tcm-cream/30 transition" onclick="toggleAnswer('td4_ans')">
+<p class="text-tcm-dark font-medium">4. 正气</p><span class="text-tcm-gold text-lg">&#9660;</span>
+</div>
+<div id="td4_ans" class="answer-reveal px-5 text-sm text-tcm-dark border-t border-tcm-gold/20">
+<p><strong class="text-tcm-green">定义：</strong>正气是人体正常生理功能的总称，包括脏腑经络气血津液等的功能活动及抗病康复能力，是维持健康的内在根据。正气不足是发病的内在根据。</p>
+</div></div>
+
+<div class="question-card bg-white rounded-xl border-2 border-tcm-gold/30 shadow-sm overflow-hidden">
+<div class="px-5 py-4 flex items-center justify-between cursor-pointer hover:bg-tcm-cream/30 transition" onclick="toggleAnswer('td5_ans')">
+<p class="text-tcm-dark font-medium">5. 病机</p><span class="text-tcm-gold text-lg">&#9660;</span>
+</div>
+<div id="td5_ans" class="answer-reveal px-5 text-sm text-tcm-dark border-t border-tcm-gold/20">
+<p><strong class="text-tcm-green">定义：</strong>病机即疾病发生、发展、变化的基本机理（机制），是认识疾病本质的关键，包括邪正盛衰、阴阳失调、气血失常等基本病机。</p>
+</div></div>
+
+<div class="question-card bg-white rounded-xl border-2 border-tcm-gold/30 shadow-sm overflow-hidden">
+<div class="px-5 py-4 flex items-center justify-between cursor-pointer hover:bg-tcm-cream/30 transition" onclick="toggleAnswer('td6_ans')">
+<p class="text-tcm-dark font-medium">6. 瘀血</p><span class="text-tcm-gold text-lg">&#9660;</span>
+</div>
+<div id="td6_ans" class="answer-reveal px-5 text-sm text-tcm-dark border-t border-tcm-gold/20">
+<p class="mb-2"><strong class="text-tcm-green">定义：</strong>瘀血是指血液运行不畅停滞于脉中，或离经之血积存于体内尚未消散的病理产物，又称蓄血、恶血。</p>
+<p class="text-tcm-brown">致病4特点：1易于阻滞气机；2影响血脉运行；3导致新血生成障碍(瘀血不去新血不生)；4病位固定病证繁多。</p>
+</div></div>
+
+<div class="question-card bg-white rounded-xl border-2 border-tcm-gold/30 shadow-sm overflow-hidden">
+<div class="px-5 py-4 flex items-center justify-between cursor-pointer hover:bg-tcm-cream/30 transition" onclick="toggleAnswer('td7_ans')">
+<p class="text-tcm-dark font-medium">7. 归经</p><span class="text-tcm-gold text-lg">&#9660;</span>
+</div>
+<div id="td7_ans" class="answer-reveal px-5 text-sm text-tcm-dark border-t border-tcm-gold/20">
+<p><strong class="text-tcm-green">定义：</strong>归经是指药物对机体某部分的选择性作用，即药物对某些脏腑经络有特殊亲和力，从而对这些部位的病变起主要治疗作用。以脏腑经络学说为基础。</p>
+</div></div>
+
+<div class="question-card bg-white rounded-xl border-2 border-tcm-gold/30 shadow-sm overflow-hidden">
+<div class="px-5 py-4 flex items-center justify-between cursor-pointer hover:bg-tcm-cream/30 transition" onclick="toggleAnswer('td8_ans')">
+<p class="text-tcm-dark font-medium">8. 奇经八脉</p><span class="text-tcm-gold text-lg">&#9660;</span>
+</div>
+<div id="td8_ans" class="answer-reveal px-5 text-sm text-tcm-dark border-t border-tcm-gold/20">
+<p class="mb-2"><strong class="text-tcm-green">定义：</strong>奇经八脉是督脉、任脉、冲脉、带脉、阴维脉、阳维脉、阴跷脉、阳跷脉八条经脉的合称。</p>
+<p class="text-tcm-brown">称奇经3原因：1不属脏腑(无脏腑属络关系)；2无阴阳表里配属关系；3除任督外无腧穴配属。功能：统领一身阴阳经脉、调节十二经脉气血。</p>
+</div></div>
+
+<div class="question-card bg-white rounded-xl border-2 border-tcm-gold/30 shadow-sm overflow-hidden">
+<div class="px-5 py-4 flex items-center justify-between cursor-pointer hover:bg-tcm-cream/30 transition" onclick="toggleAnswer('td9_ans')">
+<p class="text-tcm-dark font-medium">9. 治未病</p><span class="text-tcm-gold text-lg">&#9660;</span>
+</div>
+<div id="td9_ans" class="answer-reveal px-5 text-sm text-tcm-dark border-t border-tcm-gold/20">
+<p class="mb-2"><strong class="text-tcm-green">定义：</strong>治未病是中医预防医学的核心思想，包括未病先防和既病防变两个方面。</p>
+<p class="text-tcm-brown">未病先防：疾病发生前预防(养生保健增强正气避免邪气)。既病防变：疾病发生后早期诊治防止发展和传变(早期诊治、先安未受邪之地)。</p>
+</div></div>
+
+<div class="question-card bg-white rounded-xl border-2 border-tcm-gold/30 shadow-sm overflow-hidden">
+<div class="px-5 py-4 flex items-center justify-between cursor-pointer hover:bg-tcm-cream/30 transition" onclick="toggleAnswer('td10_ans')">
+<p class="text-tcm-dark font-medium">10. 同病异治</p><span class="text-tcm-gold text-lg">&#9660;</span>
+</div>
+<div id="td10_ans" class="answer-reveal px-5 text-sm text-tcm-dark border-t border-tcm-gold/20">
+<p><strong class="text-tcm-green">定义：</strong>同病异治指同一种疾病，由于发病时间、地区、患者体质不同，或疾病处于不同发展阶段，所表现的证候不同，因而治法也不同。体现辨证论治精神，证是论治依据。</p>
+</div></div>
+
+<div class="question-card bg-white rounded-xl border-2 border-tcm-gold/30 shadow-sm overflow-hidden">
+<div class="px-5 py-4 flex items-center justify-between cursor-pointer hover:bg-tcm-cream/30 transition" onclick="toggleAnswer('td11_ans')">
+<p class="text-tcm-dark font-medium">11. 异病同治</p><span class="text-tcm-gold text-lg">&#9660;</span>
+</div>
+<div id="td11_ans" class="answer-reveal px-5 text-sm text-tcm-dark border-t border-tcm-gold/20">
+<p><strong class="text-tcm-green">定义：</strong>异病同治指不同的疾病，在其发展过程中出现相同的证候，因而采用相同的治法。同样体现辨证论治精神，证同则治同，证不同则治不同。</p>
+</div></div>
+
+<div class="question-card bg-white rounded-xl border-2 border-tcm-gold/30 shadow-sm overflow-hidden">
+<div class="px-5 py-4 flex items-center justify-between cursor-pointer hover:bg-tcm-cream/30 transition" onclick="toggleAnswer('td12_ans')">
+<p class="text-tcm-dark font-medium">12. 伤寒</p><span class="text-tcm-gold text-lg">&#9660;</span>
+</div>
+<div id="td12_ans" class="answer-reveal px-5 text-sm text-tcm-dark border-t border-tcm-gold/20">
+<p><strong class="text-tcm-green">定义：</strong>伤寒指寒邪伤于肌表，属表寒证。与中寒(寒邪直中于里/里寒证)不同，区别在于邪犯部位表里不同。伤寒恶寒发热并见。</p>
+</div></div>
+
+<div class="question-card bg-white rounded-xl border-2 border-tcm-gold/30 shadow-sm overflow-hidden">
+<div class="px-5 py-4 flex items-center justify-between cursor-pointer hover:bg-tcm-cream/30 transition" onclick="toggleAnswer('td13_ans')">
+<p class="text-tcm-dark font-medium">13. 中寒</p><span class="text-tcm-gold text-lg">&#9660;</span>
+</div>
+<div id="td13_ans" class="answer-reveal px-5 text-sm text-tcm-dark border-t border-tcm-gold/20">
+<p><strong class="text-tcm-green">定义：</strong>中寒指寒邪直中于里，直接损伤脏腑阳气，属里寒证。表现为突然恶寒、四肢冰冷、腹痛吐泻等，与伤寒(寒伤肌表之表寒证)不同。</p>
+</div></div>
+
+<div class="question-card bg-white rounded-xl border-2 border-tcm-gold/30 shadow-sm overflow-hidden">
+<div class="px-5 py-4 flex items-center justify-between cursor-pointer hover:bg-tcm-cream/30 transition" onclick="toggleAnswer('td14_ans')">
+<p class="text-tcm-dark font-medium">14. 天癸</p><span class="text-tcm-gold text-lg">&#9660;</span>
+</div>
+<div id="td14_ans" class="answer-reveal px-5 text-sm text-tcm-dark border-t border-tcm-gold/20">
+<p><strong class="text-tcm-green">定义：</strong>天癸是先天肾气充盛后产生的促进性腺发育和生殖功能成熟的一种精微物质，与肾气密切相关。女子二七(14岁)天癸至月事以时下；男子二八(16岁)天癸至精气溢泻。</p>
+</div></div>
+
+<div class="question-card bg-white rounded-xl border-2 border-tcm-gold/30 shadow-sm overflow-hidden">
+<div class="px-5 py-4 flex items-center justify-between cursor-pointer hover:bg-tcm-cream/30 transition" onclick="toggleAnswer('td15_ans')">
+<p class="text-tcm-dark font-medium">15. 藏象</p><span class="text-tcm-gold text-lg">&#9660;</span>
+</div>
+<div id="td15_ans" class="answer-reveal px-5 text-sm text-tcm-dark border-t border-tcm-gold/20">
+<p><strong class="text-tcm-green">定义：</strong>藏象指藏于体内的内脏及其表现于外的生理病理征象。"藏"指藏于体内的内脏(五脏六腑奇恒之腑)；"象"指表现于外的生理病理现象。藏象学说通过观察外在征象研究内脏活动规律。</p>
+</div></div>
+
+</div>
+</section>
+
+<!-- ===== 四、简答题 ===== -->
+<section id="short-answer" class="max-w-5xl mx-auto px-4 pt-8 pb-4">
+<div class="flex items-center gap-3 mb-6">
+<span class="bg-tcm-red text-white text-sm font-bold px-3 py-1 rounded">四</span>
+<h3 class="text-tcm-dark text-xl font-bold">简答题（8题）</h3>
+<span class="text-tcm-brown text-sm">点击展开答案</span>
+</div>
+<div id="short-container" class="space-y-4">
+
+<div class="question-card bg-white rounded-xl border-2 border-tcm-gold/30 shadow-sm overflow-hidden">
+<div class="px-5 py-4 flex items-center justify-between cursor-pointer hover:bg-tcm-cream/30 transition" onclick="toggleAnswer('sa1_ans')">
+<p class="text-tcm-dark font-medium">1. 简述中医学的基本特点及其含义。</p><span class="text-tcm-gold text-lg">&#9660;</span>
+</div>
+<div id="sa1_ans" class="answer-reveal px-5 text-sm text-tcm-dark border-t border-tcm-gold/20">
+<p class="font-bold text-tcm-green mb-2">中医学的基本特点有两个：</p>
+<p class="mb-2"><strong>一、整体观念：</strong>认为人体是一个有机的整体，人与自然环境和社会环境密切相关，构成统一的整体。</p>
+<p class="mb-1 pl-4 text-tcm-brown">1人体有机整体：以五脏为中心，通过经络联络六腑、五官、四肢等形成统一有机体。</p>
+<p class="mb-1 pl-4 text-tcm-brown">2人与自然环境的统一性：季节气候、昼夜晨昏、地区方域均影响人体。</p>
+<p class="mb-2 pl-4 text-tcm-brown">3人与社会环境的统一性：社会地位、经济条件、人际关系影响健康。</p>
+<p class="mb-2"><strong>二、辨证论治：</strong>是中医认识疾病和治疗疾病的基本原则。</p>
+<p class="mb-1 pl-4 text-tcm-brown">1辨证：将四诊收集的资料进行分析综合，辨别证候（辨别疾病现阶段病理本质）。</p>
+<p class="mb-1 pl-4 text-tcm-brown">2论治：根据辨证结果确定治疗原则和方法。</p>
+<p class="pl-4 text-tcm-brown">3辨证是论治的前提和依据，论治是辨证的目的和检验。</p>
+</div></div>
+
+<div class="question-card bg-white rounded-xl border-2 border-tcm-gold/30 shadow-sm overflow-hidden">
+<div class="px-5 py-4 flex items-center justify-between cursor-pointer hover:bg-tcm-cream/30 transition" onclick="toggleAnswer('sa2_ans')">
+<p class="text-tcm-dark font-medium">2. 简述气的生理功能。</p><span class="text-tcm-gold text-lg">&#9660;</span>
+</div>
+<div id="sa2_ans" class="answer-reveal px-5 text-sm text-tcm-dark border-t border-tcm-gold/20">
+<p class="font-bold text-tcm-green mb-2">气的生理功能有5方面：</p>
+<p class="mb-1"><strong>1. 推动作用：</strong>推动人体生长发育、脏腑经络生理功能、血液运行和津液输布。</p>
+<p class="mb-1"><strong>2. 温煦作用：</strong>维持体温恒定，温煦脏腑经络，维持正常生理功能。</p>
+<p class="mb-1"><strong>3. 防御作用：</strong>护卫肌表抵御外邪，驱邪外出，协助正气恢复。</p>
+<p class="mb-1"><strong>4. 固摄作用：</strong>固摄血液防出血，固摄津液防流失，固摄精液防遗泄，固摄脏器维持位置。</p>
+<p><strong>5. 气化作用：</strong>精气血津液各自新陈代谢及其相互转化（精化气、气化精、精化血、血化精等）。</p>
+</div></div>
+
+<div class="question-card bg-white rounded-xl border-2 border-tcm-gold/30 shadow-sm overflow-hidden">
+<div class="px-5 py-4 flex items-center justify-between cursor-pointer hover:bg-tcm-cream/30 transition" onclick="toggleAnswer('sa3_ans')">
+<p class="text-tcm-dark font-medium">3. 简述肝主疏泄的具体表现。</p><span class="text-tcm-gold text-lg">&#9660;</span>
+</div>
+<div id="sa3_ans" class="answer-reveal px-5 text-sm text-tcm-dark border-t border-tcm-gold/20">
+<p class="font-bold text-tcm-green mb-2">肝主疏泄的具体表现有5方面：</p>
+<p class="mb-1"><strong>1. 调畅气机：</strong>肝疏泄使气机疏通畅达，气血运行通畅，脏腑功能协调。</p>
+<p class="mb-1"><strong>2. 调畅情志：</strong>疏泄正常则情志舒畅；太过则急躁易怒；不及则抑郁不乐。</p>
+<p class="mb-1"><strong>3. 促进消化吸收：</strong>促进胆汁分泌排泄帮助消化；协助脾胃升降促进运化。</p>
+<p class="mb-1"><strong>4. 促进血液运行和津液代谢：</strong>气机畅达则血行正常、津液输布代谢正常。</p>
+<p><strong>5. 调节生殖功能：</strong>调节冲任二脉及女子月经、男子排精功能。</p>
+</div></div>
+
+<div class="question-card bg-white rounded-xl border-2 border-tcm-gold/30 shadow-sm overflow-hidden">
+<div class="px-5 py-4 flex items-center justify-between cursor-pointer hover:bg-tcm-cream/30 transition" onclick="toggleAnswer('sa4_ans')">
+<p class="text-tcm-dark font-medium">4. 简述六淫致病的共同特点。</p><span class="text-tcm-gold text-lg">&#9660;</span>
+</div>
+<div id="sa4_ans" class="answer-reveal px-5 text-sm text-tcm-dark border-t border-tcm-gold/20">
+<p class="font-bold text-tcm-green mb-2">六淫致病的共同特点有5条：</p>
+<p class="mb-1"><strong>1. 外感性：</strong>六淫邪气多从肌表或口鼻侵犯人体，从外而入，故称外感六淫。</p>
+<p class="mb-1"><strong>2. 孑节性：</strong>六淫致病与季节气候密切相关，如春季多风病、夏季多暑病等。</p>
+<p class="mb-1"><strong>3. 地域性：</strong>六淫致病与居住地区环境有关，如西北多燥寒、东南多湿热。</p>
+<p class="mb-1"><strong>4. 相兼性：</strong>六淫可单独致病，也可两种以上同时侵犯人体（如风寒、湿热）。</p>
+<p><strong>5. 转化性：</strong>六淫致病在一定条件下可互相转化，如寒邪入里化热、湿邪郁久化热等。</p>
+</div></div>
+
+<div class="question-card bg-white rounded-xl border-2 border-tcm-gold/30 shadow-sm overflow-hidden">
+<div class="px-5 py-4 flex items-center justify-between cursor-pointer hover:bg-tcm-cream/30 transition" onclick="toggleAnswer('sa5_ans')">
+<p class="text-tcm-dark font-medium">5. 简述七情内伤的致病特点。</p><span class="text-tcm-gold text-lg">&#9660;</span>
+</div>
+<div id="sa5_ans" class="answer-reveal px-5 text-sm text-tcm-dark border-t border-tcm-gold/20">
+<p class="font-bold text-tcm-green mb-2">七情内伤的致病特点有4条：</p>
+<p class="mb-1"><strong>1. 直接伤及内脏：</strong>七情直接损伤相应脏腑，如怒伤肝、喜伤心、思伤脾、忧伤肺、恐伤肾。</p>
+<p class="mb-1"><strong>2. 影响脏腑气机：</strong>怒则气上、喜则气缓、悲则气消、恐则气下、惊则气乱、思则气结。</p>
+<p class="mb-1"><strong>3. 情志波动影响病情变化：</strong>情志异常可加重原有病情，良好的情志有利于病情好转。</p>
+<p><strong>4. 多以相应脏腑为主：</strong>每种情志主要损伤相应脏腑，但也可影响其他脏腑。</p>
+</div></div>
+
+<div class="question-card bg-white rounded-xl border-2 border-tcm-gold/30 shadow-sm overflow-hidden">
+<div class="px-5 py-4 flex items-center justify-between cursor-pointer hover:bg-tcm-cream/30 transition" onclick="toggleAnswer('sa6_ans')">
+<p class="text-tcm-dark font-medium">6. 简述痰饮和瘀血的致病特点。</p><span class="text-tcm-gold text-lg">&#9660;</span>
+</div>
+<div id="sa6_ans" class="answer-reveal px-5 text-sm text-tcm-dark border-t border-tcm-gold/20">
+<p class="font-bold text-tcm-green mb-2">痰饮致病特点5条：</p>
+<p class="mb-1">1阻滞气血运行；2影响水液代谢；3易于蒙蔽心神；4致病广泛变幻多端；5病势缠绵病程较长。</p>
+<p class="font-bold text-tcm-green mb-2 mt-2">瘀血致病特点4条：</p>
+<p>1易于阻滞气机；2影响血脉运行；3导致新血生成障碍（瘀血不去新血不生）；4病位固定病证繁多。</p>
+</div></div>
+
+<div class="question-card bg-white rounded-xl border-2 border-tcm-gold/30 shadow-sm overflow-hidden">
+<div class="px-5 py-4 flex items-center justify-between cursor-pointer hover:bg-tcm-cream/30 transition" onclick="toggleAnswer('sa7_ans')">
+<p class="text-tcm-dark font-medium">7. 简述方剂中君臣佐使的含义。</p><span class="text-tcm-gold text-lg">&#9660;</span>
+</div>
+<div id="sa7_ans" class="answer-reveal px-5 text-sm text-tcm-dark border-t border-tcm-gold/20">
+<p class="font-bold text-tcm-green mb-2">君臣佐使的含义：</p>
+<p class="mb-1"><strong>君药：</strong>方中起主要治疗作用的药物，是方剂的核心，针对主证或主病。</p>
+<p class="mb-1"><strong>臣药：</strong>辅助君药加强治疗主病或主证的药物，或针对兼病兼证起主要治疗作用。</p>
+<p class="mb-1"><strong>佐药：</strong>1佐助药-协助君臣药加强治疗作用；2佐制药-消除或减缓君臣药毒性与烈性；3反佐药-与君药性味相反而起相成作用。</p>
+<p><strong>使药：</strong>引经药（引导诸药直达病所）或调和药（调和诸药作用）。</p>
+<p class="text-tcm-brown mt-2">组方目的3条：1增强疗效（药物合用产生协同作用）；2扩大治疗范围（兼顾主证兼证）；3降低毒副作用（监制君臣药毒性烈性）。</p>
+</div></div>
+
+<div class="question-card bg-white rounded-xl border-2 border-tcm-gold/30 shadow-sm overflow-hidden">
+<div class="px-5 py-4 flex items-center justify-between cursor-pointer hover:bg-tcm-cream/30 transition" onclick="toggleAnswer('sa8_ans')">
+<p class="text-tcm-dark font-medium">8. 简述中药配伍七情的含义。</p><span class="text-tcm-gold text-lg">&#9660;</span>
+</div>
+<div id="sa8_ans" class="answer-reveal px-5 text-sm text-tcm-dark border-t border-tcm-gold/20">
+<p class="font-bold text-tcm-green mb-2">配伍七情7种含义：</p>
+<p class="mb-1"><strong>1. 单行：</strong>单用一味药治病，不需其他药物辅助。</p>
+<p class="mb-1"><strong>2. 相须：</strong>两种功效相似的药物合用，增强原有疗效。</p>
+<p class="mb-1"><strong>3. 相使：</strong>一种药物为主，另一种为辅，辅药能提高主药疗效。</p>
+<p class="mb-1"><strong>4. 相畏：</strong>一种药物的毒副作用能被另一种药物减轻或消除。</p>
+<p class="mb-1"><strong>5. 相杀：</strong>一种药物能减轻或消除另一种药物的毒副作用。</p>
+<p class="mb-1"><strong>6. 相恶：</strong>两种药物合用，一种药物能降低另一种药物的疗效。</p>
+<p><strong>7. 相反：</strong>两种药物合用产生毒副作用或增强毒副作用（十八反、十九畏）。</p>
+<p class="text-tcm-brown mt-2">配伍目的3条：1增强疗效；2扩大治疗范围；3降低毒副作用。</p>
+</div></div>
+
+</div>
+</section>
+
+<!-- ===== 五、论述题 ===== -->
+<section id="essay" class="max-w-5xl mx-auto px-4 pt-8 pb-4">
+<div class="flex items-center gap-3 mb-6">
+<span class="bg-tcm-red text-white text-sm font-bold px-3 py-1 rounded">五</span>
+<h3 class="text-tcm-dark text-xl font-bold">论述题（3题）</h3>
+<span class="text-tcm-brown text-sm">点击展开答案 | 详细展开论述</span>
+</div>
+<div id="essay-container" class="space-y-4">
+
+<div class="question-card bg-white rounded-xl border-2 border-tcm-gold/30 shadow-sm overflow-hidden">
+<div class="px-5 py-4 flex items-center justify-between cursor-pointer hover:bg-tcm-cream/30 transition" onclick="toggleAnswer('es1_ans')">
+<p class="text-tcm-dark font-medium">1. 试论述五脏之间的主要关系（10组）。</p><span class="text-tcm-gold text-lg">&#9660;</span>
+</div>
+<div id="es1_ans" class="answer-reveal px-5 text-sm text-tcm-dark border-t border-tcm-gold/20">
+<p class="font-bold text-tcm-green mb-2">五脏之间的主要关系10组：</p>
+<p class="mb-2"><strong>1. 心与肺：</strong>心主血，肺主气。气血关系：气为血帅（肺气推动心血运行），血为气母（心血载气养气），气血相互依存。</p>
+<p class="mb-2"><strong>2. 心与脾：</strong>心主血，脾统血生血。脾为心血之源（脾运化水谷精微化生血液），脾统血使血行脉中不外溢，心脾共同维持血液正常运行。</p>
+<p class="mb-2"><strong>3. 心与肝：</strong>心主血，肝藏血。心血充盈则肝有所藏，肝藏血可调节血量助心行血；心主神志，肝主疏泄调畅情志，二者共调精神情志。</p>
+<p class="mb-2"><strong>4. 心与肾：</strong>心属火居上，肾属水居下。心肾相交（心火下降温肾水，肾水上济滋心阴），水火既济则阴阳协调。若心肾不交则失眠心悸。</p>
+<p class="mb-2"><strong>5. 肺与脾：</strong>肺主气，脾为气之源。脾运化水谷精微上输于肺化生宗气，脾肺共主气之生成；脾主运化水湿，肺主通调水道，共调水液代谢。</p>
+<p class="mb-2"><strong>6. 肺与肝：</strong>肺主气降于右，肝主气升于左。肝升肺降共调气机升降平衡，若肝气上逆犯肺则咳喘（木火刑金）。</p>
+<p class="mb-2"><strong>7. 肺与肾：</strong>肺主呼气，肾主纳气，肺肾共司呼吸（肺为气之主，肾为气之根）；肺主通调水道为水之上源，肾主水液为水之下源，共调水液代谢；金水相生（肺阴滋肾阴，肾阴润肺阴）。</p>
+<p class="mb-2"><strong>8. 肝与脾：</strong>肝主疏泄，脾主运化。肝疏泄助脾运化（调畅气机促进消化），脾运化正常则肝有所养；肝藏血脾统血共调血液。若肝气犯脾则腹痛泄泻。</p>
+<p class="mb-2"><strong>9. 肝与肾：</strong>肝藏血，肾藏精。精血同源（肾精化血养肝，肝血化精滋肾），肝肾同源又称乙癸同源；肝阴赖肾阴滋养，肾阴赖肝阴补充，肝肾阴液相互资生。</p>
+<p><strong>10. 脾与肾：</strong>脾为后天之本，肾为先天之本。先天促后天（肾阳温脾阳助运化），后天养先天（脾运化精微充养肾精）。脾肾共主水液代谢（脾运化水湿，肾主水液）。</p>
+</div></div>
+
+<div class="question-card bg-white rounded-xl border-2 border-tcm-gold/30 shadow-sm overflow-hidden">
+<div class="px-5 py-4 flex items-center justify-between cursor-pointer hover:bg-tcm-cream/30 transition" onclick="toggleAnswer('es2_ans')">
+<p class="text-tcm-dark font-medium">2. 试论述气血精津液之间的相互关系。</p><span class="text-tcm-gold text-lg">&#9660;</span>
+</div>
+<div id="es2_ans" class="answer-reveal px-5 text-sm text-tcm-dark border-t border-tcm-gold/20">
+<p class="font-bold text-tcm-green mb-2">气血精津液之间的相互关系：</p>
+<p class="mb-2"><strong>一、气与血的关系：</strong></p>
+<p class="mb-1 pl-4">1气为血帅：气能生血（气化作用化生血液）、气能行血（气推动血液运行）、气能摄血（气固摄血液不外溢）。</p>
+<p class="mb-2 pl-4">2血为气母：血能载气（血为气的载体）、血能养气（血为气的营养来源）。</p>
+<p class="mb-2"><strong>二、气与精的关系：</strong></p>
+<p class="mb-1 pl-4">1气能生精（气化作用促进精的生成）、气能摄精（气固摄精不外泄）。</p>
+<p class="mb-2 pl-4">2精能化气（精为气的物质基础，精化生元气）。</p>
+<p class="mb-2"><strong>三、气与津液的关系：</strong></p>
+<p class="mb-1 pl-4">1气能生津（气化作用化生津液）、气能行津（气推动津液运行）、气能摄津（气固摄津液不流失）。</p>
+<p class="mb-2 pl-4">2津能载气（津液为气的载体，津液丢失则气随津脱）。</p>
+<p class="mb-2"><strong>四、血与精的关系：</strong></p>
+<p class="mb-2 pl-4">精血同源：精可化血（肾精化生血液），血可化精（肝血化生肾精），精血相互转化。</p>
+<p class="mb-2"><strong>五、血与津液的关系：</strong></p>
+<p class="mb-1 pl-4">1津血同源（均由脾胃运化水谷精微化生）。</p>
+<p class="mb-1 pl-4">2津可生血（津液渗入脉中化血，津血互化）。</p>
+<p class="mb-2 pl-4">3血可化津（血中津液渗出脉外化为津液），故"夺血者无汗，夺汗者无血"。</p>
+<p class="mb-2"><strong>六、精与津液的关系：</strong></p>
+<p>精与津液同为人体精微物质，同源于水谷精微。精可化为津液滋养全身，津液不足则精亦亏虚。</p>
+</div></div>
+
+<div class="question-card bg-white rounded-xl border-2 border-tcm-gold/30 shadow-sm overflow-hidden">
+<div class="px-5 py-4 flex items-center justify-between cursor-pointer hover:bg-tcm-cream/30 transition" onclick="toggleAnswer('es3_ans')">
+<p class="text-tcm-dark font-medium">3. 试论述六淫各自致病特点并加以对比。</p><span class="text-tcm-gold text-lg">&#9660;</span>
+</div>
+<div id="es3_ans" class="answer-reveal px-5 text-sm text-tcm-dark border-t border-tcm-gold/20">
+<p class="font-bold text-tcm-green mb-2">六淫各自致病特点：</p>
+<p class="mb-2"><strong>1. 风邪：</strong>风为百病之长（外邪致病的先导，常兼他邪致病）；善行数变（病位游走不定、发病急变化快）；主动（症状动摇不定如眩晕震颤）；易伤阳气（风性开泄使腠理疏泄阳气外泄）；易袭阳位（多犯上部和肌表）。</p>
+<p class="mb-2"><strong>2. 寒邪：</strong>寒为阴邪易伤阳气（寒性阴盛损伤阳气）；寒性凝滞（气血凝结阻滞不通则痛——寒痛）；寒性收引（收缩牵引——腠理拘急筋脉挛缩）。伤寒(寒伤肌表)与中寒(寒直中于里)不同。</p>
+<p class="mb-2"><strong>3. 暑邪：</strong>暑为阳邪其性炎热（暑性火热的阳邪）；暑性升散易耗气伤津（暑邪上升发散使腠理开泄多汗耗气伤津）；暑多挟湿（夏季湿气重暑湿兼见）。</p>
+<p class="mb-2"><strong>4. 湿邪：</strong>湿为阴邪易阻气机（湿性重浊黏腻阻滞气机）；湿性重浊（沉重如头身困重、秽浊如分泌物混浊）；湿性黏滞（症状黏腻缠绵病程长反复发作）；湿易伤脾（脾主运化水湿，湿邪困脾则运化失职）。</p>
+<p class="mb-2"><strong>5. 燥邪：</strong>燥性干燥易伤津液（燥邪耗伤津液出现口干唇裂皮肤干燥）；燥易伤肺（肺为娇脏喜润恶燥，燥邪从口鼻而入最易伤肺）。</p>
+<p class="mb-2"><strong>6. 火(热)邪：</strong>火为阳邪其性炎上（火性向上向外燔灼）；易伤津耗气（火热消耗津液和正气）；易生风动血（热极生风、迫血妄行出血）；易扰心神（火热扰心见神昏谵语狂躁）；易致疮痈（火热蕴结成脓疮痈）。</p>
+<p class="font-bold text-tcm-green mb-2 mt-3">对比要点：</p>
+<p class="mb-1">1风/暑/火(热)为阳邪，寒/湿为阴邪。暑与火同属阳邪但暑仅夏季、火全年可有。</p>
+<p class="mb-1">2寒/燥/火均伤津液，湿不伤津反留湿。</p>
+<p class="mb-1">3寒/湿均伤阳气，风/暑/火耗气伤津。</p>
+<p class="mb-1">4寒主凝滞收引(痛+拘急)，湿主重浊黏滞(困重+缠绵)。</p>
+<p>5风善行数变主动，湿黏滞固定不动——风湿对比鲜明。</p>
+</div></div>
+
+</div>
+</section>
+
+<div id="check-section" class="max-w-5xl mx-auto px-4 pt-8 pb-4">
+<div class="flex items-center gap-3 mb-6">
+<span class="bg-tcm-gold text-tcm-dark text-sm font-bold px-3 py-1 rounded">成绩</span>
+<h3 class="text-tcm-dark text-xl font-bold">全部检查</h3>
+</div>
+<button onclick="checkAll()" class="w-full bg-tcm-red hover:bg-tcm-red/80 text-white font-bold py-4 rounded-xl shadow-lg text-lg transition">全部检查 - 查看成绩报告</button>
+<div id="score-report" class="mt-6 bg-white rounded-xl p-6 border-2 border-tcm-gold/30 shadow-sm hidden">
+<h4 class="text-tcm-dark text-lg font-bold mb-4">成绩报告</h4>
+<div id="score-details" class="space-y-3"></div>
+<div class="mt-4 pt-4 border-t-2 border-tcm-gold/30">
+<div class="flex items-center justify-between mb-2"><span class="text-tcm-dark font-bold">总分</span><span id="total-score" class="text-tcm-gold text-2xl font-bold">0</span></div>
+<div class="w-full bg-tcm-cream rounded-full h-4 overflow-hidden"><div id="total-bar" class="score-bar bg-tcm-gold rounded-full h-4" style="width:0%"></div></div>
+</div>
+</div>
+</div>
+
+<footer class="max-w-5xl mx-auto px-4 py-8 text-center text-tcm-brown/60 text-sm">
+<div class="h-0.5 bg-gradient-to-r from-transparent via-tcm-gold/30 to-transparent mb-4"></div>
+中医基础理论自测模拟题 | 答题状态自动保存至本地 | 覆盖全部72小节知识点
+</footer>
+
+<script>
+// --- Answer toggle ---
+function toggleAnswer(id){
+  const el=document.getElementById(id);
+  el.classList.toggle('open');
+  saveState();
+}
+
+// --- MCQ check ---
+function checkMCQ(optEl,qId,choice,correct){
+  const card=optEl.closest('[data-q]');
+  if(card.querySelector('.answered'))return;
+  const opts=card.querySelectorAll('.mcq-option');
+  opts.forEach(o=>o.classList.add('answered'));
+  if(choice===correct){
+    optEl.classList.add('correct');
+  }else{
+    optEl.classList.add('wrong');
+    opts.forEach(o=>{if(o.textContent.trim().startsWith(correct+'.'))o.classList.add('correct')});
+  }
+  // Show explanation
+  const exp=document.getElementById(qId+'_explain');
+  if(exp)exp.classList.add('open');
+  saveState();
+}
+
+// --- Fill-in scoring helpers ---
+const fbAnswers={
+  fb1:['有利的社会文化背景','古代哲学思想的渗透'],
+  fb2:['有机整体','自然环境','社会环境'],
+  fb3:['辨别分析证候','根据辨证结果确定治疗原则和方法'],
+  fb4:['司外揣内','以表知里'],
+  fb5:['相互关联的某些事物和现象对立双方','生命现象及各种组织结构对立双方'],
+  fb6:['相互制约','相互生化'],
+  fb7:['太过(超过正常限度)','反向(被克者反克克己者)'],
+  fb8:['生长升发条达舒畅','温热升腾明亮','生化承载受纳','清洁肃降收敛','寒凉滋润下行闭藏'],
+  fb9:['说明五脏的生理功能及其特性','说明五脏之间的相互关系','说明人与自然环境的统一性'],
+  fb10:['气的生成不足或消耗太过导致脏腑功能减退','气的大量外泄导致功能突然衰竭'],
+  fb11:['营养滋润全身','为神的主要物质基础'],
+  fb12:['生殖之精(禀受于父母的先天之精)','一切精微物质(包括气血津液等)'],
+  fb13:['繁衍生命','滋养脏腑','化生血液','化气化神'],
+  fb14:['一切正常水液','津','液'],
+  fb15:['津血同源','津可生血(津可化血)','血可化津(血可生津)'],
+  fb16:['血虚','血热','血瘀'],
+  fb17:['腑(中空有腔)','脏(贮藏精气)'],
+  fb18:['贮藏血液','调节血量(按需分配)','防止出血'],
+  fb19:['通行元气','运行水液'],
+  fb20:['雾','沤','渎'],
+  fb21:['传化水谷','虚实交替'],
+  fb22:['六腑','奇恒之腑','贮存和排泄胆汁'],
+  fb23:['受纳水谷','腐熟水谷'],
+  fb24:['受盛化物','泌别清浊'],
+  fb25:['传化糟粕(吸收水分形成粪便排出)','贮尿和排尿'],
+  fb26:['经脉分出处的络脉(十二经脉+任督+脾之大络)','浮现于体表的络脉','络脉的最细小分支'],
+  fb27:['相为表里的阴经与阳经(表里经)','同名的手足阳经','手足阴经'],
+  fb28:['不属脏腑(无脏腑属络关系)','无阴阳表里配属关系','除任督外无腧穴配属'],
+  fb29:['沟通联络(联络脏腑肢体)','感应传导(传导刺激和病候)','调节功能平衡(调节阴阳保持平衡)'],
+  fb30:['直接伤及内脏','影响脏腑气机','情志波动影响病情变化','多以相应脏腑为主'],
+  fb31:['陈无择','内因(七情)','外因(六淫)','不内外因(饮食劳倦跌打金刃等)'],
+  fb32:['阻滞气血运行','影响水液代谢','易于蒙蔽心神','致病广泛变幻多端','病势缠绵病程较长'],
+  fb33:['易于阻滞气机','影响血脉运行','导致新血生成障碍','病位固定病证繁多'],
+  fb34:['正气不足','邪气'],
+  fb35:['疾病发生发展变化的基本机理(机制)'],
+  fb36:['病向好转/痊愈','病趋恶化/死亡','病势迁延','病势缠绵','病后体虚/恢复期'],
+  fb37:['阳偏盛(实热证)','阴偏盛(实寒证)','阳偏衰(虚寒证)','阴偏衰(虚热证)','阳损及阴','阴损及阳','阴盛格阳(真寒假热)','阳盛格阴(真热假寒)'],
+  fb38:['气的运行不畅/局部阻滞','气升举太过/下降不及','气升举无力/下降太过','气外出受阻/闭结于内','气不内守/大量外泄'],
+  fb39:['形体强弱胖瘦','形体畸异','动(仰卧伸足/欲去衣被)','静(蜷卧缩足/欲得衣被)'],
+  fb40:['颜色质地量','寒热','头身']
+};
+
+// --- Save state ---
+function saveState(){
+  const state={};
+  // Save fill-in inputs
+  for(let i=1;i<=40;i++){
+    const key='fb'+i;
+    const answers=fbAnswers[key]||[];
+    for(let j=0;j<answers.length;j++){
+      const el=document.getElementById(key+'_'+j);
+      if(el)state[key+'_'+j]=el.value;
+    }
+  }
+  // Save answer reveal states
+  document.querySelectorAll('.answer-reveal').forEach(el=>{
+    state['ans_'+el.id]=el.classList.contains('open');
+  });
+  // Save MCQ answered states
+  document.querySelectorAll('[data-q]').forEach(card=>{
+    const qId=card.getAttribute('data-q');
+    if(!qId.startsWith('mcq'))return;
+    const hasWrong=card.querySelector('.mcq-option.wrong');
+    const hasAnswered=card.querySelector('.mcq-option.answered');
+    if(hasAnswered)state['mcq_'+qId]=hasWrong?'wrong':'correct';
+  });
+  localStorage.setItem('tcm_quiz_state',JSON.stringify(state));
+}
+
+// --- Load state ---
+function loadState(){
+  const raw=localStorage.getItem('tcm_quiz_state');
+  if(!raw)return;
+  const state=JSON.parse(raw);
+  for(const[k,v]of Object.entries(state)){
+    if(k.startsWith('fb')){
+      const el=document.getElementById(k);
+      if(el)el.value=v;
+    }else if(k.startsWith('ans_')){
+      const el=document.getElementById(k.replace('ans_',''));
+      if(el&&v)el.classList.add('open');
+    }else if(k.startsWith('mcq_')){
+      const qId=k.replace('mcq_','');
+      const card=document.querySelector('[data-q="'+qId+'"]');
+      if(!card)continue;
+      const opts=card.querySelectorAll('.mcq-option');
+      opts.forEach(o=>o.classList.add('answered'));
+      // Find correct answer from onclick attributes and highlight it
+      opts.forEach(o=>{
+        const onclick=o.getAttribute('onclick');
+        if(onclick){
+          const match=onclick.match(/'([A-D])','([A-D])'/);
+          if(match&&match[1]===match[2])o.classList.add('correct');
+        }
+      });
+      const exp=document.getElementById(qId+'_explain');
+      if(exp)exp.classList.add('open');
+    }
+  }
+}
+
+// --- Reset ---
+function resetAll(){
+  if(!confirm('确定要重置所有答题状态吗？'))return;
+  localStorage.removeItem('tcm_quiz_state');
+  // Clear inputs
+  document.querySelectorAll('input[type="text"]').forEach(el=>el.value='');
+  // Close all answers
+  document.querySelectorAll('.answer-reveal').forEach(el=>el.classList.remove('open'));
+  // Reset MCQ
+  document.querySelectorAll('.mcq-option').forEach(el=>{
+    el.classList.remove('answered','correct','wrong');
+  });
+  document.getElementById('score-report').classList.add('hidden');
+  alert('答题状态已重置！');
+}
+
+// --- Check all & score ---
+function checkAll(){
+  const report=document.getElementById('score-report');
+  const details=document.getElementById('score-details');
+  details.innerHTML='';
+  report.classList.remove('hidden');
+
+  // Fill-in score
+  let fbCorrect=0,fbTotal=0;
+  for(let i=1;i<=40;i++){
+    const key='fb'+i;
+    const answers=fbAnswers[key]||[];
+    for(let j=0;j<answers.length;j++){
+      fbTotal++;
+      const el=document.getElementById(key+'_'+j);
+      if(el){
+        const val=el.value.trim().toLowerCase();
+        const ans=answers[j].toLowerCase();
+        // Flexible matching: check if key terms appear
+        const keyTerms=ans.replace(/[()（）]/g,'').split(/[、，,\/]/);
+        let match=false;
+        if(val===ans)match=true;
+        else if(keyTerms.some(t=>val.includes(t.replace(/\s/g,''))&&t.length>2))match=true;
+        else if(val.length>0&&val.length>=ans.length*0.6)match=true;
+        if(match)fbCorrect++;
+      }
+    }
+  }
+  const fbScore=Math.round(fbCorrect/fbTotal*100);
+  details.innerHTML+=`<div class="flex items-center justify-between"><span class="text-tcm-dark font-medium">填空题 (${fbCorrect}/${fbTotal})</span><div class="flex items-center gap-2"><span class="text-tcm-gold font-bold">${fbScore}%</span><div class="w-32 bg-tcm-cream rounded-full h-3 overflow-hidden"><div class="score-bar bg-tcm-green rounded-full h-3" style="width:${fbScore}%"></div></div></div></div>`;
+
+  // MCQ score
+  let mcqCorrect=0,mcqTotal=20;
+  document.querySelectorAll('[data-q]').forEach(card=>{
+    const qId=card.getAttribute('data-q');
+    if(qId.startsWith('mcq')){
+      const correct=card.querySelector('.mcq-option.correct.answered');
+      const wrong=card.querySelector('.mcq-option.wrong.answered');
+      if(correct&&!wrong)mcqCorrect++;
+    }
+  });
+  const mcqScore=Math.round(mcqCorrect/mcqTotal*100);
+  details.innerHTML+=`<div class="flex items-center justify-between"><span class="text-tcm-dark font-medium">选择题 (${mcqCorrect}/${mcqTotal})</span><div class="flex items-center gap-2"><span class="text-tcm-gold font-bold">${mcqScore}%</span><div class="w-32 bg-tcm-cream rounded-full h-3 overflow-hidden"><div class="score-bar bg-tcm-green rounded-full h-3" style="width:${mcqScore}%"></div></div></div></div>`;
+
+  // Count opened answers for term/short/essay
+  let termOpened=0,termTotal=15,shortOpened=0,shortTotal=8,essayOpened=0,essayTotal=3;
+  document.querySelectorAll('#term-container .answer-reveal').forEach(el=>{if(el.classList.contains('open'))termOpened++});
+  document.querySelectorAll('#short-container .answer-reveal').forEach(el=>{if(el.classList.contains('open'))shortOpened++});
+  document.querySelectorAll('#essay-container .answer-reveal').forEach(el=>{if(el.classList.contains('open'))essayOpened++});
+
+  const termPct=Math.round(termOpened/termTotal*100);
+  const shortPct=Math.round(shortOpened/shortTotal*100);
+  const essayPct=Math.round(essayOpened/essayTotal*100);
+
+  details.innerHTML+=`<div class="flex items-center justify-between"><span class="text-tcm-dark font-medium">名词解释 (已查看${termOpened}/${termTotal})</span><div class="flex items-center gap-2"><span class="text-tcm-gold font-bold">${termPct}%</span><div class="w-32 bg-tcm-cream rounded-full h-3 overflow-hidden"><div class="score-bar bg-tcm-gold rounded-full h-3" style="width:${termPct}%"></div></div></div></div>`;
+  details.innerHTML+=`<div class="flex items-center justify-between"><span class="text-tcm-dark font-medium">简答题 (已查看${shortOpened}/${shortTotal})</span><div class="flex items-center gap-2"><span class="text-tcm-gold font-bold">${shortPct}%</span><div class="w-32 bg-tcm-cream rounded-full h-3 overflow-hidden"><div class="score-bar bg-tcm-gold rounded-full h-3" style="width:${shortPct}%"></div></div></div></div>`;
+  details.innerHTML+=`<div class="flex items-center justify-between"><span class="text-tcm-dark font-medium">论述题 (已查看${essayOpened}/${essayTotal})</span><div class="flex items-center gap-2"><span class="text-tcm-gold font-bold">${essayPct}%</span><div class="w-32 bg-tcm-cream rounded-full h-3 overflow-hidden"><div class="score-bar bg-tcm-gold rounded-full h-3" style="width:${essayPct}%"></div></div></div></div>`;
+
+  // Total weighted score: fill-in 30%, mcq 30%, term 20%, short 10%, essay 10%
+  const total=Math.round(fbScore*0.3+mcqScore*0.3+termPct*0.2+shortPct*0.1+essayPct*0.1);
+  document.getElementById('total-score').textContent=total+'分';
+  document.getElementById('total-bar').style.width=total+'%';
+
+  // Show all answers
+  document.querySelectorAll('.answer-reveal').forEach(el=>el.classList.add('open'));
+  saveState();
+}
+
+// --- Nav active highlight ---
+const sections=['fill-blank','mcq','term-def','short-answer','essay'];
+const navLinks=document.querySelectorAll('.nav-link');
+window.addEventListener('scroll',()=>{
+  let current='';
+  sections.forEach(id=>{
+    const el=document.getElementById(id);
+    if(el&&el.getBoundingClientRect().top<=120)current=id;
+  });
+  navLinks.forEach(link=>{
+    link.classList.remove('active');
+    if(link.getAttribute('href')==='#'+current)link.classList.add('active');
+  });
+});
+
+// --- Init ---
+window.addEventListener('DOMContentLoaded',loadState);
+</script>
+
+</body>
+</html>
