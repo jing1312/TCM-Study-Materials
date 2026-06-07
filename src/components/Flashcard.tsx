@@ -19,7 +19,7 @@ export function Flashcard({ card, status, onSetStatus, onClearStatus }: Flashcar
     <article className={`flashcard ${statusClass}`}>
       <button className="flashcard-stage" type="button" onClick={() => setFlipped((value) => !value)} aria-pressed={flipped}>
         <div className={flipped ? 'flashcard-inner is-flipped' : 'flashcard-inner'}>
-          <section className="flashcard-face bg-white">
+          <section className="flashcard-face flashcard-front">
             <CardHeader card={card} status={status} />
             <div className="grid flex-1 place-items-center px-1 text-center text-[15px] font-semibold leading-7 text-slate-950">
               {card.front}
@@ -30,7 +30,7 @@ export function Flashcard({ card, status, onSetStatus, onClearStatus }: Flashcar
             </div>
           </section>
 
-          <section className="flashcard-face flashcard-back bg-indigo-950 text-indigo-50">
+          <section className="flashcard-face flashcard-back">
             <CardHeader card={card} status={status} inverted />
             <div className="flashcard-answer" dangerouslySetInnerHTML={{ __html: card.back }} />
             <div className="flex items-center justify-center gap-1.5 text-xs font-medium text-indigo-200">

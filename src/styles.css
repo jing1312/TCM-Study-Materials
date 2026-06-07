@@ -232,8 +232,18 @@ button {
   box-shadow: 0 12px 26px rgb(37 99 235 / 0.08);
 }
 
+.flashcard-front {
+  background:
+    radial-gradient(circle at 12% 0%, rgb(224 242 254 / 0.95), transparent 36%),
+    linear-gradient(145deg, rgb(255 255 255), rgb(248 250 252) 58%, rgb(238 242 255));
+}
+
 .flashcard-back {
-  border-color: rgb(99 102 241);
+  border-color: rgb(34 211 238);
+  background:
+    radial-gradient(circle at 16% 10%, rgb(34 211 238 / 0.22), transparent 32%),
+    linear-gradient(145deg, rgb(30 41 59), rgb(49 46 129) 48%, rgb(8 47 73));
+  color: rgb(240 249 255);
   transform: rotateY(180deg);
 }
 
@@ -243,8 +253,8 @@ button {
 }
 
 .flashcard.is-unmastered .flashcard-face {
-  border-color: rgb(245 158 11);
-  box-shadow: 0 12px 26px rgb(245 158 11 / 0.16);
+  border-color: rgb(217 70 239);
+  box-shadow: 0 12px 26px rgb(217 70 239 / 0.14);
 }
 
 .flashcard-answer {
@@ -271,7 +281,7 @@ button {
   font-weight: 750;
 }
 
-.kw-gold {
+.kw-accent {
   color: rgb(103 232 249);
   font-weight: 750;
 }
@@ -323,11 +333,11 @@ button {
 }
 
 .warning-button {
-  background: rgb(217 119 6);
+  background: rgb(192 38 211);
 }
 
 .warning-button:hover {
-  background: rgb(180 83 9);
+  background: rgb(162 28 175);
 }
 
 @media (max-width: 640px) {

@@ -10,7 +10,7 @@ tailwind.config = {
   theme: {
     extend: {
       colors: {
-        tcm: { gold: '#D4A017', red: '#C41E3A', brown: '#2563EB', cream: '#F0F9FF', dark: '#3730A3', green: '#5B8C5A' }
+        tcm: { accent: '#0891B2', red: '#C41E3A', blue: '#2563EB', cream: '#F0F9FF', dark: '#3730A3', green: '#5B8C5A' }
       }
     }
   }
@@ -21,7 +21,7 @@ tailwind.config = {
 @media print { .sticky-nav { position: static !important; } .collapsible-content { display: block !important; } .toggle-btn { display: none !important; } section { break-inside: avoid; } .no-print { display: none !important; } }
 .collapsible-content { display: none; }
 .collapsible-content.open { display: block; }
-.mnemonic-box { background: linear-gradient(135deg, #D4A017 0%, #C41E3A 50%, #2563EB 100%); color: #F0F9FF; font-size: 1.25rem; line-height: 1.8; padding: 1.25rem 1.5rem; border-radius: 1rem; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); }
+.mnemonic-box { background: linear-gradient(135deg, #0891B2 0%, #C41E3A 50%, #2563EB 100%); color: #F0F9FF; font-size: 1.25rem; line-height: 1.8; padding: 1.25rem 1.5rem; border-radius: 1rem; text-shadow: 1px 1px 2px rgba(0,0,0,0.3); }
 .exam-tip { border-left: 4px solid #C41E3A; background: #FFF1F0; padding: 0.75rem 1rem; border-radius: 0.5rem; }
 </style>
 </head>
@@ -35,37 +35,37 @@ function toggleSection(id) {
 
 <nav class="sticky-nav sticky top-0 z-50 bg-tcm-dark shadow-lg no-print">
   <div class="max-w-4xl mx-auto px-4 py-2 flex items-center justify-between flex-wrap gap-1">
-    <h1 class="text-tcm-gold font-bold text-lg tracking-wider">重点难点口诀速记</h1>
+    <h1 class="text-tcm-accent font-bold text-lg tracking-wider">重点难点口诀速记</h1>
     <div class="flex gap-1 flex-wrap text-xs">
       <a href="#m01" class="px-2 py-1 bg-tcm-red text-white rounded hover:bg-red-700">01</a>
-      <a href="#m02" class="px-2 py-1 bg-tcm-brown text-tcm-cream rounded hover:bg-yellow-800">02</a>
+      <a href="#m02" class="px-2 py-1 bg-tcm-blue text-tcm-cream rounded hover:bg-blue-700">02</a>
       <a href="#m03" class="px-2 py-1 bg-tcm-green text-white rounded hover:bg-green-700">03</a>
       <a href="#m04" class="px-2 py-1 bg-blue-700 text-white rounded hover:bg-blue-800">04</a>
       <a href="#m05" class="px-2 py-1 bg-purple-700 text-white rounded hover:bg-purple-800">05</a>
       <a href="#m06" class="px-2 py-1 bg-teal-700 text-white rounded hover:bg-teal-800">06</a>
       <a href="#m07" class="px-2 py-1 bg-indigo-700 text-white rounded hover:bg-indigo-800">07</a>
       <a href="#m08" class="px-2 py-1 bg-pink-700 text-white rounded hover:bg-pink-800">08</a>
-      <a href="#m09" class="px-2 py-1 bg-orange-700 text-white rounded hover:bg-orange-800">09</a>
+      <a href="#m09" class="px-2 py-1 bg-cyan-700 text-white rounded hover:bg-cyan-800">09</a>
       <a href="#m10" class="px-2 py-1 bg-cyan-700 text-white rounded hover:bg-cyan-800">10</a>
-      <a href="#m11" class="px-2 py-1 bg-amber-700 text-white rounded hover:bg-amber-800">11</a>
+      <a href="#m11" class="px-2 py-1 bg-sky-700 text-white rounded hover:bg-sky-800">11</a>
       <a href="#m12" class="px-2 py-1 bg-emerald-700 text-white rounded hover:bg-emerald-800">12</a>
       <a href="#m13" class="px-2 py-1 bg-rose-700 text-white rounded hover:bg-rose-800">13</a>
-      <a href="#summary" class="px-2 py-1 bg-tcm-gold text-tcm-dark rounded hover:bg-yellow-500 font-bold">速查</a>
+      <a href="#summary" class="px-2 py-1 bg-tcm-accent text-tcm-dark rounded hover:bg-cyan-500 font-bold">速查</a>
     </div>
   </div>
 </nav>
 
-<header class="bg-gradient-to-br from-tcm-dark via-tcm-brown to-tcm-red text-white text-center py-10 px-4">
+<header class="bg-gradient-to-br from-tcm-dark via-tcm-blue to-tcm-red text-white text-center py-10 px-4">
   <h1 class="text-3xl md:text-4xl font-bold tracking-widest mb-2">中医药学概论</h1>
   <p class="text-lg text-tcm-cream opacity-90">重点难点口诀速记手册 &mdash; 13模块全覆盖</p>
-  <span class="inline-block bg-tcm-gold text-tcm-dark rounded-full px-4 py-1 font-bold text-sm mt-3">零基础 &middot; 口诀版 &middot; 可折叠 &middot; A4打印</span>
+  <span class="inline-block bg-tcm-accent text-tcm-dark rounded-full px-4 py-1 font-bold text-sm mt-3">零基础 &middot; 口诀版 &middot; 可折叠 &middot; A4打印</span>
 </header>
 
 <main class="max-w-4xl mx-auto px-4 py-8 space-y-8">
 
 <section id="m01" class="bg-white rounded-xl shadow-md overflow-hidden">
-  <button onclick="toggleSection('m01-content')" class="toggle-btn w-full bg-gradient-to-r from-tcm-red to-tcm-brown text-white text-left px-6 py-4 flex items-center justify-between hover:opacity-90 transition">
-    <div><span class="font-bold text-xl">模块01</span><span class="ml-2 text-lg">五脏功能对应表</span><span class="ml-2 text-xs bg-yellow-400 text-tcm-dark text-white rounded px-2 py-0.5">最易混</span></div>
+  <button onclick="toggleSection('m01-content')" class="toggle-btn w-full bg-gradient-to-r from-tcm-red to-tcm-blue text-white text-left px-6 py-4 flex items-center justify-between hover:opacity-90 transition">
+    <div><span class="font-bold text-xl">模块01</span><span class="ml-2 text-lg">五脏功能对应表</span><span class="ml-2 text-xs bg-cyan-400 text-tcm-dark text-white rounded px-2 py-0.5">最易混</span></div>
     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
   </button>
   <div id="m01-content" class="collapsible-content px-6 py-5 space-y-4">
@@ -74,33 +74,33 @@ function toggleSection(id) {
       <p class="font-bold text-center mb-2">五脏功能口诀</p>
       <p><span class="text-red-300 font-bold">心：</span>血脉神志面舌喜汗夏（红心君主）</p>
       <p><span class="text-blue-300 font-bold">肺：</span>气呼吸宣降通调百脉主治节 皮鼻忧涕毛秋（白肺华盖）</p>
-      <p><span class="text-yellow-300 font-bold">脾：</span>运化升清统血 肉四肢口思涎唇长夏（黄脾仓廪后天）</p>
+      <p><span class="text-sky-200 font-bold">脾：</span>运化升清统血 肉四肢口思涎唇长夏（黄脾仓廪后天）</p>
       <p><span class="text-green-300 font-bold">肝：</span>疏泄藏血筋目怒泪爪春（绿肝将军）</p>
       <p><span class="text-gray-300 font-bold">肾：</span>藏精水纳气 骨髓脑耳二阴恐唾发冬（黑肾先天）</p>
 
     </div>
 
-    <div class="bg-gradient-to-r from-red-100 via-yellow-100 to-green-100 rounded-lg p-4 border border-tcm-gold">
-      <p class="font-bold text-tcm-brown mb-2">颜色联想记忆法</p>
+    <div class="bg-gradient-to-r from-red-100 via-sky-100 to-green-100 rounded-lg p-4 border border-tcm-accent">
+      <p class="font-bold text-tcm-blue mb-2">颜色联想记忆法</p>
       <p class="flex items-center gap-3 text-lg">
         <span class="bg-red-600 text-white rounded-full px-3 py-1">红心(火)</span>
         <span class="bg-white text-tcm-dark border-2 border-gray-400 rounded-full px-3 py-1">白肺(金)</span>
-        <span class="bg-yellow-500 text-tcm-dark rounded-full px-3 py-1">黄脾(土)</span>
+        <span class="bg-sky-500 text-tcm-dark rounded-full px-3 py-1">黄脾(土)</span>
         <span class="bg-green-600 text-white rounded-full px-3 py-1">绿肝(木)</span>
         <span class="bg-gray-800 text-white rounded-full px-3 py-1">黑肾(水)</span>
       </p>
     </div>
 
-    <h3 class="font-bold text-tcm-red text-lg border-b border-tcm-gold pb-1">5脏 x 7项 完整对应表</h3>
+    <h3 class="font-bold text-tcm-red text-lg border-b border-tcm-accent pb-1">5脏 x 7项 完整对应表</h3>
     <div class="overflow-x-auto">
-<table class="w-full text-sm border-collapse border border-tcm-brown">
-        <thead><tr class="bg-gradient-to-r from-tcm-dark to-tcm-brown text-white"><th class="border border-tcm-brown px-2 py-2">五脏</th><th class="border border-tcm-brown px-2 py-2">五行/颜色</th><th class="border border-tcm-brown px-2 py-2">主要功能</th><th class="border border-tcm-brown px-2 py-2">在体/窍</th><th class="border border-tcm-brown px-2 py-2">情志/液</th><th class="border border-tcm-brown px-2 py-2">季节</th><th class="border border-tcm-brown px-2 py-2">别称</th></tr></thead>
+<table class="w-full text-sm border-collapse border border-tcm-blue">
+        <thead><tr class="bg-gradient-to-r from-tcm-dark to-tcm-blue text-white"><th class="border border-tcm-blue px-2 py-2">五脏</th><th class="border border-tcm-blue px-2 py-2">五行/颜色</th><th class="border border-tcm-blue px-2 py-2">主要功能</th><th class="border border-tcm-blue px-2 py-2">在体/窍</th><th class="border border-tcm-blue px-2 py-2">情志/液</th><th class="border border-tcm-blue px-2 py-2">季节</th><th class="border border-tcm-blue px-2 py-2">别称</th></tr></thead>
         <tbody>
-          <tr class="bg-red-50"><td class="border border-tcm-brown px-2 py-2"><b class="text-tcm-red">心</b></td><td class="border border-tcm-brown px-2 py-2">火/红</td><td class="border border-tcm-brown px-2 py-2">主血脉、主神志</td><td class="border border-tcm-brown px-2 py-2">面、舌</td><td class="border border-tcm-brown px-2 py-2">喜、汗</td><td class="border border-tcm-brown px-2 py-2">夏</td><td class="border border-tcm-brown px-2 py-2"><b>君主之官</b></td></tr>
-          <tr class="bg-blue-50"><td class="border border-tcm-brown px-2 py-2"><b class="text-blue-700">肺</b></td><td class="border border-tcm-brown px-2 py-2">金/白</td><td class="border border-tcm-brown px-2 py-2">主气、司呼吸、主宣降、通调水道、朝百脉、主治节</td><td class="border border-tcm-brown px-2 py-2">皮、鼻</td><td class="border border-tcm-brown px-2 py-2">忧、涕</td><td class="border border-tcm-brown px-2 py-2">秋</td><td class="border border-tcm-brown px-2 py-2"><b>华盖之官</b></td></tr>
-          <tr class="bg-yellow-50"><td class="border border-tcm-brown px-2 py-2"><b class="text-tcm-brown">脾</b></td><td class="border border-tcm-brown px-2 py-2">土/黄</td><td class="border border-tcm-brown px-2 py-2">主运化、主升清、主统血</td><td class="border border-tcm-brown px-2 py-2">肉、四肢、口、唇</td><td class="border border-tcm-brown px-2 py-2">思、涎</td><td class="border border-tcm-brown px-2 py-2">长夏</td><td class="border border-tcm-brown px-2 py-2"><b>仓廪之官(后天之本)</b></td></tr>
-          <tr class="bg-green-50"><td class="border border-tcm-brown px-2 py-2"><b class="text-tcm-green">肝</b></td><td class="border border-tcm-brown px-2 py-2">木/绿</td><td class="border border-tcm-brown px-2 py-2">主疏泄、主藏血</td><td class="border border-tcm-brown px-2 py-2">筋、目、爪</td><td class="border border-tcm-brown px-2 py-2">怒、泪</td><td class="border border-tcm-brown px-2 py-2">春</td><td class="border border-tcm-brown px-2 py-2"><b>将军之官</b></td></tr>
-          <tr class="bg-gray-100"><td class="border border-tcm-brown px-2 py-2"><b class="text-gray-800">肾</b></td><td class="border border-tcm-brown px-2 py-2">水/黑</td><td class="border border-tcm-brown px-2 py-2">藏精、主水、纳气</td><td class="border border-tcm-brown px-2 py-2">骨、髓、脑、耳、二阴、发</td><td class="border border-tcm-brown px-2 py-2">恐、唾</td><td class="border border-tcm-brown px-2 py-2">冬</td><td class="border border-tcm-brown px-2 py-2"><b>先天之本</b></td></tr>
+          <tr class="bg-red-50"><td class="border border-tcm-blue px-2 py-2"><b class="text-tcm-red">心</b></td><td class="border border-tcm-blue px-2 py-2">火/红</td><td class="border border-tcm-blue px-2 py-2">主血脉、主神志</td><td class="border border-tcm-blue px-2 py-2">面、舌</td><td class="border border-tcm-blue px-2 py-2">喜、汗</td><td class="border border-tcm-blue px-2 py-2">夏</td><td class="border border-tcm-blue px-2 py-2"><b>君主之官</b></td></tr>
+          <tr class="bg-blue-50"><td class="border border-tcm-blue px-2 py-2"><b class="text-blue-700">肺</b></td><td class="border border-tcm-blue px-2 py-2">金/白</td><td class="border border-tcm-blue px-2 py-2">主气、司呼吸、主宣降、通调水道、朝百脉、主治节</td><td class="border border-tcm-blue px-2 py-2">皮、鼻</td><td class="border border-tcm-blue px-2 py-2">忧、涕</td><td class="border border-tcm-blue px-2 py-2">秋</td><td class="border border-tcm-blue px-2 py-2"><b>华盖之官</b></td></tr>
+          <tr class="bg-sky-50"><td class="border border-tcm-blue px-2 py-2"><b class="text-tcm-blue">脾</b></td><td class="border border-tcm-blue px-2 py-2">土/黄</td><td class="border border-tcm-blue px-2 py-2">主运化、主升清、主统血</td><td class="border border-tcm-blue px-2 py-2">肉、四肢、口、唇</td><td class="border border-tcm-blue px-2 py-2">思、涎</td><td class="border border-tcm-blue px-2 py-2">长夏</td><td class="border border-tcm-blue px-2 py-2"><b>仓廪之官(后天之本)</b></td></tr>
+          <tr class="bg-green-50"><td class="border border-tcm-blue px-2 py-2"><b class="text-tcm-green">肝</b></td><td class="border border-tcm-blue px-2 py-2">木/绿</td><td class="border border-tcm-blue px-2 py-2">主疏泄、主藏血</td><td class="border border-tcm-blue px-2 py-2">筋、目、爪</td><td class="border border-tcm-blue px-2 py-2">怒、泪</td><td class="border border-tcm-blue px-2 py-2">春</td><td class="border border-tcm-blue px-2 py-2"><b>将军之官</b></td></tr>
+          <tr class="bg-gray-100"><td class="border border-tcm-blue px-2 py-2"><b class="text-gray-800">肾</b></td><td class="border border-tcm-blue px-2 py-2">水/黑</td><td class="border border-tcm-blue px-2 py-2">藏精、主水、纳气</td><td class="border border-tcm-blue px-2 py-2">骨、髓、脑、耳、二阴、发</td><td class="border border-tcm-blue px-2 py-2">恐、唾</td><td class="border border-tcm-blue px-2 py-2">冬</td><td class="border border-tcm-blue px-2 py-2"><b>先天之本</b></td></tr>
         </tbody>
       </table>
     </div>
@@ -110,7 +110,7 @@ function toggleSection(id) {
 
 
 <section id="m02" class="bg-white rounded-xl shadow-md overflow-hidden">
-  <button onclick="toggleSection('m02-content')" class="toggle-btn w-full bg-gradient-to-r from-tcm-brown to-tcm-gold text-white text-left px-6 py-4 flex items-center justify-between hover:opacity-90 transition">
+  <button onclick="toggleSection('m02-content')" class="toggle-btn w-full bg-gradient-to-r from-tcm-blue to-tcm-accent text-white text-left px-6 py-4 flex items-center justify-between hover:opacity-90 transition">
     <div><span class="font-bold text-xl">模块02</span><span class="ml-2 text-lg">五脏别称+概括</span></div>
     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
   </button>
@@ -122,21 +122,21 @@ function toggleSection(id) {
 
     </div>
 
-    <div class="bg-gradient-to-r from-yellow-50 to-yellow-100 rounded-lg p-4 border border-tcm-gold">
-      <p class="font-bold text-tcm-brown mb-2">功能一句话概括</p>
-      <p class="text-sm"><span class="text-tcm-red font-bold">心</span>=血脉+神志(君主)；<span class="text-blue-700 font-bold">肺</span>=气+呼吸+治节(华盖)；<span class="text-tcm-brown font-bold">脾</span>=运化+升清+统血(仓廪)；<span class="text-tcm-green font-bold">肝</span>=疏泄+藏血(将军)；<span class="text-gray-800 font-bold">肾</span>=精+水+纳气(先天)</p>
+    <div class="bg-gradient-to-r from-sky-50 to-sky-100 rounded-lg p-4 border border-tcm-accent">
+      <p class="font-bold text-tcm-blue mb-2">功能一句话概括</p>
+      <p class="text-sm"><span class="text-tcm-red font-bold">心</span>=血脉+神志(君主)；<span class="text-blue-700 font-bold">肺</span>=气+呼吸+治节(华盖)；<span class="text-tcm-blue font-bold">脾</span>=运化+升清+统血(仓廪)；<span class="text-tcm-green font-bold">肝</span>=疏泄+藏血(将军)；<span class="text-gray-800 font-bold">肾</span>=精+水+纳气(先天)</p>
     </div>
 
-    <h3 class="font-bold text-tcm-brown text-lg border-b border-tcm-gold pb-1">五脏别称对照表</h3>
+    <h3 class="font-bold text-tcm-blue text-lg border-b border-tcm-accent pb-1">五脏别称对照表</h3>
     <div class="overflow-x-auto">
-<table class="w-full text-sm border-collapse border border-tcm-brown">
-        <thead><tr class="bg-gradient-to-r from-tcm-brown to-tcm-gold text-white"><th class="border border-tcm-brown px-2 py-2">五脏</th><th class="border border-tcm-brown px-2 py-2">别称</th><th class="border border-tcm-brown px-2 py-2">别称含义</th><th class="border border-tcm-brown px-2 py-2">核心概括</th></tr></thead>
+<table class="w-full text-sm border-collapse border border-tcm-blue">
+        <thead><tr class="bg-gradient-to-r from-tcm-blue to-tcm-accent text-white"><th class="border border-tcm-blue px-2 py-2">五脏</th><th class="border border-tcm-blue px-2 py-2">别称</th><th class="border border-tcm-blue px-2 py-2">别称含义</th><th class="border border-tcm-blue px-2 py-2">核心概括</th></tr></thead>
         <tbody>
-          <tr class="bg-red-50"><td class="border border-tcm-brown px-2 py-2"><b class="text-tcm-red">心</b></td><td class="border border-tcm-brown px-2 py-2">君主之官</td><td class="border border-tcm-brown px-2 py-2">心为五脏六腑之大主</td><td class="border border-tcm-brown px-2 py-2"><b>主血脉、主神志</b></td></tr>
-          <tr class="bg-blue-50"><td class="border border-tcm-brown px-2 py-2"><b class="text-blue-700">肺</b></td><td class="border border-tcm-brown px-2 py-2">华盖之官</td><td class="border border-tcm-brown px-2 py-2">肺位最高，覆盖诸脏如伞盖</td><td class="border border-tcm-brown px-2 py-2"><b>主气司呼吸、主治节</b></td></tr>
-          <tr class="bg-yellow-50"><td class="border border-tcm-brown px-2 py-2"><b class="text-tcm-brown">脾</b></td><td class="border border-tcm-brown px-2 py-2">仓廪之官/后天之本</td><td class="border border-tcm-brown px-2 py-2">脾主运化水谷精微，气血生化之源</td><td class="border border-tcm-brown px-2 py-2"><b>主运化、升清、统血</b></td></tr>
-          <tr class="bg-green-50"><td class="border border-tcm-brown px-2 py-2"><b class="text-tcm-green">肝</b></td><td class="border border-tcm-brown px-2 py-2">将军之官</td><td class="border border-tcm-brown px-2 py-2">肝性刚强，主疏泄决断</td><td class="border border-tcm-brown px-2 py-2"><b>主疏泄、藏血</b></td></tr>
-          <tr class="bg-gray-100"><td class="border border-tcm-brown px-2 py-2"><b class="text-gray-800">肾</b></td><td class="border border-tcm-brown px-2 py-2">先天之本</td><td class="border border-tcm-brown px-2 py-2">肾藏精，生长发育生殖之根本</td><td class="border border-tcm-brown px-2 py-2"><b>藏精、主水、纳气</b></td></tr>
+          <tr class="bg-red-50"><td class="border border-tcm-blue px-2 py-2"><b class="text-tcm-red">心</b></td><td class="border border-tcm-blue px-2 py-2">君主之官</td><td class="border border-tcm-blue px-2 py-2">心为五脏六腑之大主</td><td class="border border-tcm-blue px-2 py-2"><b>主血脉、主神志</b></td></tr>
+          <tr class="bg-blue-50"><td class="border border-tcm-blue px-2 py-2"><b class="text-blue-700">肺</b></td><td class="border border-tcm-blue px-2 py-2">华盖之官</td><td class="border border-tcm-blue px-2 py-2">肺位最高，覆盖诸脏如伞盖</td><td class="border border-tcm-blue px-2 py-2"><b>主气司呼吸、主治节</b></td></tr>
+          <tr class="bg-sky-50"><td class="border border-tcm-blue px-2 py-2"><b class="text-tcm-blue">脾</b></td><td class="border border-tcm-blue px-2 py-2">仓廪之官/后天之本</td><td class="border border-tcm-blue px-2 py-2">脾主运化水谷精微，气血生化之源</td><td class="border border-tcm-blue px-2 py-2"><b>主运化、升清、统血</b></td></tr>
+          <tr class="bg-green-50"><td class="border border-tcm-blue px-2 py-2"><b class="text-tcm-green">肝</b></td><td class="border border-tcm-blue px-2 py-2">将军之官</td><td class="border border-tcm-blue px-2 py-2">肝性刚强，主疏泄决断</td><td class="border border-tcm-blue px-2 py-2"><b>主疏泄、藏血</b></td></tr>
+          <tr class="bg-gray-100"><td class="border border-tcm-blue px-2 py-2"><b class="text-gray-800">肾</b></td><td class="border border-tcm-blue px-2 py-2">先天之本</td><td class="border border-tcm-blue px-2 py-2">肾藏精，生长发育生殖之根本</td><td class="border border-tcm-blue px-2 py-2"><b>藏精、主水、纳气</b></td></tr>
         </tbody>
       </table>
     </div>
@@ -169,16 +169,16 @@ function toggleSection(id) {
       <p class="text-sm mt-2"><b>季节：</b>木春 / 火夏 / 土长夏 / 金秋 / 水冬</p>
     </div>
 
-    <h3 class="font-bold text-tcm-green text-lg border-b border-tcm-gold pb-1">五行全属性对照表</h3>
+    <h3 class="font-bold text-tcm-green text-lg border-b border-tcm-accent pb-1">五行全属性对照表</h3>
     <div class="overflow-x-auto">
-<table class="w-full text-sm border-collapse border border-tcm-brown">
-        <thead><tr class="bg-gradient-to-r from-tcm-green to-green-800 text-white"><th class="border border-tcm-brown px-2 py-2">五行</th><th class="border border-tcm-brown px-2 py-2">特性</th><th class="border border-tcm-brown px-2 py-2">脏</th><th class="border border-tcm-brown px-2 py-2">腑</th><th class="border border-tcm-brown px-2 py-2">季节</th><th class="border border-tcm-brown px-2 py-2">颜色</th><th class="border border-tcm-brown px-2 py-2">情志</th><th class="border border-tcm-brown px-2 py-2">生我(母)</th><th class="border border-tcm-brown px-2 py-2">我生(子)</th><th class="border border-tcm-brown px-2 py-2">克我</th><th class="border border-tcm-brown px-2 py-2">我克</th></tr></thead>
+<table class="w-full text-sm border-collapse border border-tcm-blue">
+        <thead><tr class="bg-gradient-to-r from-tcm-green to-green-800 text-white"><th class="border border-tcm-blue px-2 py-2">五行</th><th class="border border-tcm-blue px-2 py-2">特性</th><th class="border border-tcm-blue px-2 py-2">脏</th><th class="border border-tcm-blue px-2 py-2">腑</th><th class="border border-tcm-blue px-2 py-2">季节</th><th class="border border-tcm-blue px-2 py-2">颜色</th><th class="border border-tcm-blue px-2 py-2">情志</th><th class="border border-tcm-blue px-2 py-2">生我(母)</th><th class="border border-tcm-blue px-2 py-2">我生(子)</th><th class="border border-tcm-blue px-2 py-2">克我</th><th class="border border-tcm-blue px-2 py-2">我克</th></tr></thead>
         <tbody>
-          <tr class="bg-green-50"><td class="border border-tcm-brown px-2 py-2"><b>木</b></td><td class="border border-tcm-brown px-2 py-2">生长升发条达舒畅</td><td class="border border-tcm-brown px-2 py-2">肝</td><td class="border border-tcm-brown px-2 py-2">胆</td><td class="border border-tcm-brown px-2 py-2">春</td><td class="border border-tcm-brown px-2 py-2">青</td><td class="border border-tcm-brown px-2 py-2">怒</td><td class="border border-tcm-brown px-2 py-2">水</td><td class="border border-tcm-brown px-2 py-2">火</td><td class="border border-tcm-brown px-2 py-2">金</td><td class="border border-tcm-brown px-2 py-2">土</td></tr>
-          <tr class="bg-red-50"><td class="border border-tcm-brown px-2 py-2"><b>火</b></td><td class="border border-tcm-brown px-2 py-2">温热升腾</td><td class="border border-tcm-brown px-2 py-2">心</td><td class="border border-tcm-brown px-2 py-2">小肠</td><td class="border border-tcm-brown px-2 py-2">夏</td><td class="border border-tcm-brown px-2 py-2">红</td><td class="border border-tcm-brown px-2 py-2">喜</td><td class="border border-tcm-brown px-2 py-2">木</td><td class="border border-tcm-brown px-2 py-2">土</td><td class="border border-tcm-brown px-2 py-2">水</td><td class="border border-tcm-brown px-2 py-2">金</td></tr>
-          <tr class="bg-yellow-50"><td class="border border-tcm-brown px-2 py-2"><b>土</b></td><td class="border border-tcm-brown px-2 py-2">生化承载受纳</td><td class="border border-tcm-brown px-2 py-2">脾</td><td class="border border-tcm-brown px-2 py-2">胃</td><td class="border border-tcm-brown px-2 py-2">长夏</td><td class="border border-tcm-brown px-2 py-2">黄</td><td class="border border-tcm-brown px-2 py-2">思</td><td class="border border-tcm-brown px-2 py-2">火</td><td class="border border-tcm-brown px-2 py-2">金</td><td class="border border-tcm-brown px-2 py-2">木</td><td class="border border-tcm-brown px-2 py-2">水</td></tr>
-          <tr class="bg-white"><td class="border border-tcm-brown px-2 py-2"><b>金</b></td><td class="border border-tcm-brown px-2 py-2">清洁肃降收敛</td><td class="border border-tcm-brown px-2 py-2">肺</td><td class="border border-tcm-brown px-2 py-2">大肠</td><td class="border border-tcm-brown px-2 py-2">秋</td><td class="border border-tcm-brown px-2 py-2">白</td><td class="border border-tcm-brown px-2 py-2">忧</td><td class="border border-tcm-brown px-2 py-2">土</td><td class="border border-tcm-brown px-2 py-2">水</td><td class="border border-tcm-brown px-2 py-2">火</td><td class="border border-tcm-brown px-2 py-2">木</td></tr>
-          <tr class="bg-blue-50"><td class="border border-tcm-brown px-2 py-2"><b>水</b></td><td class="border border-tcm-brown px-2 py-2">寒凉滋润向下</td><td class="border border-tcm-brown px-2 py-2">肾</td><td class="border border-tcm-brown px-2 py-2">膀胱</td><td class="border border-tcm-brown px-2 py-2">冬</td><td class="border border-tcm-brown px-2 py-2">黑</td><td class="border border-tcm-brown px-2 py-2">恐</td><td class="border border-tcm-brown px-2 py-2">金</td><td class="border border-tcm-brown px-2 py-2">木</td><td class="border border-tcm-brown px-2 py-2">土</td><td class="border border-tcm-brown px-2 py-2">火</td></tr>
+          <tr class="bg-green-50"><td class="border border-tcm-blue px-2 py-2"><b>木</b></td><td class="border border-tcm-blue px-2 py-2">生长升发条达舒畅</td><td class="border border-tcm-blue px-2 py-2">肝</td><td class="border border-tcm-blue px-2 py-2">胆</td><td class="border border-tcm-blue px-2 py-2">春</td><td class="border border-tcm-blue px-2 py-2">青</td><td class="border border-tcm-blue px-2 py-2">怒</td><td class="border border-tcm-blue px-2 py-2">水</td><td class="border border-tcm-blue px-2 py-2">火</td><td class="border border-tcm-blue px-2 py-2">金</td><td class="border border-tcm-blue px-2 py-2">土</td></tr>
+          <tr class="bg-red-50"><td class="border border-tcm-blue px-2 py-2"><b>火</b></td><td class="border border-tcm-blue px-2 py-2">温热升腾</td><td class="border border-tcm-blue px-2 py-2">心</td><td class="border border-tcm-blue px-2 py-2">小肠</td><td class="border border-tcm-blue px-2 py-2">夏</td><td class="border border-tcm-blue px-2 py-2">红</td><td class="border border-tcm-blue px-2 py-2">喜</td><td class="border border-tcm-blue px-2 py-2">木</td><td class="border border-tcm-blue px-2 py-2">土</td><td class="border border-tcm-blue px-2 py-2">水</td><td class="border border-tcm-blue px-2 py-2">金</td></tr>
+          <tr class="bg-sky-50"><td class="border border-tcm-blue px-2 py-2"><b>土</b></td><td class="border border-tcm-blue px-2 py-2">生化承载受纳</td><td class="border border-tcm-blue px-2 py-2">脾</td><td class="border border-tcm-blue px-2 py-2">胃</td><td class="border border-tcm-blue px-2 py-2">长夏</td><td class="border border-tcm-blue px-2 py-2">黄</td><td class="border border-tcm-blue px-2 py-2">思</td><td class="border border-tcm-blue px-2 py-2">火</td><td class="border border-tcm-blue px-2 py-2">金</td><td class="border border-tcm-blue px-2 py-2">木</td><td class="border border-tcm-blue px-2 py-2">水</td></tr>
+          <tr class="bg-white"><td class="border border-tcm-blue px-2 py-2"><b>金</b></td><td class="border border-tcm-blue px-2 py-2">清洁肃降收敛</td><td class="border border-tcm-blue px-2 py-2">肺</td><td class="border border-tcm-blue px-2 py-2">大肠</td><td class="border border-tcm-blue px-2 py-2">秋</td><td class="border border-tcm-blue px-2 py-2">白</td><td class="border border-tcm-blue px-2 py-2">忧</td><td class="border border-tcm-blue px-2 py-2">土</td><td class="border border-tcm-blue px-2 py-2">水</td><td class="border border-tcm-blue px-2 py-2">火</td><td class="border border-tcm-blue px-2 py-2">木</td></tr>
+          <tr class="bg-blue-50"><td class="border border-tcm-blue px-2 py-2"><b>水</b></td><td class="border border-tcm-blue px-2 py-2">寒凉滋润向下</td><td class="border border-tcm-blue px-2 py-2">肾</td><td class="border border-tcm-blue px-2 py-2">膀胱</td><td class="border border-tcm-blue px-2 py-2">冬</td><td class="border border-tcm-blue px-2 py-2">黑</td><td class="border border-tcm-blue px-2 py-2">恐</td><td class="border border-tcm-blue px-2 py-2">金</td><td class="border border-tcm-blue px-2 py-2">木</td><td class="border border-tcm-blue px-2 py-2">土</td><td class="border border-tcm-blue px-2 py-2">火</td></tr>
         </tbody>
       </table>
     </div>
@@ -205,15 +205,15 @@ function toggleSection(id) {
 
     </div>
 
-    <h3 class="font-bold text-blue-700 text-lg border-b border-tcm-gold pb-1">4气对比表</h3>
+    <h3 class="font-bold text-blue-700 text-lg border-b border-tcm-accent pb-1">4气对比表</h3>
     <div class="overflow-x-auto">
-<table class="w-full text-sm border-collapse border border-tcm-brown">
-        <thead><tr class="bg-gradient-to-r from-blue-700 to-blue-900 text-white"><th class="border border-tcm-brown px-2 py-2">气名</th><th class="border border-tcm-brown px-2 py-2">生成来源</th><th class="border border-tcm-brown px-2 py-2">分布部位</th><th class="border border-tcm-brown px-2 py-2">主要功能</th><th class="border border-tcm-brown px-2 py-2">特点</th></tr></thead>
+<table class="w-full text-sm border-collapse border border-tcm-blue">
+        <thead><tr class="bg-gradient-to-r from-blue-700 to-blue-900 text-white"><th class="border border-tcm-blue px-2 py-2">气名</th><th class="border border-tcm-blue px-2 py-2">生成来源</th><th class="border border-tcm-blue px-2 py-2">分布部位</th><th class="border border-tcm-blue px-2 py-2">主要功能</th><th class="border border-tcm-blue px-2 py-2">特点</th></tr></thead>
         <tbody>
-          <tr class="bg-blue-50"><td class="border border-tcm-brown px-2 py-2"><b>元气</b></td><td class="border border-tcm-brown px-2 py-2">根于肾，禀于先天</td><td class="border border-tcm-brown px-2 py-2">分布于全身</td><td class="border border-tcm-brown px-2 py-2">原动力，推动生长发育</td><td class="border border-tcm-brown px-2 py-2">最基本最重要的气</td></tr>
-          <tr class="bg-blue-100"><td class="border border-tcm-brown px-2 py-2"><b>宗气</b></td><td class="border border-tcm-brown px-2 py-2">肺吸入清气+脾运化水谷精气</td><td class="border border-tcm-brown px-2 py-2">聚于胸中(气海)</td><td class="border border-tcm-brown px-2 py-2">走呼吸道司呼吸、贯心脉行气血</td><td class="border border-tcm-brown px-2 py-2">后天之气</td></tr>
-          <tr class="bg-red-50"><td class="border border-tcm-brown px-2 py-2"><b>营气</b></td><td class="border border-tcm-brown px-2 py-2">水谷精微之精华部分</td><td class="border border-tcm-brown px-2 py-2">行于脉中</td><td class="border border-tcm-brown px-2 py-2">化生血液、营养全身</td><td class="border border-tcm-brown px-2 py-2">富于营养，行于脉中</td></tr>
-          <tr class="bg-yellow-50"><td class="border border-tcm-brown px-2 py-2"><b>卫气</b></td><td class="border border-tcm-brown px-2 py-2">水谷精微之悍滑部分</td><td class="border border-tcm-brown px-2 py-2">行于脉外</td><td class="border border-tcm-brown px-2 py-2">护卫肌表、温养脏腑、调节汗孔</td><td class="border border-tcm-brown px-2 py-2">活动力强，行于脉外</td></tr>
+          <tr class="bg-blue-50"><td class="border border-tcm-blue px-2 py-2"><b>元气</b></td><td class="border border-tcm-blue px-2 py-2">根于肾，禀于先天</td><td class="border border-tcm-blue px-2 py-2">分布于全身</td><td class="border border-tcm-blue px-2 py-2">原动力，推动生长发育</td><td class="border border-tcm-blue px-2 py-2">最基本最重要的气</td></tr>
+          <tr class="bg-blue-100"><td class="border border-tcm-blue px-2 py-2"><b>宗气</b></td><td class="border border-tcm-blue px-2 py-2">肺吸入清气+脾运化水谷精气</td><td class="border border-tcm-blue px-2 py-2">聚于胸中(气海)</td><td class="border border-tcm-blue px-2 py-2">走呼吸道司呼吸、贯心脉行气血</td><td class="border border-tcm-blue px-2 py-2">后天之气</td></tr>
+          <tr class="bg-red-50"><td class="border border-tcm-blue px-2 py-2"><b>营气</b></td><td class="border border-tcm-blue px-2 py-2">水谷精微之精华部分</td><td class="border border-tcm-blue px-2 py-2">行于脉中</td><td class="border border-tcm-blue px-2 py-2">化生血液、营养全身</td><td class="border border-tcm-blue px-2 py-2">富于营养，行于脉中</td></tr>
+          <tr class="bg-sky-50"><td class="border border-tcm-blue px-2 py-2"><b>卫气</b></td><td class="border border-tcm-blue px-2 py-2">水谷精微之悍滑部分</td><td class="border border-tcm-blue px-2 py-2">行于脉外</td><td class="border border-tcm-blue px-2 py-2">护卫肌表、温养脏腑、调节汗孔</td><td class="border border-tcm-blue px-2 py-2">活动力强，行于脉外</td></tr>
         </tbody>
       </table>
     </div>
@@ -242,16 +242,16 @@ function toggleSection(id) {
 
     </div>
 
-    <h3 class="font-bold text-purple-700 text-lg border-b border-tcm-gold pb-1">关系网络图式对比表</h3>
+    <h3 class="font-bold text-purple-700 text-lg border-b border-tcm-accent pb-1">关系网络图式对比表</h3>
     <div class="overflow-x-auto">
-<table class="w-full text-sm border-collapse border border-tcm-brown">
-        <thead><tr class="bg-gradient-to-r from-purple-700 to-purple-900 text-white"><th class="border border-tcm-brown px-2 py-2">关系组</th><th class="border border-tcm-brown px-2 py-2">气的作用</th><th class="border border-tcm-brown px-2 py-2">对方的作用</th><th class="border border-tcm-brown px-2 py-2">核心口诀</th><th class="border border-tcm-brown px-2 py-2">病理意义</th></tr></thead>
+<table class="w-full text-sm border-collapse border border-tcm-blue">
+        <thead><tr class="bg-gradient-to-r from-purple-700 to-purple-900 text-white"><th class="border border-tcm-blue px-2 py-2">关系组</th><th class="border border-tcm-blue px-2 py-2">气的作用</th><th class="border border-tcm-blue px-2 py-2">对方的作用</th><th class="border border-tcm-blue px-2 py-2">核心口诀</th><th class="border border-tcm-blue px-2 py-2">病理意义</th></tr></thead>
         <tbody>
-          <tr class="bg-red-50"><td class="border border-tcm-brown px-2 py-2"><b>气-血</b></td><td class="border border-tcm-brown px-2 py-2">气能生血、行血、摄血(帅)</td><td class="border border-tcm-brown px-2 py-2">血能载气、养气(母)</td><td class="border border-tcm-brown px-2 py-2"><b>气为血帅，血为气母</b></td><td class="border border-tcm-brown px-2 py-2">气虚→血虚/出血；血虚→气亦虚</td></tr>
-          <tr class="bg-blue-50"><td class="border border-tcm-brown px-2 py-2"><b>气-津液</b></td><td class="border border-tcm-brown px-2 py-2">气能生津、行津、摄津</td><td class="border border-tcm-brown px-2 py-2">津能载气、保气运行</td><td class="border border-tcm-brown px-2 py-2"><b>气生行摄津，津载气</b></td><td class="border border-tcm-brown px-2 py-2">气虚→津亏/水肿；津脱→气亦脱</td></tr>
-          <tr class="bg-yellow-50"><td class="border border-tcm-brown px-2 py-2"><b>精-血</b></td><td class="border border-tcm-brown px-2 py-2">精化气、气生精</td><td class="border border-tcm-brown px-2 py-2">精血同源互转化</td><td class="border border-tcm-brown px-2 py-2"><b>精血同源</b></td><td class="border border-tcm-brown px-2 py-2">精损→血亏；血虚→精不足</td></tr>
-          <tr class="bg-green-50"><td class="border border-tcm-brown px-2 py-2"><b>血-津液</b></td><td class="border border-tcm-brown px-2 py-2">均源于水谷精气</td><td class="border border-tcm-brown px-2 py-2">可互转化</td><td class="border border-tcm-brown px-2 py-2"><b>津血同源</b></td><td class="border border-tcm-brown px-2 py-2">失血耗津，津损伤血</td></tr>
-          <tr class="bg-purple-50"><td class="border border-tcm-brown px-2 py-2"><b>血-神志</b></td><td class="border border-tcm-brown px-2 py-2">血是神志活动的物质基础</td><td class="border border-tcm-brown px-2 py-2">神志正常赖血充养</td><td class="border border-tcm-brown px-2 py-2"><b>血养神志</b></td><td class="border border-tcm-brown px-2 py-2">血虚/血热/血运失常→神志异常</td></tr>
+          <tr class="bg-red-50"><td class="border border-tcm-blue px-2 py-2"><b>气-血</b></td><td class="border border-tcm-blue px-2 py-2">气能生血、行血、摄血(帅)</td><td class="border border-tcm-blue px-2 py-2">血能载气、养气(母)</td><td class="border border-tcm-blue px-2 py-2"><b>气为血帅，血为气母</b></td><td class="border border-tcm-blue px-2 py-2">气虚→血虚/出血；血虚→气亦虚</td></tr>
+          <tr class="bg-blue-50"><td class="border border-tcm-blue px-2 py-2"><b>气-津液</b></td><td class="border border-tcm-blue px-2 py-2">气能生津、行津、摄津</td><td class="border border-tcm-blue px-2 py-2">津能载气、保气运行</td><td class="border border-tcm-blue px-2 py-2"><b>气生行摄津，津载气</b></td><td class="border border-tcm-blue px-2 py-2">气虚→津亏/水肿；津脱→气亦脱</td></tr>
+          <tr class="bg-sky-50"><td class="border border-tcm-blue px-2 py-2"><b>精-血</b></td><td class="border border-tcm-blue px-2 py-2">精化气、气生精</td><td class="border border-tcm-blue px-2 py-2">精血同源互转化</td><td class="border border-tcm-blue px-2 py-2"><b>精血同源</b></td><td class="border border-tcm-blue px-2 py-2">精损→血亏；血虚→精不足</td></tr>
+          <tr class="bg-green-50"><td class="border border-tcm-blue px-2 py-2"><b>血-津液</b></td><td class="border border-tcm-blue px-2 py-2">均源于水谷精气</td><td class="border border-tcm-blue px-2 py-2">可互转化</td><td class="border border-tcm-blue px-2 py-2"><b>津血同源</b></td><td class="border border-tcm-blue px-2 py-2">失血耗津，津损伤血</td></tr>
+          <tr class="bg-purple-50"><td class="border border-tcm-blue px-2 py-2"><b>血-神志</b></td><td class="border border-tcm-blue px-2 py-2">血是神志活动的物质基础</td><td class="border border-tcm-blue px-2 py-2">神志正常赖血充养</td><td class="border border-tcm-blue px-2 py-2"><b>血养神志</b></td><td class="border border-tcm-blue px-2 py-2">血虚/血热/血运失常→神志异常</td></tr>
         </tbody>
       </table>
     </div>
@@ -283,21 +283,21 @@ function toggleSection(id) {
       <p class="text-sm"><span class="bg-teal-700 text-white rounded px-2 py-0.5 font-bold">4</span> 最后总结(概括该关系的重要性)</p>
     </div>
 
-    <h3 class="font-bold text-teal-700 text-lg border-b border-tcm-gold pb-1">10组脏腑关系详细对照表</h3>
+    <h3 class="font-bold text-teal-700 text-lg border-b border-tcm-accent pb-1">10组脏腑关系详细对照表</h3>
     <div class="overflow-x-auto">
-<table class="w-full text-sm border-collapse border border-tcm-brown">
-        <thead><tr class="bg-gradient-to-r from-teal-700 to-teal-900 text-white"><th class="border border-tcm-brown px-2 py-2">序号</th><th class="border border-tcm-brown px-2 py-2">关系组</th><th class="border border-tcm-brown px-2 py-2">口诀关键词</th><th class="border border-tcm-brown px-2 py-2">生理配合</th><th class="border border-tcm-brown px-2 py-2">病理影响</th></tr></thead>
+<table class="w-full text-sm border-collapse border border-tcm-blue">
+        <thead><tr class="bg-gradient-to-r from-teal-700 to-teal-900 text-white"><th class="border border-tcm-blue px-2 py-2">序号</th><th class="border border-tcm-blue px-2 py-2">关系组</th><th class="border border-tcm-blue px-2 py-2">口诀关键词</th><th class="border border-tcm-blue px-2 py-2">生理配合</th><th class="border border-tcm-blue px-2 py-2">病理影响</th></tr></thead>
         <tbody>
-          <tr class="bg-red-50"><td class="border border-tcm-brown px-2 py-2">1</td><td class="border border-tcm-brown px-2 py-2"><b>心-肺</b></td><td class="border border-tcm-brown px-2 py-2">气血</td><td class="border border-tcm-brown px-2 py-2">心主血，肺主气；气血相互依存</td><td class="border border-tcm-brown px-2 py-2">肺气虚→心血运行不畅</td></tr>
-          <tr class="bg-yellow-50"><td class="border border-tcm-brown px-2 py-2">2</td><td class="border border-tcm-brown px-2 py-2"><b>心-脾</b></td><td class="border border-tcm-brown px-2 py-2">血</td><td class="border border-tcm-brown px-2 py-2">脾为血液生化之源，心主血脉；共主血生成运行</td><td class="border border-tcm-brown px-2 py-2">脾虚→心血不足(心脾两虚)</td></tr>
-          <tr class="bg-green-50"><td class="border border-tcm-brown px-2 py-2">3</td><td class="border border-tcm-brown px-2 py-2"><b>心-肝</b></td><td class="border border-tcm-brown px-2 py-2">情</td><td class="border border-tcm-brown px-2 py-2">心主神志，肝主疏泄；共调血液运行和情志活动</td><td class="border border-tcm-brown px-2 py-2">肝疏泄失常→心神不安</td></tr>
-          <tr class="bg-gray-50"><td class="border border-tcm-brown px-2 py-2">4</td><td class="border border-tcm-brown px-2 py-2"><b>心-肾</b></td><td class="border border-tcm-brown px-2 py-2">火</td><td class="border border-tcm-brown px-2 py-2">心火下降温肾阳，肾水上升滋心阴；心肾相交(水火既济)</td><td class="border border-tcm-brown px-2 py-2">心肾不交→失眠心烦</td></tr>
-          <tr class="bg-blue-50"><td class="border border-tcm-brown px-2 py-2">5</td><td class="border border-tcm-brown px-2 py-2"><b>肺-脾</b></td><td class="border border-tcm-brown px-2 py-2">气</td><td class="border border-tcm-brown px-2 py-2">脾为气之源(运化水谷)，肺为气之主(主呼吸)</td><td class="border border-tcm-brown px-2 py-2">脾虚→肺气不足；痰饮犯肺</td></tr>
-          <tr class="bg-teal-50"><td class="border border-tcm-brown px-2 py-2">6</td><td class="border border-tcm-brown px-2 py-2"><b>肺-肝</b></td><td class="border border-tcm-brown px-2 py-2">升</td><td class="border border-tcm-brown px-2 py-2">肺主肃降，肝主升发；气机升降相反相成</td><td class="border border-tcm-brown px-2 py-2">肝升太过→肺降不及(肝火犯肺)</td></tr>
-          <tr class="bg-cyan-50"><td class="border border-tcm-brown px-2 py-2">7</td><td class="border border-tcm-brown px-2 py-2"><b>肺-肾</b></td><td class="border border-tcm-brown px-2 py-2">水</td><td class="border border-tcm-brown px-2 py-2">肺主呼气，肾主纳气；肺为水之上源，肾主水之下源</td><td class="border border-tcm-brown px-2 py-2">肾不纳气→喘息</td></tr>
-          <tr class="bg-lime-50"><td class="border border-tcm-brown px-2 py-2">8</td><td class="border border-tcm-brown px-2 py-2"><b>肝-脾</b></td><td class="border border-tcm-brown px-2 py-2">消</td><td class="border border-tcm-brown px-2 py-2">肝疏泄助脾运化(消化)，肝藏血调节脾统血(血液)</td><td class="border border-tcm-brown px-2 py-2">肝疏泄失常→脾运化障碍</td></tr>
-          <tr class="bg-purple-50"><td class="border border-tcm-brown px-2 py-2">9</td><td class="border border-tcm-brown px-2 py-2"><b>肝-肾</b></td><td class="border border-tcm-brown px-2 py-2">源</td><td class="border border-tcm-brown px-2 py-2">精血同源(肝藏血肾藏精)；阴液互养</td><td class="border border-tcm-brown px-2 py-2">肾精不足→肝血亏虚</td></tr>
-          <tr class="bg-orange-50"><td class="border border-tcm-brown px-2 py-2">10</td><td class="border border-tcm-brown px-2 py-2"><b>脾-肾</b></td><td class="border border-tcm-brown px-2 py-2">先</td><td class="border border-tcm-brown px-2 py-2">脾后天之本，肾先天之本；先天温养后天，后天补充先天</td><td class="border border-tcm-brown px-2 py-2">脾虚→肾精不足；肾阳虚→脾失温煦</td></tr>
+          <tr class="bg-red-50"><td class="border border-tcm-blue px-2 py-2">1</td><td class="border border-tcm-blue px-2 py-2"><b>心-肺</b></td><td class="border border-tcm-blue px-2 py-2">气血</td><td class="border border-tcm-blue px-2 py-2">心主血，肺主气；气血相互依存</td><td class="border border-tcm-blue px-2 py-2">肺气虚→心血运行不畅</td></tr>
+          <tr class="bg-sky-50"><td class="border border-tcm-blue px-2 py-2">2</td><td class="border border-tcm-blue px-2 py-2"><b>心-脾</b></td><td class="border border-tcm-blue px-2 py-2">血</td><td class="border border-tcm-blue px-2 py-2">脾为血液生化之源，心主血脉；共主血生成运行</td><td class="border border-tcm-blue px-2 py-2">脾虚→心血不足(心脾两虚)</td></tr>
+          <tr class="bg-green-50"><td class="border border-tcm-blue px-2 py-2">3</td><td class="border border-tcm-blue px-2 py-2"><b>心-肝</b></td><td class="border border-tcm-blue px-2 py-2">情</td><td class="border border-tcm-blue px-2 py-2">心主神志，肝主疏泄；共调血液运行和情志活动</td><td class="border border-tcm-blue px-2 py-2">肝疏泄失常→心神不安</td></tr>
+          <tr class="bg-gray-50"><td class="border border-tcm-blue px-2 py-2">4</td><td class="border border-tcm-blue px-2 py-2"><b>心-肾</b></td><td class="border border-tcm-blue px-2 py-2">火</td><td class="border border-tcm-blue px-2 py-2">心火下降温肾阳，肾水上升滋心阴；心肾相交(水火既济)</td><td class="border border-tcm-blue px-2 py-2">心肾不交→失眠心烦</td></tr>
+          <tr class="bg-blue-50"><td class="border border-tcm-blue px-2 py-2">5</td><td class="border border-tcm-blue px-2 py-2"><b>肺-脾</b></td><td class="border border-tcm-blue px-2 py-2">气</td><td class="border border-tcm-blue px-2 py-2">脾为气之源(运化水谷)，肺为气之主(主呼吸)</td><td class="border border-tcm-blue px-2 py-2">脾虚→肺气不足；痰饮犯肺</td></tr>
+          <tr class="bg-teal-50"><td class="border border-tcm-blue px-2 py-2">6</td><td class="border border-tcm-blue px-2 py-2"><b>肺-肝</b></td><td class="border border-tcm-blue px-2 py-2">升</td><td class="border border-tcm-blue px-2 py-2">肺主肃降，肝主升发；气机升降相反相成</td><td class="border border-tcm-blue px-2 py-2">肝升太过→肺降不及(肝火犯肺)</td></tr>
+          <tr class="bg-cyan-50"><td class="border border-tcm-blue px-2 py-2">7</td><td class="border border-tcm-blue px-2 py-2"><b>肺-肾</b></td><td class="border border-tcm-blue px-2 py-2">水</td><td class="border border-tcm-blue px-2 py-2">肺主呼气，肾主纳气；肺为水之上源，肾主水之下源</td><td class="border border-tcm-blue px-2 py-2">肾不纳气→喘息</td></tr>
+          <tr class="bg-lime-50"><td class="border border-tcm-blue px-2 py-2">8</td><td class="border border-tcm-blue px-2 py-2"><b>肝-脾</b></td><td class="border border-tcm-blue px-2 py-2">消</td><td class="border border-tcm-blue px-2 py-2">肝疏泄助脾运化(消化)，肝藏血调节脾统血(血液)</td><td class="border border-tcm-blue px-2 py-2">肝疏泄失常→脾运化障碍</td></tr>
+          <tr class="bg-purple-50"><td class="border border-tcm-blue px-2 py-2">9</td><td class="border border-tcm-blue px-2 py-2"><b>肝-肾</b></td><td class="border border-tcm-blue px-2 py-2">源</td><td class="border border-tcm-blue px-2 py-2">精血同源(肝藏血肾藏精)；阴液互养</td><td class="border border-tcm-blue px-2 py-2">肾精不足→肝血亏虚</td></tr>
+          <tr class="bg-cyan-50"><td class="border border-tcm-blue px-2 py-2">10</td><td class="border border-tcm-blue px-2 py-2"><b>脾-肾</b></td><td class="border border-tcm-blue px-2 py-2">先</td><td class="border border-tcm-blue px-2 py-2">脾后天之本，肾先天之本；先天温养后天，后天补充先天</td><td class="border border-tcm-blue px-2 py-2">脾虚→肾精不足；肾阳虚→脾失温煦</td></tr>
         </tbody>
       </table>
     </div>
@@ -324,17 +324,17 @@ function toggleSection(id) {
 
     </div>
 
-    <h3 class="font-bold text-indigo-700 text-lg border-b border-tcm-gold pb-1">六腑功能对照表</h3>
+    <h3 class="font-bold text-indigo-700 text-lg border-b border-tcm-accent pb-1">六腑功能对照表</h3>
     <div class="overflow-x-auto">
-<table class="w-full text-sm border-collapse border border-tcm-brown">
-        <thead><tr class="bg-gradient-to-r from-indigo-700 to-indigo-900 text-white"><th class="border border-tcm-brown px-2 py-2">腑名</th><th class="border border-tcm-brown px-2 py-2">主要功能</th><th class="border border-tcm-brown px-2 py-2">功能详解</th><th class="border border-tcm-brown px-2 py-2">特殊归属</th></tr></thead>
+<table class="w-full text-sm border-collapse border border-tcm-blue">
+        <thead><tr class="bg-gradient-to-r from-indigo-700 to-indigo-900 text-white"><th class="border border-tcm-blue px-2 py-2">腑名</th><th class="border border-tcm-blue px-2 py-2">主要功能</th><th class="border border-tcm-blue px-2 py-2">功能详解</th><th class="border border-tcm-blue px-2 py-2">特殊归属</th></tr></thead>
         <tbody>
-          <tr class="bg-indigo-50"><td class="border border-tcm-brown px-2 py-2"><b>胆</b></td><td class="border border-tcm-brown px-2 py-2">贮存排泄胆汁、主决断</td><td class="border border-tcm-brown px-2 py-2">胆汁来源于肝，胆贮藏排泄；主决断与精神情志相关</td><td class="border border-tcm-brown px-2 py-2"><b class="text-indigo-700">双重归属：六腑+奇恒之腑</b></td></tr>
-          <tr class="bg-yellow-50"><td class="border border-tcm-brown px-2 py-2"><b>胃</b></td><td class="border border-tcm-brown px-2 py-2">受纳腐熟、通降</td><td class="border border-tcm-brown px-2 py-2">接受水谷初步消化(腐熟)；以通降为顺</td><td class="border border-tcm-brown px-2 py-2">六腑之一</td></tr>
-          <tr class="bg-red-50"><td class="border border-tcm-brown px-2 py-2"><b>小肠</b></td><td class="border border-tcm-brown px-2 py-2">受盛化物、泌别清浊</td><td class="border border-tcm-brown px-2 py-2">接受食糜进一步消化；分清浊(精华入脾，糟粕入大肠)</td><td class="border border-tcm-brown px-2 py-2">六腑之一</td></tr>
-          <tr class="bg-orange-50"><td class="border border-tcm-brown px-2 py-2"><b>大肠</b></td><td class="border border-tcm-brown px-2 py-2">传化糟粕</td><td class="border border-tcm-brown px-2 py-2">将糟粕变为粪便排出</td><td class="border border-tcm-brown px-2 py-2">六腑之一</td></tr>
-          <tr class="bg-blue-50"><td class="border border-tcm-brown px-2 py-2"><b>膀胱</b></td><td class="border border-tcm-brown px-2 py-2">贮存排泄尿液</td><td class="border border-tcm-brown px-2 py-2">贮尿靠肾阳固摄，排尿靠肾气推动</td><td class="border border-tcm-brown px-2 py-2">六腑之一</td></tr>
-          <tr class="bg-green-50"><td class="border border-tcm-brown px-2 py-2"><b>三焦</b></td><td class="border border-tcm-brown px-2 py-2">通行元气、运行水液</td><td class="border border-tcm-brown px-2 py-2">上焦如雾、中焦如沤、下焦如渎</td><td class="border border-tcm-brown px-2 py-2">六腑之一(有争议)</td></tr>
+          <tr class="bg-indigo-50"><td class="border border-tcm-blue px-2 py-2"><b>胆</b></td><td class="border border-tcm-blue px-2 py-2">贮存排泄胆汁、主决断</td><td class="border border-tcm-blue px-2 py-2">胆汁来源于肝，胆贮藏排泄；主决断与精神情志相关</td><td class="border border-tcm-blue px-2 py-2"><b class="text-indigo-700">双重归属：六腑+奇恒之腑</b></td></tr>
+          <tr class="bg-sky-50"><td class="border border-tcm-blue px-2 py-2"><b>胃</b></td><td class="border border-tcm-blue px-2 py-2">受纳腐熟、通降</td><td class="border border-tcm-blue px-2 py-2">接受水谷初步消化(腐熟)；以通降为顺</td><td class="border border-tcm-blue px-2 py-2">六腑之一</td></tr>
+          <tr class="bg-red-50"><td class="border border-tcm-blue px-2 py-2"><b>小肠</b></td><td class="border border-tcm-blue px-2 py-2">受盛化物、泌别清浊</td><td class="border border-tcm-blue px-2 py-2">接受食糜进一步消化；分清浊(精华入脾，糟粕入大肠)</td><td class="border border-tcm-blue px-2 py-2">六腑之一</td></tr>
+          <tr class="bg-cyan-50"><td class="border border-tcm-blue px-2 py-2"><b>大肠</b></td><td class="border border-tcm-blue px-2 py-2">传化糟粕</td><td class="border border-tcm-blue px-2 py-2">将糟粕变为粪便排出</td><td class="border border-tcm-blue px-2 py-2">六腑之一</td></tr>
+          <tr class="bg-blue-50"><td class="border border-tcm-blue px-2 py-2"><b>膀胱</b></td><td class="border border-tcm-blue px-2 py-2">贮存排泄尿液</td><td class="border border-tcm-blue px-2 py-2">贮尿靠肾阳固摄，排尿靠肾气推动</td><td class="border border-tcm-blue px-2 py-2">六腑之一</td></tr>
+          <tr class="bg-green-50"><td class="border border-tcm-blue px-2 py-2"><b>三焦</b></td><td class="border border-tcm-blue px-2 py-2">通行元气、运行水液</td><td class="border border-tcm-blue px-2 py-2">上焦如雾、中焦如沤、下焦如渎</td><td class="border border-tcm-blue px-2 py-2">六腑之一(有争议)</td></tr>
         </tbody>
       </table>
     </div>
@@ -365,15 +365,15 @@ function toggleSection(id) {
 
     </div>
 
-    <h3 class="font-bold text-pink-700 text-lg border-b border-tcm-gold pb-1">走向规律表</h3>
+    <h3 class="font-bold text-pink-700 text-lg border-b border-tcm-accent pb-1">走向规律表</h3>
     <div class="overflow-x-auto">
-<table class="w-full text-sm border-collapse border border-tcm-brown">
-        <thead><tr class="bg-gradient-to-r from-pink-700 to-pink-900 text-white"><th class="border border-tcm-brown px-2 py-2">经脉类别</th><th class="border border-tcm-brown px-2 py-2">走向</th><th class="border border-tcm-brown px-2 py-2">具体经脉</th><th class="border border-tcm-brown px-2 py-2">交接规律</th></tr></thead>
+<table class="w-full text-sm border-collapse border border-tcm-blue">
+        <thead><tr class="bg-gradient-to-r from-pink-700 to-pink-900 text-white"><th class="border border-tcm-blue px-2 py-2">经脉类别</th><th class="border border-tcm-blue px-2 py-2">走向</th><th class="border border-tcm-blue px-2 py-2">具体经脉</th><th class="border border-tcm-blue px-2 py-2">交接规律</th></tr></thead>
         <tbody>
-          <tr class="bg-pink-50"><td class="border border-tcm-brown px-2 py-2"><b>手三阴</b></td><td class="border border-tcm-brown px-2 py-2">胸→手</td><td class="border border-tcm-brown px-2 py-2">手太阴肺经、手厥阴心包经、手少阴心经</td><td class="border border-tcm-brown px-2 py-2">在手指末端与手三阳交接</td></tr>
-          <tr class="bg-blue-50"><td class="border border-tcm-brown px-2 py-2"><b>手三阳</b></td><td class="border border-tcm-brown px-2 py-2">手→头</td><td class="border border-tcm-brown px-2 py-2">手阳明大肠经、手少阳三焦经、手太阳小肠经</td><td class="border border-tcm-brown px-2 py-2">在头面部与足三阳交接</td></tr>
-          <tr class="bg-yellow-50"><td class="border border-tcm-brown px-2 py-2"><b>足三阳</b></td><td class="border border-tcm-brown px-2 py-2">头→足</td><td class="border border-tcm-brown px-2 py-2">足阳明胃经、足少阳胆经、足太阳膀胱经</td><td class="border border-tcm-brown px-2 py-2">在足趾末端与足三阴交接</td></tr>
-          <tr class="bg-green-50"><td class="border border-tcm-brown px-2 py-2"><b>足三阴</b></td><td class="border border-tcm-brown px-2 py-2">足→腹</td><td class="border border-tcm-brown px-2 py-2">足太阴脾经、足厥阴肝经、足少阴肾经</td><td class="border border-tcm-brown px-2 py-2">在胸腹部与手三阴交接</td></tr>
+          <tr class="bg-pink-50"><td class="border border-tcm-blue px-2 py-2"><b>手三阴</b></td><td class="border border-tcm-blue px-2 py-2">胸→手</td><td class="border border-tcm-blue px-2 py-2">手太阴肺经、手厥阴心包经、手少阴心经</td><td class="border border-tcm-blue px-2 py-2">在手指末端与手三阳交接</td></tr>
+          <tr class="bg-blue-50"><td class="border border-tcm-blue px-2 py-2"><b>手三阳</b></td><td class="border border-tcm-blue px-2 py-2">手→头</td><td class="border border-tcm-blue px-2 py-2">手阳明大肠经、手少阳三焦经、手太阳小肠经</td><td class="border border-tcm-blue px-2 py-2">在头面部与足三阳交接</td></tr>
+          <tr class="bg-sky-50"><td class="border border-tcm-blue px-2 py-2"><b>足三阳</b></td><td class="border border-tcm-blue px-2 py-2">头→足</td><td class="border border-tcm-blue px-2 py-2">足阳明胃经、足少阳胆经、足太阳膀胱经</td><td class="border border-tcm-blue px-2 py-2">在足趾末端与足三阴交接</td></tr>
+          <tr class="bg-green-50"><td class="border border-tcm-blue px-2 py-2"><b>足三阴</b></td><td class="border border-tcm-blue px-2 py-2">足→腹</td><td class="border border-tcm-blue px-2 py-2">足太阴脾经、足厥阴肝经、足少阴肾经</td><td class="border border-tcm-blue px-2 py-2">在胸腹部与手三阴交接</td></tr>
         </tbody>
       </table>
     </div>
@@ -383,7 +383,7 @@ function toggleSection(id) {
 
 
 <section id="m09" class="bg-white rounded-xl shadow-md overflow-hidden">
-  <button onclick="toggleSection('m09-content')" class="toggle-btn w-full bg-gradient-to-r from-orange-700 to-orange-900 text-white text-left px-6 py-4 flex items-center justify-between hover:opacity-90 transition">
+  <button onclick="toggleSection('m09-content')" class="toggle-btn w-full bg-gradient-to-r from-cyan-700 to-cyan-900 text-white text-left px-6 py-4 flex items-center justify-between hover:opacity-90 transition">
     <div><span class="font-bold text-xl">模块09</span><span class="ml-2 text-lg">六淫对比+疫疠+七情</span></div>
     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
   </button>
@@ -408,17 +408,17 @@ function toggleSection(id) {
 
     </div>
 
-    <h3 class="font-bold text-orange-700 text-lg border-b border-tcm-gold pb-1">六淫邪气对比大表(6邪x5特点)</h3>
+    <h3 class="font-bold text-cyan-700 text-lg border-b border-tcm-accent pb-1">六淫邪气对比大表(6邪x5特点)</h3>
     <div class="overflow-x-auto">
-<table class="w-full text-sm border-collapse border border-tcm-brown">
-        <thead><tr class="bg-gradient-to-r from-orange-700 to-orange-900 text-white"><th class="border border-tcm-brown px-2 py-2">邪气</th><th class="border border-tcm-brown px-2 py-2">性质</th><th class="border border-tcm-brown px-2 py-2">致病特点</th><th class="border border-tcm-brown px-2 py-2">易伤部位</th><th class="border border-tcm-brown px-2 py-2">季节性</th></tr></thead>
+<table class="w-full text-sm border-collapse border border-tcm-blue">
+        <thead><tr class="bg-gradient-to-r from-cyan-700 to-cyan-900 text-white"><th class="border border-tcm-blue px-2 py-2">邪气</th><th class="border border-tcm-blue px-2 py-2">性质</th><th class="border border-tcm-blue px-2 py-2">致病特点</th><th class="border border-tcm-blue px-2 py-2">易伤部位</th><th class="border border-tcm-blue px-2 py-2">季节性</th></tr></thead>
         <tbody>
-          <tr class="bg-gray-50"><td class="border border-tcm-brown px-2 py-2"><b>风邪</b></td><td class="border border-tcm-brown px-2 py-2">开泄、善行数变</td><td class="border border-tcm-brown px-2 py-2">百病之长、易袭阳位、游走不定</td><td class="border border-tcm-brown px-2 py-2">上部、肌表</td><td class="border border-tcm-brown px-2 py-2">春季为主，四季皆有</td></tr>
-          <tr class="bg-blue-50"><td class="border border-tcm-brown px-2 py-2"><b>寒邪</b></td><td class="border border-tcm-brown px-2 py-2">凝滞、收引</td><td class="border border-tcm-brown px-2 py-2">伤阳、凝滞气血、收引筋脉</td><td class="border border-tcm-brown px-2 py-2">阳气、筋脉</td><td class="border border-tcm-brown px-2 py-2">冬季为主</td></tr>
-          <tr class="bg-yellow-50"><td class="border border-tcm-brown px-2 py-2"><b>湿邪</b></td><td class="border border-tcm-brown px-2 py-2">重浊、黏滞、趋下</td><td class="border border-tcm-brown px-2 py-2">阻遏气机、黏滞缠绵、趋下袭阴位</td><td class="border border-tcm-brown px-2 py-2">脾阳、下部</td><td class="border border-tcm-brown px-2 py-2">长夏为主</td></tr>
-          <tr class="bg-white"><td class="border border-tcm-brown px-2 py-2"><b>燥邪</b></td><td class="border border-tcm-brown px-2 py-2">干燥、伤津</td><td class="border border-tcm-brown px-2 py-2">伤津耗液、伤肺、干涩</td><td class="border border-tcm-brown px-2 py-2">肺、津液</td><td class="border border-tcm-brown px-2 py-2">秋季为主</td></tr>
-          <tr class="bg-red-50"><td class="border border-tcm-brown px-2 py-2"><b>火(热)邪</b></td><td class="border border-tcm-brown px-2 py-2">炎上、生风动血</td><td class="border border-tcm-brown px-2 py-2">炎上、生风、动血、肿疡、伤津耗气</td><td class="border border-tcm-brown px-2 py-2">上部、心</td><td class="border border-tcm-brown px-2 py-2">夏季为主</td></tr>
-          <tr class="bg-orange-50"><td class="border border-tcm-brown px-2 py-2"><b>暑邪</b></td><td class="border border-tcm-brown px-2 py-2">炎热、升散、夹湿</td><td class="border border-tcm-brown px-2 py-2">炎热升散耗气伤津、夹湿、仅夏季</td><td class="border border-tcm-brown px-2 py-2">气津、心</td><td class="border border-tcm-brown px-2 py-2"><b>夏季独有</b></td></tr>
+          <tr class="bg-gray-50"><td class="border border-tcm-blue px-2 py-2"><b>风邪</b></td><td class="border border-tcm-blue px-2 py-2">开泄、善行数变</td><td class="border border-tcm-blue px-2 py-2">百病之长、易袭阳位、游走不定</td><td class="border border-tcm-blue px-2 py-2">上部、肌表</td><td class="border border-tcm-blue px-2 py-2">春季为主，四季皆有</td></tr>
+          <tr class="bg-blue-50"><td class="border border-tcm-blue px-2 py-2"><b>寒邪</b></td><td class="border border-tcm-blue px-2 py-2">凝滞、收引</td><td class="border border-tcm-blue px-2 py-2">伤阳、凝滞气血、收引筋脉</td><td class="border border-tcm-blue px-2 py-2">阳气、筋脉</td><td class="border border-tcm-blue px-2 py-2">冬季为主</td></tr>
+          <tr class="bg-sky-50"><td class="border border-tcm-blue px-2 py-2"><b>湿邪</b></td><td class="border border-tcm-blue px-2 py-2">重浊、黏滞、趋下</td><td class="border border-tcm-blue px-2 py-2">阻遏气机、黏滞缠绵、趋下袭阴位</td><td class="border border-tcm-blue px-2 py-2">脾阳、下部</td><td class="border border-tcm-blue px-2 py-2">长夏为主</td></tr>
+          <tr class="bg-white"><td class="border border-tcm-blue px-2 py-2"><b>燥邪</b></td><td class="border border-tcm-blue px-2 py-2">干燥、伤津</td><td class="border border-tcm-blue px-2 py-2">伤津耗液、伤肺、干涩</td><td class="border border-tcm-blue px-2 py-2">肺、津液</td><td class="border border-tcm-blue px-2 py-2">秋季为主</td></tr>
+          <tr class="bg-red-50"><td class="border border-tcm-blue px-2 py-2"><b>火(热)邪</b></td><td class="border border-tcm-blue px-2 py-2">炎上、生风动血</td><td class="border border-tcm-blue px-2 py-2">炎上、生风、动血、肿疡、伤津耗气</td><td class="border border-tcm-blue px-2 py-2">上部、心</td><td class="border border-tcm-blue px-2 py-2">夏季为主</td></tr>
+          <tr class="bg-cyan-50"><td class="border border-tcm-blue px-2 py-2"><b>暑邪</b></td><td class="border border-tcm-blue px-2 py-2">炎热、升散、夹湿</td><td class="border border-tcm-blue px-2 py-2">炎热升散耗气伤津、夹湿、仅夏季</td><td class="border border-tcm-blue px-2 py-2">气津、心</td><td class="border border-tcm-blue px-2 py-2"><b>夏季独有</b></td></tr>
         </tbody>
       </table>
     </div>
@@ -451,28 +451,28 @@ function toggleSection(id) {
       <p class="font-bold">问睡眠：</p><p>失眠=阴虚阳盛；嗜睡=阳虚阴盛或痰湿困脾</p>
 
     </div>
-    <h3 class="font-bold text-cyan-700 text-lg border-b border-tcm-gold pb-1">望神4种对照表</h3>
+    <h3 class="font-bold text-cyan-700 text-lg border-b border-tcm-accent pb-1">望神4种对照表</h3>
     <div class="overflow-x-auto">
-<table class="w-full text-sm border-collapse border border-tcm-brown">
-        <thead><tr class="bg-gradient-to-r from-cyan-700 to-cyan-900 text-white"><th class="border border-tcm-brown px-2 py-2">神候</th><th class="border border-tcm-brown px-2 py-2">含义</th><th class="border border-tcm-brown px-2 py-2">临床表现</th><th class="border border-tcm-brown px-2 py-2">病情判断</th></tr></thead>
+<table class="w-full text-sm border-collapse border border-tcm-blue">
+        <thead><tr class="bg-gradient-to-r from-cyan-700 to-cyan-900 text-white"><th class="border border-tcm-blue px-2 py-2">神候</th><th class="border border-tcm-blue px-2 py-2">含义</th><th class="border border-tcm-blue px-2 py-2">临床表现</th><th class="border border-tcm-blue px-2 py-2">病情判断</th></tr></thead>
         <tbody>
-          <tr class="bg-green-50"><td class="border border-tcm-brown px-2 py-2"><b>得神</b></td><td class="border border-tcm-brown px-2 py-2">正气充足</td><td class="border border-tcm-brown px-2 py-2">目光有神、面色荣润、精神充沛</td><td class="border border-tcm-brown px-2 py-2">健康或病轻，预后好</td></tr>
-          <tr class="bg-yellow-50"><td class="border border-tcm-brown px-2 py-2"><b>少神</b></td><td class="border border-tcm-brown px-2 py-2">正气已伤</td><td class="border border-tcm-brown px-2 py-2">目光乏神、面色少华、精神不振</td><td class="border border-tcm-brown px-2 py-2">病较重</td></tr>
-          <tr class="bg-red-50"><td class="border border-tcm-brown px-2 py-2"><b>失神</b></td><td class="border border-tcm-brown px-2 py-2">正气严重损伤</td><td class="border border-tcm-brown px-2 py-2">目光晦暗、面色枯槁、精神萎靡</td><td class="border border-tcm-brown px-2 py-2">病重危，预后差</td></tr>
-          <tr class="bg-orange-50"><td class="border border-tcm-brown px-2 py-2"><b>假神</b></td><td class="border border-tcm-brown px-2 py-2">虚阳外越，回光返照</td><td class="border border-tcm-brown px-2 py-2">突然精神好转、面色泛红如妆</td><td class="border border-tcm-brown px-2 py-2">危重临终前假象</td></tr>
+          <tr class="bg-green-50"><td class="border border-tcm-blue px-2 py-2"><b>得神</b></td><td class="border border-tcm-blue px-2 py-2">正气充足</td><td class="border border-tcm-blue px-2 py-2">目光有神、面色荣润、精神充沛</td><td class="border border-tcm-blue px-2 py-2">健康或病轻，预后好</td></tr>
+          <tr class="bg-sky-50"><td class="border border-tcm-blue px-2 py-2"><b>少神</b></td><td class="border border-tcm-blue px-2 py-2">正气已伤</td><td class="border border-tcm-blue px-2 py-2">目光乏神、面色少华、精神不振</td><td class="border border-tcm-blue px-2 py-2">病较重</td></tr>
+          <tr class="bg-red-50"><td class="border border-tcm-blue px-2 py-2"><b>失神</b></td><td class="border border-tcm-blue px-2 py-2">正气严重损伤</td><td class="border border-tcm-blue px-2 py-2">目光晦暗、面色枯槁、精神萎靡</td><td class="border border-tcm-blue px-2 py-2">病重危，预后差</td></tr>
+          <tr class="bg-cyan-50"><td class="border border-tcm-blue px-2 py-2"><b>假神</b></td><td class="border border-tcm-blue px-2 py-2">虚阳外越，回光返照</td><td class="border border-tcm-blue px-2 py-2">突然精神好转、面色泛红如妆</td><td class="border border-tcm-blue px-2 py-2">危重临终前假象</td></tr>
         </tbody>
       </table>
     </div>
-    <h3 class="font-bold text-cyan-700 text-lg border-b border-tcm-gold pb-1">面色5色主病对照表</h3>
+    <h3 class="font-bold text-cyan-700 text-lg border-b border-tcm-accent pb-1">面色5色主病对照表</h3>
     <div class="overflow-x-auto">
-<table class="w-full text-sm border-collapse border border-tcm-brown">
-        <thead><tr class="bg-gradient-to-r from-cyan-700 to-blue-800 text-white"><th class="border border-tcm-brown px-2 py-2">面色</th><th class="border border-tcm-brown px-2 py-2">主病</th><th class="border border-tcm-brown px-2 py-2">口诀关键词</th></tr></thead>
+<table class="w-full text-sm border-collapse border border-tcm-blue">
+        <thead><tr class="bg-gradient-to-r from-cyan-700 to-blue-800 text-white"><th class="border border-tcm-blue px-2 py-2">面色</th><th class="border border-tcm-blue px-2 py-2">主病</th><th class="border border-tcm-blue px-2 py-2">口诀关键词</th></tr></thead>
         <tbody>
-          <tr class="bg-green-50"><td class="border border-tcm-brown px-2 py-2"><b>青色</b></td><td class="border border-tcm-brown px-2 py-2">寒证、痛证、瘀证、惊风</td><td class="border border-tcm-brown px-2 py-2">寒痛瘀惊风</td></tr>
-          <tr class="bg-red-50"><td class="border border-tcm-brown px-2 py-2"><b>赤色</b></td><td class="border border-tcm-brown px-2 py-2">热证(实热/虚热)</td><td class="border border-tcm-brown px-2 py-2">赤热</td></tr>
-          <tr class="bg-yellow-50"><td class="border border-tcm-brown px-2 py-2"><b>黄色</b></td><td class="border border-tcm-brown px-2 py-2">虚证、湿证</td><td class="border border-tcm-brown px-2 py-2">黄虚湿</td></tr>
-          <tr class="bg-white"><td class="border border-tcm-brown px-2 py-2"><b>白色</b></td><td class="border border-tcm-brown px-2 py-2">虚证、寒证、失血</td><td class="border border-tcm-brown px-2 py-2">白虚寒失血</td></tr>
-          <tr class="bg-gray-100"><td class="border border-tcm-brown px-2 py-2"><b>黑色</b></td><td class="border border-tcm-brown px-2 py-2">肾虚、寒证、水饮、瘀证</td><td class="border border-tcm-brown px-2 py-2">黑肾寒水瘀</td></tr>
+          <tr class="bg-green-50"><td class="border border-tcm-blue px-2 py-2"><b>青色</b></td><td class="border border-tcm-blue px-2 py-2">寒证、痛证、瘀证、惊风</td><td class="border border-tcm-blue px-2 py-2">寒痛瘀惊风</td></tr>
+          <tr class="bg-red-50"><td class="border border-tcm-blue px-2 py-2"><b>赤色</b></td><td class="border border-tcm-blue px-2 py-2">热证(实热/虚热)</td><td class="border border-tcm-blue px-2 py-2">赤热</td></tr>
+          <tr class="bg-sky-50"><td class="border border-tcm-blue px-2 py-2"><b>黄色</b></td><td class="border border-tcm-blue px-2 py-2">虚证、湿证</td><td class="border border-tcm-blue px-2 py-2">黄虚湿</td></tr>
+          <tr class="bg-white"><td class="border border-tcm-blue px-2 py-2"><b>白色</b></td><td class="border border-tcm-blue px-2 py-2">虚证、寒证、失血</td><td class="border border-tcm-blue px-2 py-2">白虚寒失血</td></tr>
+          <tr class="bg-gray-100"><td class="border border-tcm-blue px-2 py-2"><b>黑色</b></td><td class="border border-tcm-blue px-2 py-2">肾虚、寒证、水饮、瘀证</td><td class="border border-tcm-blue px-2 py-2">黑肾寒水瘀</td></tr>
         </tbody>
       </table>
     </div>
@@ -492,34 +492,34 @@ function toggleSection(id) {
       <p class="text-sm"><b class="text-blue-800">伤寒：</b>寒邪伤肌表，阻遏卫阳(表寒证)</p>
       <p class="text-sm"><b class="text-red-700">中寒：</b>寒邪直中于里，伤脏腑阳气(里寒证)</p>
     </div>
-    <h3 class="font-bold text-cyan-700 text-lg border-b border-tcm-gold pb-1">问寒热4型+问汗3种</h3>
+    <h3 class="font-bold text-cyan-700 text-lg border-b border-tcm-accent pb-1">问寒热4型+问汗3种</h3>
     <div class="overflow-x-auto">
-<table class="w-full text-sm border-collapse border border-tcm-brown">
-        <thead><tr class="bg-gradient-to-r from-cyan-600 to-blue-700 text-white"><th class="border border-tcm-brown px-2 py-2">类别</th><th class="border border-tcm-brown px-2 py-2">类型</th><th class="border border-tcm-brown px-2 py-2">含义/病机</th></tr></thead>
+<table class="w-full text-sm border-collapse border border-tcm-blue">
+        <thead><tr class="bg-gradient-to-r from-cyan-600 to-blue-700 text-white"><th class="border border-tcm-blue px-2 py-2">类别</th><th class="border border-tcm-blue px-2 py-2">类型</th><th class="border border-tcm-blue px-2 py-2">含义/病机</th></tr></thead>
         <tbody>
-          <tr class="bg-white"><td class="border border-tcm-brown px-2 py-2"><b>寒热4型</b></td><td class="border border-tcm-brown px-2 py-2">恶寒发热</td><td class="border border-tcm-brown px-2 py-2">风寒袭表，卫阳被遏</td></tr>
-          <tr class="bg-white"><td class="border border-tcm-brown px-2 py-2"></td><td class="border border-tcm-brown px-2 py-2">寒热往来</td><td class="border border-tcm-brown px-2 py-2">半表半里(少阳证)</td></tr>
-          <tr class="bg-white"><td class="border border-tcm-brown px-2 py-2"></td><td class="border border-tcm-brown px-2 py-2">但寒不热</td><td class="border border-tcm-brown px-2 py-2">里寒证或阳虚</td></tr>
-          <tr class="bg-white"><td class="border border-tcm-brown px-2 py-2"></td><td class="border border-tcm-brown px-2 py-2">但热不寒</td><td class="border border-tcm-brown px-2 py-2">里热证</td></tr>
-          <tr class="bg-yellow-50"><td class="border border-tcm-brown px-2 py-2"><b>汗出3种</b></td><td class="border border-tcm-brown px-2 py-2">自汗</td><td class="border border-tcm-brown px-2 py-2">日间汗出不止→阳虚</td></tr>
-          <tr class="bg-yellow-50"><td class="border border-tcm-brown px-2 py-2"></td><td class="border border-tcm-brown px-2 py-2">盗汗</td><td class="border border-tcm-brown px-2 py-2">入睡汗出醒则止→阴虚</td></tr>
-          <tr class="bg-yellow-50"><td class="border border-tcm-brown px-2 py-2"></td><td class="border border-tcm-brown px-2 py-2">绝汗</td><td class="border border-tcm-brown px-2 py-2">危重大汗不止→亡阴亡阳</td></tr>
+          <tr class="bg-white"><td class="border border-tcm-blue px-2 py-2"><b>寒热4型</b></td><td class="border border-tcm-blue px-2 py-2">恶寒发热</td><td class="border border-tcm-blue px-2 py-2">风寒袭表，卫阳被遏</td></tr>
+          <tr class="bg-white"><td class="border border-tcm-blue px-2 py-2"></td><td class="border border-tcm-blue px-2 py-2">寒热往来</td><td class="border border-tcm-blue px-2 py-2">半表半里(少阳证)</td></tr>
+          <tr class="bg-white"><td class="border border-tcm-blue px-2 py-2"></td><td class="border border-tcm-blue px-2 py-2">但寒不热</td><td class="border border-tcm-blue px-2 py-2">里寒证或阳虚</td></tr>
+          <tr class="bg-white"><td class="border border-tcm-blue px-2 py-2"></td><td class="border border-tcm-blue px-2 py-2">但热不寒</td><td class="border border-tcm-blue px-2 py-2">里热证</td></tr>
+          <tr class="bg-sky-50"><td class="border border-tcm-blue px-2 py-2"><b>汗出3种</b></td><td class="border border-tcm-blue px-2 py-2">自汗</td><td class="border border-tcm-blue px-2 py-2">日间汗出不止→阳虚</td></tr>
+          <tr class="bg-sky-50"><td class="border border-tcm-blue px-2 py-2"></td><td class="border border-tcm-blue px-2 py-2">盗汗</td><td class="border border-tcm-blue px-2 py-2">入睡汗出醒则止→阴虚</td></tr>
+          <tr class="bg-sky-50"><td class="border border-tcm-blue px-2 py-2"></td><td class="border border-tcm-blue px-2 py-2">绝汗</td><td class="border border-tcm-blue px-2 py-2">危重大汗不止→亡阴亡阳</td></tr>
         </tbody>
       </table>
     </div>
-    <h3 class="font-bold text-cyan-700 text-lg border-b border-tcm-gold pb-1">问疼痛8种性质对照表</h3>
+    <h3 class="font-bold text-cyan-700 text-lg border-b border-tcm-accent pb-1">问疼痛8种性质对照表</h3>
     <div class="overflow-x-auto">
-<table class="w-full text-sm border-collapse border border-tcm-brown">
-        <thead><tr class="bg-gradient-to-r from-cyan-700 to-teal-700 text-white"><th class="border border-tcm-brown px-2 py-2">疼痛性质</th><th class="border border-tcm-brown px-2 py-2">对应证型</th><th class="border border-tcm-brown px-2 py-2">记忆要点</th></tr></thead>
+<table class="w-full text-sm border-collapse border border-tcm-blue">
+        <thead><tr class="bg-gradient-to-r from-cyan-700 to-teal-700 text-white"><th class="border border-tcm-blue px-2 py-2">疼痛性质</th><th class="border border-tcm-blue px-2 py-2">对应证型</th><th class="border border-tcm-blue px-2 py-2">记忆要点</th></tr></thead>
         <tbody>
-          <tr class="bg-white"><td class="border border-tcm-brown px-2 py-2"><b>剧痛</b></td><td class="border border-tcm-brown px-2 py-2">实证</td><td class="border border-tcm-brown px-2 py-2">痛势剧烈，拒按</td></tr>
-          <tr class="bg-white"><td class="border border-tcm-brown px-2 py-2"><b>隐痛</b></td><td class="border border-tcm-brown px-2 py-2">虚证</td><td class="border border-tcm-brown px-2 py-2">痛势轻微，喜按</td></tr>
-          <tr class="bg-white"><td class="border border-tcm-brown px-2 py-2"><b>胀痛</b></td><td class="border border-tcm-brown px-2 py-2">气滞</td><td class="border border-tcm-brown px-2 py-2">胀+痛，走窜不定</td></tr>
-          <tr class="bg-white"><td class="border border-tcm-brown px-2 py-2"><b>刺痛</b></td><td class="border border-tcm-brown px-2 py-2">血瘀</td><td class="border border-tcm-brown px-2 py-2">如针刺，固定不移</td></tr>
-          <tr class="bg-white"><td class="border border-tcm-brown px-2 py-2"><b>灼痛</b></td><td class="border border-tcm-brown px-2 py-2">热证</td><td class="border border-tcm-brown px-2 py-2">灼热感，喜冷</td></tr>
-          <tr class="bg-white"><td class="border border-tcm-brown px-2 py-2"><b>冷痛</b></td><td class="border border-tcm-brown px-2 py-2">寒证</td><td class="border border-tcm-brown px-2 py-2">冷感，喜温</td></tr>
-          <tr class="bg-white"><td class="border border-tcm-brown px-2 py-2"><b>重痛</b></td><td class="border border-tcm-brown px-2 py-2">湿证</td><td class="border border-tcm-brown px-2 py-2">沉重感，如负重</td></tr>
-          <tr class="bg-white"><td class="border border-tcm-brown px-2 py-2"><b>绞痛</b></td><td class="border border-tcm-brown px-2 py-2">瘀/虫/石</td><td class="border border-tcm-brown px-2 py-2">剧烈如刀绞</td></tr>
+          <tr class="bg-white"><td class="border border-tcm-blue px-2 py-2"><b>剧痛</b></td><td class="border border-tcm-blue px-2 py-2">实证</td><td class="border border-tcm-blue px-2 py-2">痛势剧烈，拒按</td></tr>
+          <tr class="bg-white"><td class="border border-tcm-blue px-2 py-2"><b>隐痛</b></td><td class="border border-tcm-blue px-2 py-2">虚证</td><td class="border border-tcm-blue px-2 py-2">痛势轻微，喜按</td></tr>
+          <tr class="bg-white"><td class="border border-tcm-blue px-2 py-2"><b>胀痛</b></td><td class="border border-tcm-blue px-2 py-2">气滞</td><td class="border border-tcm-blue px-2 py-2">胀+痛，走窜不定</td></tr>
+          <tr class="bg-white"><td class="border border-tcm-blue px-2 py-2"><b>刺痛</b></td><td class="border border-tcm-blue px-2 py-2">血瘀</td><td class="border border-tcm-blue px-2 py-2">如针刺，固定不移</td></tr>
+          <tr class="bg-white"><td class="border border-tcm-blue px-2 py-2"><b>灼痛</b></td><td class="border border-tcm-blue px-2 py-2">热证</td><td class="border border-tcm-blue px-2 py-2">灼热感，喜冷</td></tr>
+          <tr class="bg-white"><td class="border border-tcm-blue px-2 py-2"><b>冷痛</b></td><td class="border border-tcm-blue px-2 py-2">寒证</td><td class="border border-tcm-blue px-2 py-2">冷感，喜温</td></tr>
+          <tr class="bg-white"><td class="border border-tcm-blue px-2 py-2"><b>重痛</b></td><td class="border border-tcm-blue px-2 py-2">湿证</td><td class="border border-tcm-blue px-2 py-2">沉重感，如负重</td></tr>
+          <tr class="bg-white"><td class="border border-tcm-blue px-2 py-2"><b>绞痛</b></td><td class="border border-tcm-blue px-2 py-2">瘀/虫/石</td><td class="border border-tcm-blue px-2 py-2">剧烈如刀绞</td></tr>
         </tbody>
       </table>
     </div>
@@ -528,15 +528,15 @@ function toggleSection(id) {
       <p class="text-sm"><b>失眠：</b>阴虚阳盛(阳不入阴)</p>
       <p class="text-sm"><b>嗜睡：</b>阳虚阴盛或痰湿困脾</p>
     </div>
-    <h3 class="font-bold text-cyan-700 text-lg border-b border-tcm-gold pb-1">切诊4概念</h3>
+    <h3 class="font-bold text-cyan-700 text-lg border-b border-tcm-accent pb-1">切诊4概念</h3>
     <div class="overflow-x-auto">
-<table class="w-full text-sm border-collapse border border-tcm-brown">
-        <thead><tr class="bg-gradient-to-r from-cyan-700 to-indigo-700 text-white"><th class="border border-tcm-brown px-2 py-2">概念</th><th class="border border-tcm-brown px-2 py-2">含义</th></tr></thead>
+<table class="w-full text-sm border-collapse border border-tcm-blue">
+        <thead><tr class="bg-gradient-to-r from-cyan-700 to-indigo-700 text-white"><th class="border border-tcm-blue px-2 py-2">概念</th><th class="border border-tcm-blue px-2 py-2">含义</th></tr></thead>
         <tbody>
-          <tr class="bg-white"><td class="border border-tcm-brown px-2 py-2"><b>三部九候</b></td><td class="border border-tcm-brown px-2 py-2">上中下三部各取3个动脉搏动处，共9处</td></tr>
-          <tr class="bg-white"><td class="border border-tcm-brown px-2 py-2"><b>一息四至</b></td><td class="border border-tcm-brown px-2 py-2">正常人呼吸一次脉搏跳动4次为常脉</td></tr>
-          <tr class="bg-white"><td class="border border-tcm-brown px-2 py-2"><b>寸口脉法</b></td><td class="border border-tcm-brown px-2 py-2">独取寸口(手腕桡动脉)诊脉，分寸关尺三部</td></tr>
-          <tr class="bg-white"><td class="border border-tcm-brown px-2 py-2"><b>真脏脉</b></td><td class="border border-tcm-brown px-2 py-2">五脏真气败露的脉象，无胃气，预后极差</td></tr>
+          <tr class="bg-white"><td class="border border-tcm-blue px-2 py-2"><b>三部九候</b></td><td class="border border-tcm-blue px-2 py-2">上中下三部各取3个动脉搏动处，共9处</td></tr>
+          <tr class="bg-white"><td class="border border-tcm-blue px-2 py-2"><b>一息四至</b></td><td class="border border-tcm-blue px-2 py-2">正常人呼吸一次脉搏跳动4次为常脉</td></tr>
+          <tr class="bg-white"><td class="border border-tcm-blue px-2 py-2"><b>寸口脉法</b></td><td class="border border-tcm-blue px-2 py-2">独取寸口(手腕桡动脉)诊脉，分寸关尺三部</td></tr>
+          <tr class="bg-white"><td class="border border-tcm-blue px-2 py-2"><b>真脏脉</b></td><td class="border border-tcm-blue px-2 py-2">五脏真气败露的脉象，无胃气，预后极差</td></tr>
         </tbody>
       </table>
     </div>
@@ -547,7 +547,7 @@ function toggleSection(id) {
 
 
 <section id="m11" class="bg-white rounded-xl shadow-md overflow-hidden">
-  <button onclick="toggleSection('m11-content')" class="toggle-btn w-full bg-gradient-to-r from-amber-700 to-amber-900 text-white text-left px-6 py-4 flex items-center justify-between hover:opacity-90 transition">
+  <button onclick="toggleSection('m11-content')" class="toggle-btn w-full bg-gradient-to-r from-sky-700 to-sky-900 text-white text-left px-6 py-4 flex items-center justify-between hover:opacity-90 transition">
     <div><span class="font-bold text-xl">模块11</span><span class="ml-2 text-lg">中药学全套</span></div>
     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
   </button>
@@ -564,61 +564,61 @@ function toggleSection(id) {
 
     </div>
 
-    <div class="bg-gradient-to-r from-amber-50 to-yellow-50 rounded-lg p-4 border border-amber-300">
-      <p class="font-bold text-amber-700 mb-2">四气确定方法</p>
+    <div class="bg-gradient-to-r from-cyan-50 to-sky-50 rounded-lg p-4 border border-cyan-300">
+      <p class="font-bold text-cyan-700 mb-2">四气确定方法</p>
       <p class="text-sm"><b>寒凉药：</b>减消热证(清热泻火凉血解毒)</p>
       <p class="text-sm"><b>温热药：</b>减消寒证(温里散寒助阳)</p>
     </div>
-    <div class="bg-gradient-to-r from-yellow-50 to-amber-50 rounded-lg p-4 border border-tcm-gold">
-      <p class="font-bold text-tcm-brown mb-2">归经/升降浮沉/毒性概念</p>
+    <div class="bg-gradient-to-r from-sky-50 to-sky-50 rounded-lg p-4 border border-tcm-accent">
+      <p class="font-bold text-tcm-blue mb-2">归经/升降浮沉/毒性概念</p>
       <p class="text-sm"><b>归经：</b>药物对机体某部分的选择性作用</p>
       <p class="text-sm"><b>升降浮沉：</b>反映药物作用趋向部位(升浮→上外，沉降→下内)</p>
       <p class="text-sm"><b>毒性：</b>广义=偏性(一切药物皆有)；狭义=本身毒性</p>
     </div>
-    <h3 class="font-bold text-amber-700 text-lg border-b border-tcm-gold pb-1">副作用/毒性反应/不良反应3概念辨析</h3>
+    <h3 class="font-bold text-cyan-700 text-lg border-b border-tcm-accent pb-1">副作用/毒性反应/不良反应3概念辨析</h3>
     <div class="overflow-x-auto">
-      <table class="w-full text-sm border-collapse border border-tcm-brown">
-        <thead><tr class="bg-gradient-to-r from-tcm-red to-tcm-brown text-white"><th class="border border-tcm-brown px-3 py-2">概念</th><th class="border border-tcm-brown px-3 py-2">定义</th><th class="border border-tcm-brown px-3 py-2">与剂量关系</th></tr></thead>
+      <table class="w-full text-sm border-collapse border border-tcm-blue">
+        <thead><tr class="bg-gradient-to-r from-tcm-red to-tcm-blue text-white"><th class="border border-tcm-blue px-3 py-2">概念</th><th class="border border-tcm-blue px-3 py-2">定义</th><th class="border border-tcm-blue px-3 py-2">与剂量关系</th></tr></thead>
         <tbody>
-          <tr><td class="border border-tcm-brown px-3 py-2 font-bold">副作用</td><td class="border border-tcm-brown px-3 py-2">治疗量下出现的与用药目的无关的反应</td><td class="border border-tcm-brown px-3 py-2">治疗量即出现</td></tr>
-          <tr><td class="border border-tcm-brown px-3 py-2 font-bold">毒性反应</td><td class="border border-tcm-brown px-3 py-2">剂量过大或长期用药蓄积引起的严重反应</td><td class="border border-tcm-brown px-3 py-2">剂量过大或蓄积</td></tr>
-          <tr><td class="border border-tcm-brown px-3 py-2 font-bold">不良反应</td><td class="border border-tcm-brown px-3 py-2">不符合用药目的甚至有害的反应总称</td><td class="border border-tcm-brown px-3 py-2">涵盖范围更广</td></tr>
+          <tr><td class="border border-tcm-blue px-3 py-2 font-bold">副作用</td><td class="border border-tcm-blue px-3 py-2">治疗量下出现的与用药目的无关的反应</td><td class="border border-tcm-blue px-3 py-2">治疗量即出现</td></tr>
+          <tr><td class="border border-tcm-blue px-3 py-2 font-bold">毒性反应</td><td class="border border-tcm-blue px-3 py-2">剂量过大或长期用药蓄积引起的严重反应</td><td class="border border-tcm-blue px-3 py-2">剂量过大或蓄积</td></tr>
+          <tr><td class="border border-tcm-blue px-3 py-2 font-bold">不良反应</td><td class="border border-tcm-blue px-3 py-2">不符合用药目的甚至有害的反应总称</td><td class="border border-tcm-blue px-3 py-2">涵盖范围更广</td></tr>
         </tbody>
       </table>
     </div>
-    <h3 class="font-bold text-amber-700 text-lg border-b border-tcm-gold pb-1">配伍七情对照表</h3>
+    <h3 class="font-bold text-cyan-700 text-lg border-b border-tcm-accent pb-1">配伍七情对照表</h3>
     <div class="overflow-x-auto">
-      <table class="w-full text-sm border-collapse border border-tcm-brown">
-        <thead><tr class="bg-gradient-to-r from-amber-700 to-tcm-brown text-white"><th class="border border-tcm-brown px-3 py-2">七情</th><th class="border border-tcm-brown px-3 py-2">含义</th><th class="border border-tcm-brown px-3 py-2">效果</th></tr></thead>
+      <table class="w-full text-sm border-collapse border border-tcm-blue">
+        <thead><tr class="bg-gradient-to-r from-sky-700 to-tcm-blue text-white"><th class="border border-tcm-blue px-3 py-2">七情</th><th class="border border-tcm-blue px-3 py-2">含义</th><th class="border border-tcm-blue px-3 py-2">效果</th></tr></thead>
         <tbody>
-          <tr><td class="border border-tcm-brown px-3 py-2 font-bold">单行</td><td class="border border-tcm-brown px-3 py-2">单用一味药</td><td class="border border-tcm-brown px-3 py-2">独自生效</td></tr>
-          <tr><td class="border border-tcm-brown px-3 py-2 font-bold">相须</td><td class="border border-tcm-brown px-3 py-2">两味功效相似药物合用</td><td class="border border-tcm-brown px-3 py-2 font-bold text-green-700">增效</td></tr>
-          <tr><td class="border border-tcm-brown px-3 py-2 font-bold">相使</td><td class="border border-tcm-brown px-3 py-2">一味为主另一味为辅</td><td class="border border-tcm-brown px-3 py-2 font-bold text-green-700">增效</td></tr>
-          <tr><td class="border border-tcm-brown px-3 py-2 font-bold">相畏</td><td class="border border-tcm-brown px-3 py-2">一种药的毒副作用被另一种药减轻</td><td class="border border-tcm-brown px-3 py-2 font-bold text-blue-700">减毒</td></tr>
-          <tr><td class="border border-tcm-brown px-3 py-2 font-bold">相杀</td><td class="border border-tcm-brown px-3 py-2">一种药能消除另一种药的毒副作用</td><td class="border border-tcm-brown px-3 py-2 font-bold text-blue-700">减毒</td></tr>
-          <tr><td class="border border-tcm-brown px-3 py-2 font-bold">相恶</td><td class="border border-tcm-brown px-3 py-2">两药合用使原有功效降低</td><td class="border border-tcm-brown px-3 py-2 font-bold text-red-700">减效</td></tr>
-          <tr><td class="border border-tcm-brown px-3 py-2 font-bold">相反</td><td class="border border-tcm-brown px-3 py-2">两药合用产生毒副作用</td><td class="border border-tcm-brown px-3 py-2 font-bold text-red-700">增毒</td></tr>
+          <tr><td class="border border-tcm-blue px-3 py-2 font-bold">单行</td><td class="border border-tcm-blue px-3 py-2">单用一味药</td><td class="border border-tcm-blue px-3 py-2">独自生效</td></tr>
+          <tr><td class="border border-tcm-blue px-3 py-2 font-bold">相须</td><td class="border border-tcm-blue px-3 py-2">两味功效相似药物合用</td><td class="border border-tcm-blue px-3 py-2 font-bold text-green-700">增效</td></tr>
+          <tr><td class="border border-tcm-blue px-3 py-2 font-bold">相使</td><td class="border border-tcm-blue px-3 py-2">一味为主另一味为辅</td><td class="border border-tcm-blue px-3 py-2 font-bold text-green-700">增效</td></tr>
+          <tr><td class="border border-tcm-blue px-3 py-2 font-bold">相畏</td><td class="border border-tcm-blue px-3 py-2">一种药的毒副作用被另一种药减轻</td><td class="border border-tcm-blue px-3 py-2 font-bold text-blue-700">减毒</td></tr>
+          <tr><td class="border border-tcm-blue px-3 py-2 font-bold">相杀</td><td class="border border-tcm-blue px-3 py-2">一种药能消除另一种药的毒副作用</td><td class="border border-tcm-blue px-3 py-2 font-bold text-blue-700">减毒</td></tr>
+          <tr><td class="border border-tcm-blue px-3 py-2 font-bold">相恶</td><td class="border border-tcm-blue px-3 py-2">两药合用使原有功效降低</td><td class="border border-tcm-blue px-3 py-2 font-bold text-red-700">减效</td></tr>
+          <tr><td class="border border-tcm-blue px-3 py-2 font-bold">相反</td><td class="border border-tcm-blue px-3 py-2">两药合用产生毒副作用</td><td class="border border-tcm-blue px-3 py-2 font-bold text-red-700">增毒</td></tr>
         </tbody>
       </table>
     </div>
-    <div class="bg-gradient-to-r from-red-50 to-orange-50 rounded-lg p-4 border-2 border-tcm-red">
+    <div class="bg-gradient-to-r from-red-50 to-cyan-50 rounded-lg p-4 border-2 border-tcm-red">
       <p class="font-bold text-tcm-red mb-2">配伍禁忌与目的</p>
       <p class="text-sm"><b>十八反：</b>18种药物相反配伍关系</p>
       <p class="text-sm"><b>十九畏：</b>19种药物相畏配伍关系</p>
       <p class="text-sm mt-2"><b>配伍目的：</b>增强疗效扩大范围 / 减少毒副作用</p>
     </div>
 
-    <h3 class="font-bold text-amber-700 text-lg border-b border-tcm-gold pb-1">五味功能对照表</h3>
+    <h3 class="font-bold text-cyan-700 text-lg border-b border-tcm-accent pb-1">五味功能对照表</h3>
     <div class="overflow-x-auto">
-<table class="w-full text-sm border-collapse border border-tcm-brown">
-        <thead><tr class="bg-gradient-to-r from-amber-700 to-amber-900 text-white"><th class="border border-tcm-brown px-2 py-2">味</th><th class="border border-tcm-brown px-2 py-2">口诀</th><th class="border border-tcm-brown px-2 py-2">功能详解</th><th class="border border-tcm-brown px-2 py-2">举例</th></tr></thead>
+<table class="w-full text-sm border-collapse border border-tcm-blue">
+        <thead><tr class="bg-gradient-to-r from-sky-700 to-sky-900 text-white"><th class="border border-tcm-blue px-2 py-2">味</th><th class="border border-tcm-blue px-2 py-2">口诀</th><th class="border border-tcm-blue px-2 py-2">功能详解</th><th class="border border-tcm-blue px-2 py-2">举例</th></tr></thead>
         <tbody>
-          <tr class="bg-green-50"><td class="border border-tcm-brown px-2 py-2"><b>辛</b></td><td class="border border-tcm-brown px-2 py-2">散行</td><td class="border border-tcm-brown px-2 py-2">发散、行气、行血</td><td class="border border-tcm-brown px-2 py-2">麻黄、薄荷、川芎</td></tr>
-          <tr class="bg-yellow-50"><td class="border border-tcm-brown px-2 py-2"><b>甘</b></td><td class="border border-tcm-brown px-2 py-2">补缓</td><td class="border border-tcm-brown px-2 py-2">补益、和中、缓急</td><td class="border border-tcm-brown px-2 py-2">人参、甘草、饴糖</td></tr>
-          <tr class="bg-red-50"><td class="border border-tcm-brown px-2 py-2"><b>酸</b></td><td class="border border-tcm-brown px-2 py-2">涩敛</td><td class="border border-tcm-brown px-2 py-2">收敛、固涩</td><td class="border border-tcm-brown px-2 py-2">五味子、乌梅</td></tr>
-          <tr class="bg-orange-50"><td class="border border-tcm-brown px-2 py-2"><b>苦</b></td><td class="border border-tcm-brown px-2 py-2">泄燥</td><td class="border border-tcm-brown px-2 py-2">清泄、降泄、燥湿</td><td class="border border-tcm-brown px-2 py-2">黄连、大黄、苍术</td></tr>
-          <tr class="bg-blue-50"><td class="border border-tcm-brown px-2 py-2"><b>咸</b></td><td class="border border-tcm-brown px-2 py-2">软坚</td><td class="border border-tcm-brown px-2 py-2">软坚散结、泻下</td><td class="border border-tcm-brown px-2 py-2">昆布、海藻、芒硝</td></tr>
-          <tr class="bg-gray-50"><td class="border border-tcm-brown px-2 py-2"><b>淡</b></td><td class="border border-tcm-brown px-2 py-2">渗利</td><td class="border border-tcm-brown px-2 py-2">渗泄水湿、利尿</td><td class="border border-tcm-brown px-2 py-2">茯苓、薏苡仁</td></tr>
+          <tr class="bg-green-50"><td class="border border-tcm-blue px-2 py-2"><b>辛</b></td><td class="border border-tcm-blue px-2 py-2">散行</td><td class="border border-tcm-blue px-2 py-2">发散、行气、行血</td><td class="border border-tcm-blue px-2 py-2">麻黄、薄荷、川芎</td></tr>
+          <tr class="bg-sky-50"><td class="border border-tcm-blue px-2 py-2"><b>甘</b></td><td class="border border-tcm-blue px-2 py-2">补缓</td><td class="border border-tcm-blue px-2 py-2">补益、和中、缓急</td><td class="border border-tcm-blue px-2 py-2">人参、甘草、饴糖</td></tr>
+          <tr class="bg-red-50"><td class="border border-tcm-blue px-2 py-2"><b>酸</b></td><td class="border border-tcm-blue px-2 py-2">涩敛</td><td class="border border-tcm-blue px-2 py-2">收敛、固涩</td><td class="border border-tcm-blue px-2 py-2">五味子、乌梅</td></tr>
+          <tr class="bg-cyan-50"><td class="border border-tcm-blue px-2 py-2"><b>苦</b></td><td class="border border-tcm-blue px-2 py-2">泄燥</td><td class="border border-tcm-blue px-2 py-2">清泄、降泄、燥湿</td><td class="border border-tcm-blue px-2 py-2">黄连、大黄、苍术</td></tr>
+          <tr class="bg-blue-50"><td class="border border-tcm-blue px-2 py-2"><b>咸</b></td><td class="border border-tcm-blue px-2 py-2">软坚</td><td class="border border-tcm-blue px-2 py-2">软坚散结、泻下</td><td class="border border-tcm-blue px-2 py-2">昆布、海藻、芒硝</td></tr>
+          <tr class="bg-gray-50"><td class="border border-tcm-blue px-2 py-2"><b>淡</b></td><td class="border border-tcm-blue px-2 py-2">渗利</td><td class="border border-tcm-blue px-2 py-2">渗泄水湿、利尿</td><td class="border border-tcm-blue px-2 py-2">茯苓、薏苡仁</td></tr>
         </tbody>
       </table>
     </div>
@@ -654,32 +654,32 @@ function toggleSection(id) {
       <p class="font-bold text-tcm-green mb-2">中成药定义</p>
       <p class="text-sm">中医药理论指导下，中药饮片为原料，按规定处方工艺制成可直接应用的制剂</p>
     </div>
-    <h3 class="font-bold text-emerald-700 text-lg border-b border-tcm-gold pb-1">君臣佐使详解表</h3>
+    <h3 class="font-bold text-emerald-700 text-lg border-b border-tcm-accent pb-1">君臣佐使详解表</h3>
     <div class="overflow-x-auto">
-      <table class="w-full text-sm border-collapse border border-tcm-brown">
-        <thead><tr class="bg-gradient-to-r from-emerald-700 to-teal-700 text-white"><th class="border border-tcm-brown px-3 py-2">组成</th><th class="border border-tcm-brown px-3 py-2">口诀</th><th class="border border-tcm-brown px-3 py-2">含义详解</th></tr></thead>
+      <table class="w-full text-sm border-collapse border border-tcm-blue">
+        <thead><tr class="bg-gradient-to-r from-emerald-700 to-teal-700 text-white"><th class="border border-tcm-blue px-3 py-2">组成</th><th class="border border-tcm-blue px-3 py-2">口诀</th><th class="border border-tcm-blue px-3 py-2">含义详解</th></tr></thead>
         <tbody>
-          <tr class="bg-emerald-50"><td class="border border-tcm-brown px-3 py-2 font-bold">君药</td><td class="border border-tcm-brown px-3 py-2">君主主治</td><td class="border border-tcm-brown px-3 py-2">针对主病主证起主要治疗作用的药物</td></tr>
-          <tr class="bg-green-50"><td class="border border-tcm-brown px-3 py-2 font-bold">臣药</td><td class="border border-tcm-brown px-3 py-2">臣辅助</td><td class="border border-tcm-brown px-3 py-2">辅助君药加强治疗作用的药物</td></tr>
-          <tr class="bg-teal-50"><td class="border border-tcm-brown px-3 py-2 font-bold">佐药</td><td class="border border-tcm-brown px-3 py-2">佐协助制约</td><td class="border border-tcm-brown px-3 py-2">协助君臣药、制约毒副作用的药物</td></tr>
-          <tr class="bg-cyan-50"><td class="border border-tcm-brown px-3 py-2 font-bold">使药</td><td class="border border-tcm-brown px-3 py-2">使引经调和</td><td class="border border-tcm-brown px-3 py-2">引经报使、调和诸药的药物</td></tr>
+          <tr class="bg-emerald-50"><td class="border border-tcm-blue px-3 py-2 font-bold">君药</td><td class="border border-tcm-blue px-3 py-2">君主主治</td><td class="border border-tcm-blue px-3 py-2">针对主病主证起主要治疗作用的药物</td></tr>
+          <tr class="bg-green-50"><td class="border border-tcm-blue px-3 py-2 font-bold">臣药</td><td class="border border-tcm-blue px-3 py-2">臣辅助</td><td class="border border-tcm-blue px-3 py-2">辅助君药加强治疗作用的药物</td></tr>
+          <tr class="bg-teal-50"><td class="border border-tcm-blue px-3 py-2 font-bold">佐药</td><td class="border border-tcm-blue px-3 py-2">佐协助制约</td><td class="border border-tcm-blue px-3 py-2">协助君臣药、制约毒副作用的药物</td></tr>
+          <tr class="bg-cyan-50"><td class="border border-tcm-blue px-3 py-2 font-bold">使药</td><td class="border border-tcm-blue px-3 py-2">使引经调和</td><td class="border border-tcm-blue px-3 py-2">引经报使、调和诸药的药物</td></tr>
         </tbody>
       </table>
     </div>
 
-    <h3 class="font-bold text-emerald-700 text-lg border-b border-tcm-gold pb-1">八法含义对照表</h3>
+    <h3 class="font-bold text-emerald-700 text-lg border-b border-tcm-accent pb-1">八法含义对照表</h3>
     <div class="overflow-x-auto">
-<table class="w-full text-sm border-collapse border border-tcm-brown">
-        <thead><tr class="bg-gradient-to-r from-emerald-700 to-emerald-900 text-white"><th class="border border-tcm-brown px-2 py-2">八法</th><th class="border border-tcm-brown px-2 py-2">含义</th><th class="border border-tcm-brown px-2 py-2">适用</th></tr></thead>
+<table class="w-full text-sm border-collapse border border-tcm-blue">
+        <thead><tr class="bg-gradient-to-r from-emerald-700 to-emerald-900 text-white"><th class="border border-tcm-blue px-2 py-2">八法</th><th class="border border-tcm-blue px-2 py-2">含义</th><th class="border border-tcm-blue px-2 py-2">适用</th></tr></thead>
         <tbody>
-          <tr class="bg-white"><td class="border border-tcm-brown px-2 py-2"><b>汗</b></td><td class="border border-tcm-brown px-2 py-2">发汗解表</td><td class="border border-tcm-brown px-2 py-2">表证</td></tr>
-          <tr class="bg-white"><td class="border border-tcm-brown px-2 py-2"><b>吐</b></td><td class="border border-tcm-brown px-2 py-2">涌吐痰涎宿食</td><td class="border border-tcm-brown px-2 py-2">痰食停留上部</td></tr>
-          <tr class="bg-white"><td class="border border-tcm-brown px-2 py-2"><b>下</b></td><td class="border border-tcm-brown px-2 py-2">泻下通便逐邪</td><td class="border border-tcm-brown px-2 py-2">里实证</td></tr>
-          <tr class="bg-white"><td class="border border-tcm-brown px-2 py-2"><b>和</b></td><td class="border border-tcm-brown px-2 py-2">和解少阳、调和脏腑</td><td class="border border-tcm-brown px-2 py-2">半表半里证/脏腑不和</td></tr>
-          <tr class="bg-white"><td class="border border-tcm-brown px-2 py-2"><b>温</b></td><td class="border border-tcm-brown px-2 py-2">祛寒回阳</td><td class="border border-tcm-brown px-2 py-2">寒证/阳虚</td></tr>
-          <tr class="bg-white"><td class="border border-tcm-brown px-2 py-2"><b>清</b></td><td class="border border-tcm-brown px-2 py-2">清热泻火解毒</td><td class="border border-tcm-brown px-2 py-2">热证</td></tr>
-          <tr class="bg-white"><td class="border border-tcm-brown px-2 py-2"><b>消</b></td><td class="border border-tcm-brown px-2 py-2">消食导滞散结</td><td class="border border-tcm-brown px-2 py-2">食积/癥瘕/痞块</td></tr>
-          <tr class="bg-white"><td class="border border-tcm-brown px-2 py-2"><b>补</b></td><td class="border border-tcm-brown px-2 py-2">补益气血阴阳</td><td class="border border-tcm-brown px-2 py-2">虚证</td></tr>
+          <tr class="bg-white"><td class="border border-tcm-blue px-2 py-2"><b>汗</b></td><td class="border border-tcm-blue px-2 py-2">发汗解表</td><td class="border border-tcm-blue px-2 py-2">表证</td></tr>
+          <tr class="bg-white"><td class="border border-tcm-blue px-2 py-2"><b>吐</b></td><td class="border border-tcm-blue px-2 py-2">涌吐痰涎宿食</td><td class="border border-tcm-blue px-2 py-2">痰食停留上部</td></tr>
+          <tr class="bg-white"><td class="border border-tcm-blue px-2 py-2"><b>下</b></td><td class="border border-tcm-blue px-2 py-2">泻下通便逐邪</td><td class="border border-tcm-blue px-2 py-2">里实证</td></tr>
+          <tr class="bg-white"><td class="border border-tcm-blue px-2 py-2"><b>和</b></td><td class="border border-tcm-blue px-2 py-2">和解少阳、调和脏腑</td><td class="border border-tcm-blue px-2 py-2">半表半里证/脏腑不和</td></tr>
+          <tr class="bg-white"><td class="border border-tcm-blue px-2 py-2"><b>温</b></td><td class="border border-tcm-blue px-2 py-2">祛寒回阳</td><td class="border border-tcm-blue px-2 py-2">寒证/阳虚</td></tr>
+          <tr class="bg-white"><td class="border border-tcm-blue px-2 py-2"><b>清</b></td><td class="border border-tcm-blue px-2 py-2">清热泻火解毒</td><td class="border border-tcm-blue px-2 py-2">热证</td></tr>
+          <tr class="bg-white"><td class="border border-tcm-blue px-2 py-2"><b>消</b></td><td class="border border-tcm-blue px-2 py-2">消食导滞散结</td><td class="border border-tcm-blue px-2 py-2">食积/癥瘕/痞块</td></tr>
+          <tr class="bg-white"><td class="border border-tcm-blue px-2 py-2"><b>补</b></td><td class="border border-tcm-blue px-2 py-2">补益气血阴阳</td><td class="border border-tcm-blue px-2 py-2">虚证</td></tr>
         </tbody>
       </table>
     </div>
@@ -701,7 +701,7 @@ function toggleSection(id) {
 
     </div>
 
-    <div class="bg-gradient-to-r from-rose-50 to-orange-50 rounded-lg p-4 border-2 border-tcm-red">
+    <div class="bg-gradient-to-r from-rose-50 to-cyan-50 rounded-lg p-4 border-2 border-tcm-red">
       <p class="font-bold text-tcm-red mb-2">额外补充7条定义</p>
       <p class="text-sm"><b>天癸：</b>促进性发育和生殖功能的物质</p>
       <p class="text-sm"><b>藏象：</b>藏于体内的内脏及其表现于外的生理病理征象</p>
@@ -712,17 +712,17 @@ function toggleSection(id) {
       <p class="text-sm"><b>除中：</b>脾胃气将绝，久病不欲食突然能食为假象</p>
     </div>
 
-    <h3 class="font-bold text-rose-700 text-lg border-b border-tcm-gold pb-1">6组高频易混概念对比表</h3>
+    <h3 class="font-bold text-rose-700 text-lg border-b border-tcm-accent pb-1">6组高频易混概念对比表</h3>
     <div class="overflow-x-auto">
-<table class="w-full text-sm border-collapse border border-tcm-brown">
-        <thead><tr class="bg-gradient-to-r from-tcm-red to-tcm-brown text-white"><th class="border border-tcm-brown px-2 py-2">对比组</th><th class="border border-tcm-brown px-2 py-2">概念A</th><th class="border border-tcm-brown px-2 py-2">概念B(或C)</th><th class="border border-tcm-brown px-2 py-2">核心区别</th></tr></thead>
+<table class="w-full text-sm border-collapse border border-tcm-blue">
+        <thead><tr class="bg-gradient-to-r from-tcm-red to-tcm-blue text-white"><th class="border border-tcm-blue px-2 py-2">对比组</th><th class="border border-tcm-blue px-2 py-2">概念A</th><th class="border border-tcm-blue px-2 py-2">概念B(或C)</th><th class="border border-tcm-blue px-2 py-2">核心区别</th></tr></thead>
         <tbody>
-          <tr class="bg-red-50"><td class="border border-tcm-brown px-2 py-2"><b>1.症vs证vs病</b></td><td class="border border-tcm-brown px-2 py-2">症=临床表现</td><td class="border border-tcm-brown px-2 py-2">证=病因病位病性病势病理概括 / 病=全过程特点规律概括</td><td class="border border-tcm-brown px-2 py-2">症是现象，证是本质概括，病是全过程</td></tr>
-          <tr class="bg-blue-50"><td class="border border-tcm-brown px-2 py-2"><b>2.伤寒vs中寒</b></td><td class="border border-tcm-brown px-2 py-2">伤寒=寒邪伤肌表阻卫阳</td><td class="border border-tcm-brown px-2 py-2">中寒=寒邪直中于里伤脏腑阳气</td><td class="border border-tcm-brown px-2 py-2">伤寒=表寒，中寒=里寒</td></tr>
-          <tr class="bg-green-50"><td class="border border-tcm-brown px-2 py-2"><b>3.惊vs恐</b></td><td class="border border-tcm-brown px-2 py-2">惊=突来暂易复</td><td class="border border-tcm-brown px-2 py-2">恐=自知渐难解</td><td class="border border-tcm-brown px-2 py-2">惊=外界突然，恐=内心持续</td></tr>
-          <tr class="bg-yellow-50"><td class="border border-tcm-brown px-2 py-2"><b>4.消长vs转化</b></td><td class="border border-tcm-brown px-2 py-2">消长=量变</td><td class="border border-tcm-brown px-2 py-2">转化=质变</td><td class="border border-tcm-brown px-2 py-2">消长是量的增减，转化是根本性质改变</td></tr>
-          <tr class="bg-purple-50"><td class="border border-tcm-brown px-2 py-2"><b>5.副作用vs毒性vs不良反应</b></td><td class="border border-tcm-brown px-2 py-2">副作用=治疗量无关反应</td><td class="border border-tcm-brown px-2 py-2">毒性=剂量过大蓄积 / 不良=不符用药目的</td><td class="border border-tcm-brown px-2 py-2">副作用=正常量，毒性=超量，不良反应=总称</td></tr>
-          <tr class="bg-orange-50"><td class="border border-tcm-brown px-2 py-2"><b>6.同病异治vs异病同治</b></td><td class="border border-tcm-brown px-2 py-2">同病异治=同病证不同治不同</td><td class="border border-tcm-brown px-2 py-2">异病同治=不同病证同治同</td><td class="border border-tcm-brown px-2 py-2">关键是"证"是否相同</td></tr>
+          <tr class="bg-red-50"><td class="border border-tcm-blue px-2 py-2"><b>1.症vs证vs病</b></td><td class="border border-tcm-blue px-2 py-2">症=临床表现</td><td class="border border-tcm-blue px-2 py-2">证=病因病位病性病势病理概括 / 病=全过程特点规律概括</td><td class="border border-tcm-blue px-2 py-2">症是现象，证是本质概括，病是全过程</td></tr>
+          <tr class="bg-blue-50"><td class="border border-tcm-blue px-2 py-2"><b>2.伤寒vs中寒</b></td><td class="border border-tcm-blue px-2 py-2">伤寒=寒邪伤肌表阻卫阳</td><td class="border border-tcm-blue px-2 py-2">中寒=寒邪直中于里伤脏腑阳气</td><td class="border border-tcm-blue px-2 py-2">伤寒=表寒，中寒=里寒</td></tr>
+          <tr class="bg-green-50"><td class="border border-tcm-blue px-2 py-2"><b>3.惊vs恐</b></td><td class="border border-tcm-blue px-2 py-2">惊=突来暂易复</td><td class="border border-tcm-blue px-2 py-2">恐=自知渐难解</td><td class="border border-tcm-blue px-2 py-2">惊=外界突然，恐=内心持续</td></tr>
+          <tr class="bg-sky-50"><td class="border border-tcm-blue px-2 py-2"><b>4.消长vs转化</b></td><td class="border border-tcm-blue px-2 py-2">消长=量变</td><td class="border border-tcm-blue px-2 py-2">转化=质变</td><td class="border border-tcm-blue px-2 py-2">消长是量的增减，转化是根本性质改变</td></tr>
+          <tr class="bg-purple-50"><td class="border border-tcm-blue px-2 py-2"><b>5.副作用vs毒性vs不良反应</b></td><td class="border border-tcm-blue px-2 py-2">副作用=治疗量无关反应</td><td class="border border-tcm-blue px-2 py-2">毒性=剂量过大蓄积 / 不良=不符用药目的</td><td class="border border-tcm-blue px-2 py-2">副作用=正常量，毒性=超量，不良反应=总称</td></tr>
+          <tr class="bg-cyan-50"><td class="border border-tcm-blue px-2 py-2"><b>6.同病异治vs异病同治</b></td><td class="border border-tcm-blue px-2 py-2">同病异治=同病证不同治不同</td><td class="border border-tcm-blue px-2 py-2">异病同治=不同病证同治同</td><td class="border border-tcm-blue px-2 py-2">关键是"证"是否相同</td></tr>
         </tbody>
       </table>
     </div>
@@ -731,28 +731,28 @@ function toggleSection(id) {
 </section>
 
 <section id="summary" class="bg-white rounded-xl shadow-md overflow-hidden">
-  <button onclick="toggleSection('summary-content')" class="toggle-btn w-full bg-gradient-to-r from-tcm-gold to-tcm-red text-white text-left px-6 py-4 flex items-center justify-between hover:opacity-90 transition">
+  <button onclick="toggleSection('summary-content')" class="toggle-btn w-full bg-gradient-to-r from-tcm-accent to-tcm-red text-white text-left px-6 py-4 flex items-center justify-between hover:opacity-90 transition">
     <div><span class="font-bold text-xl">核心口诀速查表</span><span class="ml-2 text-lg">13模块一句话汇总</span></div>
     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
   </button>
   <div id="summary-content" class="collapsible-content px-6 py-5 space-y-4">
     <div class="overflow-x-auto">
-      <table class="w-full text-sm border-collapse border border-tcm-brown">
-        <thead><tr class="bg-gradient-to-r from-tcm-dark to-tcm-brown text-tcm-cream"><th class="border border-tcm-brown px-3 py-2">模块</th><th class="border border-tcm-brown px-3 py-2">一句话口诀</th></tr></thead>
+      <table class="w-full text-sm border-collapse border border-tcm-blue">
+        <thead><tr class="bg-gradient-to-r from-tcm-dark to-tcm-blue text-tcm-cream"><th class="border border-tcm-blue px-3 py-2">模块</th><th class="border border-tcm-blue px-3 py-2">一句话口诀</th></tr></thead>
         <tbody>
-          <tr class="bg-red-50"><td class="border border-tcm-brown px-3 py-2 font-bold">01五脏</td><td class="border border-tcm-brown px-3 py-2">心血脉神志红君主/肺气呼吸宣降白华盖/脾运化升清统血黄仓廪/肝疏泄藏血绿将军/肾藏精水纳气黑先天</td></tr>
-          <tr class="bg-yellow-50"><td class="border border-tcm-brown px-3 py-2 font-bold">02别称</td><td class="border border-tcm-brown px-3 py-2">华盖将军仓廪官，先天肾后天脾，藏血肝统血脾</td></tr>
-          <tr class="bg-green-50"><td class="border border-tcm-brown px-3 py-2 font-bold">03五行</td><td class="border border-tcm-brown px-3 py-2">木曲直火炎上土稼穑金从革水润下；生：木火土金水；克：木土水火金；制化/乘/侮</td></tr>
-          <tr class="bg-blue-50"><td class="border border-tcm-brown px-3 py-2 font-bold">04气</td><td class="border border-tcm-brown px-3 py-2">元气根肾/宗气胸中/营气脉中/卫气脉外；功能：推动温煦防御固摄气化；失常：滞逆闭陷脱</td></tr>
-          <tr class="bg-purple-50"><td class="border border-tcm-brown px-3 py-2 font-bold">05气血</td><td class="border border-tcm-brown px-3 py-2">气为血帅生行摄，血为气母载与养；气津：气生行摄津，津载气；精血同源/津血同源</td></tr>
-          <tr class="bg-teal-50"><td class="border border-tcm-brown px-3 py-2 font-bold">06脏腑</td><td class="border border-tcm-brown px-3 py-2">心肺气血/心脾血/心肝情/心肾火/肺脾气/肺肝升/肺肾水/肝脾消/肝肾源/脾肾先</td></tr>
-          <tr class="bg-indigo-50"><td class="border border-tcm-brown px-3 py-2 font-bold">07六腑</td><td class="border border-tcm-brown px-3 py-2">脑髓骨脉胆女子似腑似脏奇恒之；胆属两类主决断，胃受腐熟小肠清</td></tr>
-          <tr class="bg-pink-50"><td class="border border-tcm-brown px-3 py-2 font-bold">08经络</td><td class="border border-tcm-brown px-3 py-2">手三阴胸走手/手三阳手走头/足三阳头走足/足三阴足走腹；督阳海任阴海冲血海</td></tr>
-          <tr class="bg-orange-50"><td class="border border-tcm-brown px-3 py-2 font-bold">09六淫</td><td class="border border-tcm-brown px-3 py-2">风开泄百病长/寒凝滞伤阳收引/湿重浊黏滞趋下/燥伤津伤肺/火炎上生风动血肿疡/暑炎热升散夹湿；疫疠急险强似一</td></tr>
-          <tr class="bg-cyan-50"><td class="border border-tcm-brown px-3 py-2 font-bold">10诊法</td><td class="border border-tcm-brown px-3 py-2">得少失假四神候；青寒痛瘀惊风赤热黄虚湿白虚寒失血黑肾寒水瘀；十问歌全背</td></tr>
-          <tr class="bg-amber-50"><td class="border border-tcm-brown px-3 py-2 font-bold">11中药</td><td class="border border-tcm-brown px-3 py-2">辛散行甘补缓酸涩敛苦泄燥咸软坚淡渗利；增效减毒纠偏矫味矫臭改性状；须使增效畏杀减毒恶反减效增毒</td></tr>
-          <tr class="bg-emerald-50"><td class="border border-tcm-brown px-3 py-2 font-bold">12方剂</td><td class="border border-tcm-brown px-3 py-2">汗吐下和温清消补；君主主治臣辅助佐协助制约使引经调和</td></tr>
-          <tr class="bg-rose-50"><td class="border border-tcm-brown px-3 py-2 font-bold">13对比</td><td class="border border-tcm-brown px-3 py-2">症证病/表里寒/惊恐/消长转化/副毒不良/同异治看证定</td></tr>
+          <tr class="bg-red-50"><td class="border border-tcm-blue px-3 py-2 font-bold">01五脏</td><td class="border border-tcm-blue px-3 py-2">心血脉神志红君主/肺气呼吸宣降白华盖/脾运化升清统血黄仓廪/肝疏泄藏血绿将军/肾藏精水纳气黑先天</td></tr>
+          <tr class="bg-sky-50"><td class="border border-tcm-blue px-3 py-2 font-bold">02别称</td><td class="border border-tcm-blue px-3 py-2">华盖将军仓廪官，先天肾后天脾，藏血肝统血脾</td></tr>
+          <tr class="bg-green-50"><td class="border border-tcm-blue px-3 py-2 font-bold">03五行</td><td class="border border-tcm-blue px-3 py-2">木曲直火炎上土稼穑金从革水润下；生：木火土金水；克：木土水火金；制化/乘/侮</td></tr>
+          <tr class="bg-blue-50"><td class="border border-tcm-blue px-3 py-2 font-bold">04气</td><td class="border border-tcm-blue px-3 py-2">元气根肾/宗气胸中/营气脉中/卫气脉外；功能：推动温煦防御固摄气化；失常：滞逆闭陷脱</td></tr>
+          <tr class="bg-purple-50"><td class="border border-tcm-blue px-3 py-2 font-bold">05气血</td><td class="border border-tcm-blue px-3 py-2">气为血帅生行摄，血为气母载与养；气津：气生行摄津，津载气；精血同源/津血同源</td></tr>
+          <tr class="bg-teal-50"><td class="border border-tcm-blue px-3 py-2 font-bold">06脏腑</td><td class="border border-tcm-blue px-3 py-2">心肺气血/心脾血/心肝情/心肾火/肺脾气/肺肝升/肺肾水/肝脾消/肝肾源/脾肾先</td></tr>
+          <tr class="bg-indigo-50"><td class="border border-tcm-blue px-3 py-2 font-bold">07六腑</td><td class="border border-tcm-blue px-3 py-2">脑髓骨脉胆女子似腑似脏奇恒之；胆属两类主决断，胃受腐熟小肠清</td></tr>
+          <tr class="bg-pink-50"><td class="border border-tcm-blue px-3 py-2 font-bold">08经络</td><td class="border border-tcm-blue px-3 py-2">手三阴胸走手/手三阳手走头/足三阳头走足/足三阴足走腹；督阳海任阴海冲血海</td></tr>
+          <tr class="bg-cyan-50"><td class="border border-tcm-blue px-3 py-2 font-bold">09六淫</td><td class="border border-tcm-blue px-3 py-2">风开泄百病长/寒凝滞伤阳收引/湿重浊黏滞趋下/燥伤津伤肺/火炎上生风动血肿疡/暑炎热升散夹湿；疫疠急险强似一</td></tr>
+          <tr class="bg-cyan-50"><td class="border border-tcm-blue px-3 py-2 font-bold">10诊法</td><td class="border border-tcm-blue px-3 py-2">得少失假四神候；青寒痛瘀惊风赤热黄虚湿白虚寒失血黑肾寒水瘀；十问歌全背</td></tr>
+          <tr class="bg-cyan-50"><td class="border border-tcm-blue px-3 py-2 font-bold">11中药</td><td class="border border-tcm-blue px-3 py-2">辛散行甘补缓酸涩敛苦泄燥咸软坚淡渗利；增效减毒纠偏矫味矫臭改性状；须使增效畏杀减毒恶反减效增毒</td></tr>
+          <tr class="bg-emerald-50"><td class="border border-tcm-blue px-3 py-2 font-bold">12方剂</td><td class="border border-tcm-blue px-3 py-2">汗吐下和温清消补；君主主治臣辅助佐协助制约使引经调和</td></tr>
+          <tr class="bg-rose-50"><td class="border border-tcm-blue px-3 py-2 font-bold">13对比</td><td class="border border-tcm-blue px-3 py-2">症证病/表里寒/惊恐/消长转化/副毒不良/同异治看证定</td></tr>
         </tbody>
       </table>
     </div>
@@ -763,10 +763,8 @@ function toggleSection(id) {
 
 <footer class="bg-tcm-dark text-tcm-cream text-center py-6 px-4 mt-8">
   <p class="text-sm">中医药学概论 重点难点口诀速记手册 &mdash; 13模块全覆盖</p>
-  <p class="text-xs text-tcm-gold mt-2">适合A4打印 | 点击各模块标题可展开/折叠内容</p>
+  <p class="text-xs text-tcm-accent mt-2">适合A4打印 | 点击各模块标题可展开/折叠内容</p>
 </footer>
 
 </body>
 </html>
-
-

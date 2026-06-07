@@ -153,7 +153,7 @@ export function FlashcardsPage() {
             <div className="flex flex-wrap items-center gap-2 text-sm text-slate-600">
               <span className="rounded-md bg-white px-2.5 py-1 shadow-sm ring-1 ring-sky-100">{filteredCards.length} 张匹配</span>
               <span className="rounded-md bg-emerald-50 px-2.5 py-1 text-emerald-700 ring-1 ring-emerald-200">{masteredCount} 已掌握</span>
-              <span className="rounded-md bg-amber-50 px-2.5 py-1 text-amber-700 ring-1 ring-amber-200">{unmasteredCount} 未掌握</span>
+              <span className="rounded-md bg-fuchsia-50 px-2.5 py-1 text-fuchsia-700 ring-1 ring-fuchsia-200">{unmasteredCount} 未掌握</span>
               <span className="rounded-md bg-rose-50 px-2.5 py-1 text-rose-700 ring-1 ring-rose-200">{progress}%</span>
             </div>
           </div>
