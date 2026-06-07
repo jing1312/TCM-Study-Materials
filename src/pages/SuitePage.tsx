@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { CalendarDays, ClipboardList, Layers3, NotebookTabs } from 'lucide-react';
 
-const assetVersion = '20260607-mint-peach-v2';
+const assetVersion = '20260607-flow-cards';
 
 const modules = [
   {

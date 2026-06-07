@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type CSSProperties } from 'react';
 import { Check, Rotate3D, Sparkles, Undo2, X } from 'lucide-react';
 import { chapterNames, type StudyCard } from '../data/cards';
 
@@ -6,23 +6,27 @@ type MasteryStatus = 'mastered' | 'unmastered';
 
 interface FlashcardProps {
   card: StudyCard;
+  index?: number;
   status?: MasteryStatus;
   onSetStatus: (id: number, status: MasteryStatus) => void;
   onClearStatus: (id: number) => void;
 }
 
-export function Flashcard({ card, status, onSetStatus, onClearStatus }: FlashcardProps) {
+export function Flashcard({ card, index = 0, status, onSetStatus, onClearStatus }: FlashcardProps) {
   const [flipped, setFlipped] = useState(status === 'mastered');
   const statusClass = status === 'mastered' ? 'is-mastered' : status === 'unmastered' ? 'is-unmastered' : '';
-  const toneClass = `flashcard-tone-${((card.ch + card.id) % 6) + 1}`;
+  const cardStyle = {
+    '--flow-x': `${(index % 4) * 22}%`,
+    '--flow-y': `${(Math.floor(index / 4) % 5) * 18}%`
+  } as CSSProperties;
 
   return (
-    <article className={`flashcard ${toneClass} ${statusClass}`}>
+    <article className={`flashcard ${statusClass}`} style={cardStyle}>
       <button className="flashcard-stage" type="button" onClick={() => setFlipped((value) => !value)} aria-pressed={flipped}>
         <div className={flipped ? 'flashcard-inner is-flipped' : 'flashcard-inner'}>
           <section className="flashcard-face flashcard-front">
             <CardHeader card={card} status={status} />
-            <div className="grid flex-1 place-items-center px-1 text-center text-[15px] font-semibold leading-7 text-slate-950">
+            <div className="flashcard-question">
               {card.front}
             </div>
             <div className="flex items-center justify-center gap-1.5 text-xs font-medium text-[#7b8b84]">

@@ -99,12 +99,12 @@ export function FlashcardsPage() {
         </div>
 
         <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-3">
-          <div className="flex flex-wrap items-center gap-3">
-            <a className="secondary-button" href="./" title="返回全套首页">
+          <div className="flashcard-toolbar flex flex-wrap items-center gap-3">
+            <a className="secondary-button flashcard-home-button" href="./" title="返回全套首页">
               全套
             </a>
 
-            <div className="flex min-w-0 items-center gap-2">
+            <div className="flashcard-title-block flex min-w-0 items-center gap-2">
               <div className="grid size-9 shrink-0 place-items-center rounded-lg bg-[#ffb7a0] text-white shadow-sm">
                 <Gamepad2 size={19} aria-hidden="true" />
               </div>
@@ -114,7 +114,7 @@ export function FlashcardsPage() {
               </div>
             </div>
 
-            <div className="flex min-w-[220px] flex-1 items-center gap-2 rounded-lg border border-teal-100 bg-white px-3 py-2 shadow-sm focus-within:border-teal-300 focus-within:ring-2 focus-within:ring-teal-200/60">
+            <div className="flashcard-search flex min-w-[220px] flex-1 items-center gap-2 rounded-lg border border-teal-100 bg-white px-3 py-2 shadow-sm focus-within:border-teal-300 focus-within:ring-2 focus-within:ring-teal-200/60">
               <Search size={17} className="shrink-0 text-slate-500" aria-hidden="true" />
               <input
                 className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-slate-400"
@@ -130,12 +130,12 @@ export function FlashcardsPage() {
               ) : null}
             </div>
 
-            <button className="secondary-button" type="button" onClick={() => setExpandedControls((value) => !value)}>
+            <button className="secondary-button flashcard-control-button" type="button" onClick={() => setExpandedControls((value) => !value)}>
               <ChevronDown className={expandedControls ? 'rotate-180 transition' : 'transition'} size={17} aria-hidden="true" />
               筛选
             </button>
 
-            <button className="secondary-button" type="button" onClick={resetAll}>
+            <button className="secondary-button flashcard-control-button" type="button" onClick={resetAll}>
               <RotateCcw size={17} aria-hidden="true" />
               重置
             </button>
@@ -209,10 +209,11 @@ export function FlashcardsPage() {
 
         {filteredCards.length ? (
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {filteredCards.map((card) => (
+            {filteredCards.map((card, index) => (
               <Flashcard
                 key={card.id}
                 card={card}
+                index={index}
                 status={mastery[card.id]}
                 onSetStatus={setCardMastery}
                 onClearStatus={clearCardMastery}

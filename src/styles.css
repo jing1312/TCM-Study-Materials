@@ -187,8 +187,39 @@ button {
 }
 
 .flashcards-game {
+  --card-flow-front:
+    radial-gradient(circle at 12% 18%, rgb(128 244 218 / 0.78), transparent 22%),
+    radial-gradient(circle at 34% 8%, rgb(255 176 151 / 0.72), transparent 20%),
+    radial-gradient(circle at 58% 20%, rgb(254 240 138 / 0.62), transparent 20%),
+    radial-gradient(circle at 82% 12%, rgb(196 181 253 / 0.58), transparent 22%),
+    radial-gradient(circle at 18% 78%, rgb(147 197 253 / 0.62), transparent 24%),
+    radial-gradient(circle at 48% 72%, rgb(134 239 172 / 0.62), transparent 24%),
+    radial-gradient(circle at 76% 82%, rgb(249 168 212 / 0.68), transparent 24%),
+    linear-gradient(135deg, rgb(255 253 247), rgb(255 239 229) 44%, rgb(228 255 246));
+  --card-flow-back:
+    radial-gradient(circle at 18% 20%, rgb(255 184 160 / 0.76), transparent 24%),
+    radial-gradient(circle at 42% 10%, rgb(196 181 253 / 0.66), transparent 20%),
+    radial-gradient(circle at 72% 20%, rgb(94 234 212 / 0.66), transparent 22%),
+    radial-gradient(circle at 20% 78%, rgb(254 240 138 / 0.62), transparent 24%),
+    radial-gradient(circle at 58% 78%, rgb(254 202 202 / 0.68), transparent 24%),
+    radial-gradient(circle at 86% 76%, rgb(125 211 252 / 0.62), transparent 24%),
+    linear-gradient(135deg, rgb(255 253 247), rgb(255 236 226) 52%, rgb(225 255 249));
   background:
     linear-gradient(180deg, rgb(255 250 243), rgb(239 253 246) 48%, rgb(255 246 241));
+}
+
+@keyframes card-flow {
+  0% {
+    background-position: calc(var(--flow-x, 0%) + 0%) calc(var(--flow-y, 0%) + 0%);
+  }
+
+  50% {
+    background-position: calc(var(--flow-x, 0%) + 72%) calc(var(--flow-y, 0%) + 28%);
+  }
+
+  100% {
+    background-position: calc(var(--flow-x, 0%) + 0%) calc(var(--flow-y, 0%) + 0%);
+  }
 }
 
 .game-hud {
@@ -270,84 +301,11 @@ button {
   display: grid;
   min-width: 0;
   gap: 0.65rem;
-  --card-a: 204 251 241;
-  --card-b: 255 218 203;
-  --card-c: 239 253 246;
-  --card-back-a: 255 208 181;
-  --card-back-b: 187 247 208;
-  --card-back-c: 255 247 237;
-  --card-ink: 47 143 124;
   --card-back-ink: 126 90 74;
 }
 
-.flashcard-tone-1 {
-  --card-a: 204 251 241;
-  --card-b: 255 218 203;
-  --card-c: 239 253 246;
-  --card-back-a: 255 208 181;
-  --card-back-b: 221 214 254;
-  --card-back-c: 255 247 237;
-  --card-ink: 47 143 124;
-  --card-back-ink: 132 82 67;
-}
-
-.flashcard-tone-2 {
-  --card-a: 254 249 195;
-  --card-b: 187 247 208;
-  --card-c: 255 251 235;
-  --card-back-a: 254 202 202;
-  --card-back-b: 191 219 254;
-  --card-back-c: 255 241 242;
-  --card-ink: 100 116 30;
-  --card-back-ink: 128 76 87;
-}
-
-.flashcard-tone-3 {
-  --card-a: 219 234 254;
-  --card-b: 255 228 230;
-  --card-c: 240 249 255;
-  --card-back-a: 253 224 171;
-  --card-back-b: 196 181 253;
-  --card-back-c: 250 245 255;
-  --card-ink: 49 112 142;
-  --card-back-ink: 105 80 142;
-}
-
-.flashcard-tone-4 {
-  --card-a: 220 252 231;
-  --card-b: 254 215 170;
-  --card-c: 240 253 244;
-  --card-back-a: 252 231 243;
-  --card-back-b: 186 230 253;
-  --card-back-c: 253 242 248;
-  --card-ink: 47 130 97;
-  --card-back-ink: 139 85 125;
-}
-
-.flashcard-tone-5 {
-  --card-a: 254 226 226;
-  --card-b: 204 251 241;
-  --card-c: 255 247 237;
-  --card-back-a: 209 250 229;
-  --card-back-b: 253 186 116;
-  --card-back-c: 236 253 245;
-  --card-ink: 156 83 75;
-  --card-back-ink: 65 120 100;
-}
-
-.flashcard-tone-6 {
-  --card-a: 237 233 254;
-  --card-b: 254 249 195;
-  --card-c: 250 245 255;
-  --card-back-a: 153 246 228;
-  --card-back-b: 254 205 211;
-  --card-back-c: 240 253 250;
-  --card-ink: 101 85 143;
-  --card-back-ink: 49 128 121;
-}
-
 .flashcard-stage {
-  height: 18rem;
+  height: 19rem;
   width: 100%;
   border: 0;
   background: transparent;
@@ -385,23 +343,65 @@ button {
   padding: 1rem;
   backface-visibility: hidden;
   box-shadow: 0 12px 26px rgb(45 177 143 / 0.11);
+  isolation: isolate;
+}
+
+.flashcard-face::before {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  content: "";
+  background-size: 360% 320%;
+  background-position: var(--flow-x, 0%) var(--flow-y, 0%);
+  animation: card-flow 24s ease-in-out infinite;
+}
+
+.flashcard-face::after {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  content: "";
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 0.42), rgb(255 255 255 / 0.2)),
+    radial-gradient(circle at 50% 50%, rgb(255 255 255 / 0.14), transparent 58%);
+}
+
+.flashcard-face > * {
+  position: relative;
+  z-index: 1;
 }
 
 .flashcard-front {
-  background:
-    radial-gradient(circle at 12% 0%, rgb(var(--card-a) / 0.92), transparent 34%),
-    radial-gradient(circle at 92% 12%, rgb(var(--card-b) / 0.9), transparent 30%),
-    linear-gradient(145deg, rgb(255 255 255), rgb(255 250 243) 56%, rgb(var(--card-c) / 0.86));
+  background: rgb(255 255 255);
+}
+
+.flashcard-front::before {
+  background-image: var(--card-flow-front);
 }
 
 .flashcard-back {
   border-color: rgb(255 208 181);
-  background:
-    radial-gradient(circle at 18% 8%, rgb(var(--card-back-a) / 0.9), transparent 34%),
-    radial-gradient(circle at 88% 16%, rgb(var(--card-back-b) / 0.78), transparent 30%),
-    linear-gradient(145deg, rgb(255 255 255), rgb(var(--card-back-c) / 0.92) 54%, rgb(255 250 243));
+  background: rgb(255 255 255);
   color: rgb(var(--card-back-ink));
   transform: rotateY(180deg);
+}
+
+.flashcard-back::before {
+  background-image: var(--card-flow-back);
+  animation-duration: 30s;
+  animation-direction: reverse;
+}
+
+.flashcard-question {
+  display: grid;
+  flex: 1;
+  place-items: center;
+  padding-inline: 0.25rem;
+  color: rgb(15 23 42);
+  font-size: 1.08rem;
+  font-weight: 740;
+  line-height: 1.8;
+  text-align: center;
 }
 
 .flashcard.is-mastered .flashcard-face {
@@ -420,8 +420,8 @@ button {
   overflow-y: auto;
   padding-right: 0.25rem;
   color: rgb(var(--card-back-ink));
-  font-size: 0.875rem;
-  line-height: 1.72;
+  font-size: 1rem;
+  line-height: 1.85;
 }
 
 .flashcard-answer::-webkit-scrollbar {
@@ -498,6 +498,10 @@ button {
 }
 
 @media (max-width: 640px) {
+  body {
+    overflow-x: hidden;
+  }
+
   .suite-nav-inner {
     align-items: stretch;
     flex-direction: column;
@@ -516,8 +520,31 @@ button {
     min-height: 100vh;
   }
 
+  .flashcard-toolbar {
+    display: grid;
+    grid-template-columns: auto 1fr auto auto;
+  }
+
+  .flashcard-home-button {
+    grid-column: 1;
+  }
+
+  .flashcard-title-block {
+    grid-column: 2 / -1;
+  }
+
+  .flashcard-search {
+    grid-column: 1 / -1;
+    min-width: 0;
+  }
+
+  .flashcard-control-button {
+    min-width: 0;
+    padding-inline: 0.65rem;
+  }
+
   .flashcard-stage {
-    height: 16rem;
+    height: 17.25rem;
   }
 
   .flashcard-face {
