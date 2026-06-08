@@ -120,14 +120,16 @@ function toggleSection(id) {
       <a href="#m11" class="px-2 py-1 bg-white text-tcm-dark border border-teal-100 rounded hover:bg-[#f1edff]">11</a>
       <a href="#m12" class="px-2 py-1 bg-white text-tcm-dark border border-teal-100 rounded hover:bg-[#f1edff]">12</a>
       <a href="#m13" class="px-2 py-1 bg-white text-tcm-dark border border-teal-100 rounded hover:bg-[#f1edff]">13</a>
-      <a href="#summary" class="px-2 py-1 bg-[#e2efff] text-tcm-dark border border-[#9DD7FC] rounded hover:bg-[#f1edff] font-bold">速查</a>
+      <a href="#m14" class="nav-dot w-8 h-8 rounded-full bg-tcm-red/20 text-tcm-red text-xs font-bold flex items-center justify-center hover:bg-tcm-red/40 transition" title="论述口诀">14</a>
+<a href="#m15" class="nav-dot w-8 h-8 rounded-full bg-yellow-100 text-yellow-700 text-xs font-bold flex items-center justify-center hover:bg-yellow-200 transition" title="差异表">附</a>
+<a href="#summary" class="px-2 py-1 bg-[#e2efff] text-tcm-dark border border-[#9DD7FC] rounded hover:bg-[#f1edff] font-bold">速查</a>
     </div>
   </div>
 </nav>
 
 <header class="bg-gradient-to-br from-[#fbfdff] via-[#e2efff] to-[#f1edff] text-tcm-dark text-center py-10 px-4">
   <h1 class="text-3xl md:text-4xl font-bold tracking-widest mb-2">中医药学概论</h1>
-  <p class="text-lg text-tcm-dark/70">重点难点口诀速记手册 &mdash; 13模块全覆盖</p>
+  <p class="text-lg text-tcm-dark/70">重点难点口诀速记手册 &mdash; 15模块全覆盖</p>
   <span class="inline-block bg-tcm-accent text-tcm-dark rounded-full px-4 py-1 font-bold text-sm mt-3">零基础 &middot; 口诀版 &middot; 可折叠 &middot; A4打印</span>
 </header>
 
@@ -800,9 +802,133 @@ function toggleSection(id) {
   </div>
 </section>
 
+
+<!-- 论述题速记 -->
+<section id="m14" class="bg-white rounded-xl shadow-md overflow-hidden">
+<button onclick="toggleSection('m14-content')" class="w-full flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition">
+<div>
+<span class="font-bold text-xl">模块14</span>
+<span class="ml-2 text-lg">论述题速记口诀</span>
+<span class="ml-2 text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded-full">20分必背</span>
+</div>
+<svg class="w-5 h-5 text-gray-400 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+</button>
+<div id="m14-content" class="collapsible-content px-6 py-5 space-y-4">
+
+<div class="mnemonic-box">
+<p class="font-bold text-center mb-2 text-lg">论述1：阴阳偏衰与格拒 · 四句口诀</p>
+<div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-4 space-y-3">
+<p class="text-sm font-bold text-blue-800">① 阳偏衰 = 虚寒证（阳不制阴）</p>
+<p class="text-sm text-blue-700">面色㿠白、畏寒肢冷、舌淡脉迟</p>
+<hr class="border-blue-200">
+<p class="text-sm font-bold text-red-800">② 阴偏衰 = 虚热证（阴不制阳）</p>
+<p class="text-sm text-red-700">五心烦热、潮热盗汗、舌红少苔脉细数</p>
+<hr class="border-blue-200">
+<p class="text-sm font-bold text-purple-800">③ 阴盛格阳 = 真寒假热证</p>
+<p class="text-sm text-purple-700">内真寒（肢冷脉微）+ 外假热（面红烦热口渴脉大无根）</p>
+<hr class="border-blue-200">
+<p class="text-sm font-bold text-orange-800">④ 阳盛格阴 = 真热假寒证</p>
+<p class="text-sm text-orange-700">内真热（壮热气粗脉数大）+ 外假寒（四肢厥冷脉沉伏）</p>
+</div>
+<p class="mt-3 text-center font-bold text-tcm-red">口诀：阳衰虚寒，阴衰虚热；阴盛格阳真寒假热，阳盛格阴真热假寒。</p>
+</div>
+
+<div class="mnemonic-box">
+<p class="font-bold text-center mb-2 text-lg">论述2：五脏相互关系 · 十组口诀</p>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+<div class="bg-gradient-to-r from-red-50 to-pink-50 rounded-lg p-3">
+<p class="text-sm font-bold text-red-800">① 心肺 — 气和血</p>
+<p class="text-xs text-red-600">气行血、血载气</p>
+</div>
+<div class="bg-gradient-to-r from-orange-50 to-amber-50 rounded-lg p-3">
+<p class="text-sm font-bold text-orange-800">② 心脾 — 血的生化与运行</p>
+<p class="text-xs text-orange-600">脾生心行，心脾两虚</p>
+</div>
+<div class="bg-gradient-to-r from-yellow-50 to-lime-50 rounded-lg p-3">
+<p class="text-sm font-bold text-yellow-800">③ 心肝 — 血液和情志</p>
+<p class="text-xs text-yellow-600">血充则心定肝舒</p>
+</div>
+<div class="bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg p-3">
+<p class="text-sm font-bold text-green-800">④ 心肾 — 水火既济</p>
+<p class="text-xs text-green-600">心火降肾水升，心肾相交</p>
+</div>
+<div class="bg-gradient-to-r from-teal-50 to-cyan-50 rounded-lg p-3">
+<p class="text-sm font-bold text-teal-800">⑤ 肺脾 — 气和水液</p>
+<p class="text-xs text-teal-600">脾为生痰之源，肺为贮痰之器</p>
+</div>
+<div class="bg-gradient-to-r from-blue-50 to-sky-50 rounded-lg p-3">
+<p class="text-sm font-bold text-blue-800">⑥ 肺肝 — 气机升降</p>
+<p class="text-xs text-blue-600">肺降肝升</p>
+</div>
+<div class="bg-gradient-to-r from-indigo-50 to-violet-50 rounded-lg p-3">
+<p class="text-sm font-bold text-indigo-800">⑦ 肺肾 — 呼吸和水液</p>
+<p class="text-xs text-indigo-600">肺为气主，肾为气根</p>
+</div>
+<div class="bg-gradient-to-r from-purple-50 to-fuchsia-50 rounded-lg p-3">
+<p class="text-sm font-bold text-purple-800">⑧ 肝脾 — 消化和血液</p>
+<p class="text-xs text-purple-600">肝郁脾虚</p>
+</div>
+<div class="bg-gradient-to-r from-pink-50 to-rose-50 rounded-lg p-3">
+<p class="text-sm font-bold text-pink-800">⑨ 肝肾 — 精血同源</p>
+<p class="text-xs text-pink-600">肝肾同源、乙癸同源</p>
+</div>
+<div class="bg-gradient-to-r from-amber-50 to-yellow-50 rounded-lg p-3">
+<p class="text-sm font-bold text-amber-800">⑩ 脾肾 — 先后天互资</p>
+<p class="text-xs text-amber-600">脾后天本、肾先天本</p>
+</div>
+</div>
+</div>
+
+<div class="exam-tip">
+<p class="font-bold text-tcm-red mb-1">考试提醒</p>
+<ul class="text-sm space-y-1 list-disc list-inside">
+<li>论述题每题20分，占总分1/5，是拉分关键</li>
+<li>阴阳偏衰/格拒：记住4个证型+对应临床表现</li>
+<li>五脏关系：10组关系每组2分，答出关键词即可得分</li>
+<li>A卷考过论述1，B卷考过论述2，两题都要背</li>
+</ul>
+</div>
+</div>
+</section>
+
+<!-- 课本vs标答差异表 -->
+<section id="m15" class="bg-white rounded-xl shadow-md overflow-hidden">
+<button onclick="toggleSection('m15-content')" class="w-full flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition">
+<div>
+<span class="font-bold text-xl">附录</span>
+<span class="ml-2 text-lg">课本 vs B卷标答差异表</span>
+<span class="ml-2 text-xs bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full">5处差异</span>
+</div>
+<svg class="w-5 h-5 text-gray-400 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+</button>
+<div id="m15-content" class="collapsible-content px-6 py-5 space-y-4">
+<div class="overflow-x-auto">
+<table class="w-full text-sm border-collapse border border-gray-300">
+<thead>
+<tr class="bg-gray-100">
+<th class="border border-gray-300 px-3 py-2 text-left">知识点</th>
+<th class="border border-gray-300 px-3 py-2 text-left">课本表述</th>
+<th class="border border-gray-300 px-3 py-2 text-left">B卷标答</th>
+</tr>
+</thead>
+<tbody>
+<tr><td class="border border-gray-300 px-3 py-2">络脉细小分支</td><td class="border border-gray-300 px-3 py-2 font-bold text-green-700">孙络</td><td class="border border-gray-300 px-3 py-2">孙脉</td></tr>
+<tr><td class="border border-gray-300 px-3 py-2">皮肤表面络脉</td><td class="border border-gray-300 px-3 py-2 font-bold text-green-700">浮络</td><td class="border border-gray-300 px-3 py-2">浮脉</td></tr>
+<tr><td class="border border-gray-300 px-3 py-2">经络定义</td><td class="border border-gray-300 px-3 py-2 font-bold text-green-700">运行"全身"气血</td><td class="border border-gray-300 px-3 py-2">运行气血（省略"全身"）</td></tr>
+<tr><td class="border border-gray-300 px-3 py-2">瘀血定义</td><td class="border border-gray-300 px-3 py-2">血液停积的病理产物</td><td class="border border-gray-300 px-3 py-2">描述更详但非原文</td></tr>
+<tr><td class="border border-gray-300 px-3 py-2">奇经八脉</td><td class="border border-gray-300 px-3 py-2 font-bold text-green-700">不直属脏腑，无表里配，别道奇行</td><td class="border border-gray-300 px-3 py-2">描述性表述</td></tr>
+</tbody>
+</table>
+</div>
+<div class="exam-tip">
+<p class="font-bold text-tcm-red mb-1">答题建议</p>
+<p class="text-sm">考试如遇以上差异点，优先按课本作答。两版意思一致的题目任选其一即可。</p>
+</div>
+</div>
+</section>
 <section id="summary" class="bg-white rounded-xl shadow-md overflow-hidden">
   <button onclick="toggleSection('summary-content')" class="toggle-btn w-full bg-gradient-to-r from-[#e2efff] to-[#f1edff] text-tcm-dark text-left px-6 py-4 flex items-center justify-between hover:opacity-90 transition">
-    <div><span class="font-bold text-xl">核心口诀速查表</span><span class="ml-2 text-lg">13模块一句话汇总</span></div>
+    <div><span class="font-bold text-xl">核心口诀速查表</span><span class="ml-2 text-lg">15模块一句话汇总</span></div>
     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
   </button>
   <div id="summary-content" class="collapsible-content px-6 py-5 space-y-4">
@@ -832,7 +958,7 @@ function toggleSection(id) {
 </main>
 
 <footer class="bg-gradient-to-r from-[#fbfdff] to-[#e2efff] text-tcm-dark text-center py-6 px-4 mt-8 border-t border-teal-100">
-  <p class="text-sm">中医药学概论 重点难点口诀速记手册 &mdash; 13模块全覆盖</p>
+  <p class="text-sm">中医药学概论 重点难点口诀速记手册 &mdash; 15模块全覆盖</p>
   <p class="text-xs text-tcm-accent mt-2">适合A4打印 | 点击各模块标题可展开/折叠内容</p>
 </footer>
 
