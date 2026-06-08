@@ -556,16 +556,17 @@ input:focus-visible {
 }
 
 .flashcard.is-mastered {
-  --card-back-ink: 24 112 87;
-  --status-main: 72 222 166;
-  --status-strong: 5 150 105;
-  --status-soft: 220 252 231;
+  --card-back-ink: 72 78 130;
+  --status-main: 170 180 235;
+  --status-strong: 105 125 215;
+  --status-soft: 235 238 255;
 }
 
 .flashcard.is-unmastered {
-  --status-main: 243 179 169;
-  --status-strong: 255 105 85;
-  --status-soft: 255 244 241;
+  --card-back-ink: 145 82 68;
+  --status-main: 238 185 172;
+  --status-strong: 218 128 108;
+  --status-soft: 255 242 238;
 }
 
 .flashcard.is-mastered::before,
@@ -697,13 +698,25 @@ input:focus-visible {
 
 .flashcard.is-mastered .flashcard-front {
   background:
-    linear-gradient(135deg, rgb(220 252 231 / 0.82), rgb(255 255 255 / 0.74) 45%, rgb(254 249 195 / 0.42)),
+    linear-gradient(135deg, rgb(235 238 255 / 0.82), rgb(255 255 255 / 0.74) 45%, rgb(230 235 255 / 0.52)),
     white;
 }
 
 .flashcard.is-mastered .flashcard-back {
   background:
-    linear-gradient(135deg, rgb(236 253 245 / 0.86), rgb(255 255 255 / 0.78) 48%, rgb(204 251 241 / 0.46)),
+    linear-gradient(135deg, rgb(238 240 255 / 0.86), rgb(255 255 255 / 0.78) 48%, rgb(225 230 255 / 0.46)),
+    white;
+}
+
+.flashcard.is-unmastered .flashcard-front {
+  background:
+    linear-gradient(135deg, rgb(255 242 238 / 0.82), rgb(255 255 255 / 0.74) 45%, rgb(255 235 225 / 0.52)),
+    white;
+}
+
+.flashcard.is-unmastered .flashcard-back {
+  background:
+    linear-gradient(135deg, rgb(255 245 240 / 0.86), rgb(255 255 255 / 0.78) 48%, rgb(255 230 218 / 0.46)),
     white;
 }
 
@@ -765,15 +778,15 @@ input:focus-visible {
 }
 
 .flashcard.is-mastered .status-pill {
-  border: 1px solid rgb(52 211 153 / 0.9);
-  background: rgb(220 252 231);
-  color: rgb(4 120 87);
+  border: 1px solid rgb(170 180 235 / 0.9);
+  background: rgb(235 238 255);
+  color: rgb(80 90 165);
 }
 
 .flashcard.is-unmastered .status-pill {
-  border: 1px solid rgb(var(--warm) / 0.9);
-  background: rgb(var(--warm-soft));
-  color: rgb(184 86 72);
+  border: 1px solid rgb(238 185 172 / 0.9);
+  background: rgb(255 242 238);
+  color: rgb(175 95 75);
 }
 
 .status-pill-dark {
@@ -807,8 +820,8 @@ input:focus-visible {
 }
 
 .flashcard.is-mastered .success-button {
-  background: linear-gradient(135deg, rgb(5 150 105), rgb(45 212 191));
-  box-shadow: 0 4px 10px rgb(5 150 105 / 0.14);
+  background: linear-gradient(135deg, rgb(105 125 215), rgb(160 175 240));
+  box-shadow: 0 4px 10px rgb(105 125 215 / 0.14);
 }
 
 .warning-button {
@@ -821,8 +834,8 @@ input:focus-visible {
 }
 
 .flashcard.is-unmastered .warning-button {
-  background: linear-gradient(135deg, rgb(255 105 85), rgb(var(--warm)));
-  box-shadow: 0 4px 10px rgb(255 105 85 / 0.16);
+  background: linear-gradient(135deg, rgb(218 128 108), rgb(238 185 172));
+  box-shadow: 0 4px 10px rgb(218 128 108 / 0.16);
 }
 
 .flashcard-clear-button {
