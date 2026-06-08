@@ -8,10 +8,15 @@ export function BackToTop({ threshold = 300 }: { threshold?: number }) {
     function onScroll() {
       setVisible(window.scrollY > threshold);
     }
+
     window.addEventListener('scroll', onScroll, { passive: true });
     onScroll();
     return () => window.removeEventListener('scroll', onScroll);
   }, [threshold]);
+
+  function handleClick() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
 
   if (!visible) return null;
 
@@ -19,7 +24,12 @@ export function BackToTop({ threshold = 300 }: { threshold?: number }) {
     <button
       className="back-to-top"
       type="button"
-      onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+      style={{
+        position: 'fixed',
+        background: 'linear-gradient(135deg, rgb(105 125 215 / 0.9), rgb(160 175 240 / 0.85))',
+        color: 'white',
+      }}
+      onClick={handleClick}
       aria-label="回到顶部"
       title="回到顶部"
     >
