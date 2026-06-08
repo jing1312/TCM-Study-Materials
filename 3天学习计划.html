@@ -101,6 +101,14 @@ tailwind.config = {
   .decorative-line { background: linear-gradient(90deg, transparent, #FF9F84, transparent); height: 1px; }
   .kp-table th { font-family: 'Noto Serif SC', serif; }
   .kp-table td, .kp-table th { padding: 6px 10px; border: 1px solid #d8efe7; }
+  #mainNav {
+    transition: transform 240ms cubic-bezier(0.22, 1, 0.36, 1), background-color 240ms ease, box-shadow 240ms ease, backdrop-filter 240ms ease;
+    will-change: transform;
+  }
+  #mainNav.nav-hidden {
+    transform: translateY(calc(-100% - 0.5rem));
+    pointer-events: none;
+  }
   .nav-scrolled { background: rgba(255, 249, 242, 0.96) !important; backdrop-filter: blur(10px); }
   ::-webkit-scrollbar { width: 8px; }
   ::-webkit-scrollbar-track { background: #FFF9F2; }
@@ -872,10 +880,40 @@ tailwind.config = {
 
   lucide.createIcons();
   const nav = document.getElementById('mainNav');
-  window.addEventListener('scroll', () => {
-    if (window.scrollY > 50) { nav.classList.add('nav-scrolled'); }
-    else { nav.classList.remove('nav-scrolled'); }
-  });
+  function setupAutoHideNav(navEl) {
+    if (!navEl) return;
+    let lastY = Math.max(window.scrollY || 0, 0);
+    let ticking = false;
+    const delta = 8;
+    const showAtTop = 24;
+    const hideAfter = 96;
+
+    function updateNav() {
+      const currentY = Math.max(window.scrollY || 0, 0);
+      const diff = currentY - lastY;
+      navEl.classList.toggle('nav-scrolled', currentY > 50);
+
+      if (currentY <= showAtTop) {
+        navEl.classList.remove('nav-hidden');
+      } else if (diff > delta && currentY > hideAfter) {
+        navEl.classList.add('nav-hidden');
+      } else if (diff < -delta) {
+        navEl.classList.remove('nav-hidden');
+      }
+
+      lastY = currentY;
+      ticking = false;
+    }
+
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        window.requestAnimationFrame(updateNav);
+        ticking = true;
+      }
+    }, { passive: true });
+    updateNav();
+  }
+  setupAutoHideNav(nav);
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('visible'); } });
   }, { threshold: 0.1 });

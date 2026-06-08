@@ -23,6 +23,8 @@ tailwind.config = {
 .collapsible-content.open { display: block; }
 .mnemonic-box { background: linear-gradient(135deg, #fff0e8 0%, #e8fbf4 100%); color: #2F8F7C; font-size: 1.25rem; line-height: 1.8; padding: 1.25rem 1.5rem; border: 1px solid #ffd6c7; border-radius: 1rem; box-shadow: 0 12px 26px rgba(255,159,132,.12); }
 .exam-tip { border-left: 4px solid #FF9F84; background: #FFF1F0; padding: 0.75rem 1rem; border-radius: 0.5rem; }
+.sticky-nav { transition: transform 240ms cubic-bezier(0.22, 1, 0.36, 1), opacity 240ms ease, box-shadow 240ms ease; will-change: transform; }
+.sticky-nav.nav-hidden { transform: translateY(calc(-100% - 0.5rem)); opacity: .96; pointer-events: none; }
 html, body { overflow-x: clip; }
 table { max-width: 100%; }
 section { max-width: 100%; }
@@ -823,6 +825,41 @@ function toggleSection(id) {
   <p class="text-sm">中医药学概论 重点难点口诀速记手册 &mdash; 13模块全覆盖</p>
   <p class="text-xs text-tcm-accent mt-2">适合A4打印 | 点击各模块标题可展开/折叠内容</p>
 </footer>
+
+<script>
+(function () {
+  const nav = document.querySelector('.sticky-nav');
+  if (!nav) return;
+  let lastY = Math.max(window.scrollY || 0, 0);
+  let ticking = false;
+  const delta = 8;
+  const showAtTop = 24;
+  const hideAfter = 96;
+
+  function updateNav() {
+    const currentY = Math.max(window.scrollY || 0, 0);
+    const diff = currentY - lastY;
+
+    if (currentY <= showAtTop) {
+      nav.classList.remove('nav-hidden');
+    } else if (diff > delta && currentY > hideAfter) {
+      nav.classList.add('nav-hidden');
+    } else if (diff < -delta) {
+      nav.classList.remove('nav-hidden');
+    }
+
+    lastY = currentY;
+    ticking = false;
+  }
+
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      window.requestAnimationFrame(updateNav);
+      ticking = true;
+    }
+  }, { passive: true });
+})();
+</script>
 
 </body>
 </html>

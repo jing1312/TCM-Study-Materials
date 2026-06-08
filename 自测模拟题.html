@@ -18,6 +18,8 @@ tailwind.config={theme:{extend:{colors:{tcm:{accent:'#FF9F84',red:'#C41E3A',blue
 .answer-reveal{max-height:0;overflow:hidden;transition:max-height .5s ease-out,padding .3s ease}
 .answer-reveal.open{max-height:4000px;padding-top:12px;padding-bottom:12px}
 .nav-link.active{background-color:#FFF0E8;color:#2F8F7C;border-color:#FFD6C7}
+#navbar{transition:transform 240ms cubic-bezier(.22,1,.36,1),opacity 240ms ease,box-shadow 240ms ease;will-change:transform}
+#navbar.nav-hidden{transform:translateY(calc(-100% - .5rem));opacity:.96;pointer-events:none}
 .question-card:hover{box-shadow:0 4px 20px rgba(255,159,132,.13)}
 input:focus{outline:none;border-color:#FF9F84;box-shadow:0 0 0 3px rgba(95,207,181,.24)}
 .mcq-option{transition:all .2s;cursor:pointer}
@@ -1344,6 +1346,22 @@ function checkAll(){
 // --- Nav active highlight ---
 const sections=['fill-blank','mcq','term-def','short-answer','essay'];
 const navLinks=document.querySelectorAll('.nav-link');
+const navbar=document.getElementById('navbar');
+let lastNavY=Math.max(window.scrollY||0,0);
+let navTicking=false;
+
+function updateAutoHideNav(){
+  const currentY=Math.max(window.scrollY||0,0);
+  const diff=currentY-lastNavY;
+  if(navbar){
+    if(currentY<=24)navbar.classList.remove('nav-hidden');
+    else if(diff>8&&currentY>96)navbar.classList.add('nav-hidden');
+    else if(diff<-8)navbar.classList.remove('nav-hidden');
+  }
+  lastNavY=currentY;
+  navTicking=false;
+}
+
 window.addEventListener('scroll',()=>{
   let current='';
   sections.forEach(id=>{
@@ -1354,7 +1372,11 @@ window.addEventListener('scroll',()=>{
     link.classList.remove('active');
     if(link.getAttribute('href')==='#'+current)link.classList.add('active');
   });
-});
+  if(!navTicking){
+    window.requestAnimationFrame(updateAutoHideNav);
+    navTicking=true;
+  }
+},{passive:true});
 
 // --- Init ---
 window.addEventListener('DOMContentLoaded',loadState);

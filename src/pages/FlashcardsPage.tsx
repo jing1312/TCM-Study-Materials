@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { Flashcard } from '../components/Flashcard';
 import { cards, chapterNames, type ChapterId } from '../data/cards';
+import { useAutoHideOnScroll } from '../hooks/useAutoHideOnScroll';
 import { useLocalStorageState } from '../hooks/useLocalStorageState';
 import { includesQuery } from '../utils/text';
 
@@ -42,6 +43,7 @@ export function FlashcardsPage() {
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
   const [query, setQuery] = useState('');
   const [expandedControls, setExpandedControls] = useState(false);
+  const navHidden = useAutoHideOnScroll();
 
   const normalizedQuery = query.trim().toLocaleLowerCase();
 
@@ -93,7 +95,7 @@ export function FlashcardsPage() {
 
   return (
     <main className="flashcards-game min-h-screen text-slate-800">
-      <div className="sticky top-0 z-40 border-b border-teal-100/90 bg-[#fffaf3]/90 backdrop-blur">
+      <div className={navHidden ? 'flashcard-nav auto-hide-nav nav-hidden sticky top-0 z-40 border-b border-teal-100/90 bg-[#fffaf3]/90 backdrop-blur' : 'flashcard-nav auto-hide-nav sticky top-0 z-40 border-b border-teal-100/90 bg-[#fffaf3]/90 backdrop-blur'}>
         <div className="h-1.5 bg-[#ffe8dc]">
           <div className="h-full bg-[linear-gradient(90deg,#6ee7c8,#ffd0b5,#f9a8d4)] transition-all duration-300" style={{ width: `${progress}%` }} />
         </div>
