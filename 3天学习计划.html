@@ -964,6 +964,13 @@
     window.addEventListener('DOMContentLoaded', renderLucideIcons, { once: true });
   }
   const nav = document.getElementById('mainNav');
+  function isEmbeddedWindow() {
+    try {
+      return window.self !== window.top;
+    } catch {
+      return true;
+    }
+  }
   function setupAutoHideNav(navEl) {
     if (!navEl) return;
     let lastY = Math.max(window.scrollY || 0, 0);
@@ -997,7 +1004,9 @@
     }, { passive: true });
     updateNav();
   }
-  setupAutoHideNav(nav);
+  if (!isEmbeddedWindow()) {
+    setupAutoHideNav(nav);
+  }
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {

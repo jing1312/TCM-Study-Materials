@@ -1384,9 +1384,17 @@ function checkAll() {
 }
 
 // --- Nav ---
+function isEmbeddedWindow() {
+  try {
+    return window.self !== window.top;
+  } catch {
+    return true;
+  }
+}
 const sections = ['fill-blank','mcq','term-def','short-answer','essay'];
 const navLinks = document.querySelectorAll('.nav-link');
 const navbar = document.getElementById('navbar');
+const shouldAutoHideNav = !isEmbeddedWindow();
 let lastNavY = Math.max(window.scrollY || 0, 0);
 let navTicking = false;
 function updateNavState() {
@@ -1401,7 +1409,7 @@ function updateNavState() {
     link.classList.remove('active');
     if (link.getAttribute('href') === '#' + current) link.classList.add('active');
   });
-  if (navbar) {
+  if (navbar && shouldAutoHideNav) {
     if (currentY <= 24) navbar.classList.remove('nav-hidden');
     else if (diff > 8 && currentY > 96) navbar.classList.add('nav-hidden');
     else if (diff < -8) navbar.classList.remove('nav-hidden');

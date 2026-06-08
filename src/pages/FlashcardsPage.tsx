@@ -91,8 +91,9 @@ export function FlashcardsPage() {
   const [editor, setEditor] = useState<CardEditorState | null>(null);
   const [editorError, setEditorError] = useState('');
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
-  const navHidden = useAutoHideOnScroll(48);
-  const showBackToTop = !isEmbeddedWindow();
+  const isEmbedded = isEmbeddedWindow();
+  const navHidden = useAutoHideOnScroll(48, !isEmbedded);
+  const showBackToTop = !isEmbedded;
 
   const normalizedQuery = query.trim().toLocaleLowerCase();
   const allCards = useMemo(() => {

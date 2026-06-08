@@ -1,11 +1,17 @@
 import { useEffect, useRef, useState } from 'react';
 
-export function useAutoHideOnScroll(hideAfter = 96) {
+export function useAutoHideOnScroll(hideAfter = 96, enabled = true) {
   const [hidden, setHidden] = useState(false);
   const lastScrollY = useRef(0);
   const ticking = useRef(false);
 
   useEffect(() => {
+    if (!enabled) {
+      setHidden(false);
+      ticking.current = false;
+      return;
+    }
+
     const delta = 8;
     const showAtTop = 24;
     let lastTouchY: number | null = null;
@@ -91,7 +97,7 @@ export function useAutoHideOnScroll(hideAfter = 96) {
       ticking.current = false;
       animationFrameId = 0;
     };
-  }, [hideAfter]);
+  }, [enabled, hideAfter]);
 
   return hidden;
 }
