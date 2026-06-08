@@ -37,6 +37,7 @@ export function SuitePage() {
   const navHidden = useAutoHideOnScroll(48);
   const [frameNavHidden, setFrameNavHidden] = useState(false);
   const [frameScrollWindow, setFrameScrollWindow] = useState<Window | null>(null);
+  const [frameScrollVersion, setFrameScrollVersion] = useState(0);
   const frameCleanup = useRef<null | (() => void)>(null);
   const activeModule = useMemo(() => modules.find((module) => module.id === activeId) ?? modules[0], [activeId]);
   const activeHref = `${activeModule.href}?v=${assetVersion}`;
@@ -55,6 +56,7 @@ export function SuitePage() {
     const frameWindow = event.currentTarget.contentWindow;
     if (!frameWindow) return;
     setFrameScrollWindow(frameWindow);
+    setFrameScrollVersion((version) => version + 1);
 
     let lastY = Math.max(frameWindow.scrollY || 0, 0);
     let ticking = false;
@@ -180,7 +182,7 @@ export function SuitePage() {
 
       <iframe className="suite-frame" title={activeModule.label} src={activeHref} onLoad={handleFrameLoad} />
 
-      <BackToTop scrollWindow={frameScrollWindow} />
+      <BackToTop key={frameScrollVersion} scrollWindow={frameScrollWindow} />
     </main>
   );
 }

@@ -308,7 +308,6 @@ input:focus-visible {
 
 .auto-hide-nav {
   transition:
-    max-height 240ms var(--ease-out),
     transform 240ms var(--ease-out),
     opacity 240ms ease,
     box-shadow 240ms ease,
@@ -334,11 +333,8 @@ input:focus-visible {
 }
 
 .flashcard-nav.nav-hidden {
-  max-height: 0;
-  border-bottom-width: 0;
   border-bottom-color: transparent;
   box-shadow: none;
-  opacity: 0;
 }
 
 .flashcard-title-icon {
@@ -357,10 +353,21 @@ input:focus-visible {
   transition: border-color 180ms ease, box-shadow 180ms ease, background-color 180ms ease;
 }
 
+.flashcard-search:hover {
+  border-color: rgb(var(--brand-blue) / 0.38);
+  background: white;
+  box-shadow: 0 3px 10px rgb(var(--brand-blue) / 0.1);
+}
+
 .flashcard-search:focus-within {
   border-color: rgb(var(--brand-blue) / 0.55);
   background: white;
   box-shadow: 0 0 0 3px rgb(var(--brand-blue) / 0.14), 0 8px 18px rgb(var(--brand-blue) / 0.08);
+}
+
+.flashcard-search input:focus,
+.flashcard-search input:focus-visible {
+  outline: none;
 }
 
 .flashcard-summary span,
@@ -406,7 +413,7 @@ input:focus-visible {
   background: linear-gradient(180deg, #fbfdff, #f7f9fc 52%, #f2f6fb);
 }
 
-.flashcards-game > :not(.flashcard-nav) {
+.flashcards-game > :not(.flashcard-nav):not(.back-to-top) {
   position: relative;
   z-index: 1;
 }
@@ -501,9 +508,6 @@ input:focus-visible {
   display: grid;
   min-width: 0;
   gap: 0.65rem;
-  contain: layout paint;
-  content-visibility: auto;
-  contain-intrinsic-size: auto 21rem;
   --card-back-ink: 25 35 55;
   --status-main: 214 226 246;
   --status-strong: 25 117 255;
@@ -531,46 +535,59 @@ input:focus-visible {
 }
 
 .flashcard-stage {
-  height: 18.75rem;
+  min-height: 18.75rem;
   width: 100%;
-  border: 0;
-  background: transparent;
-  padding: 0;
+  border-radius: 0.75rem;
   perspective: 900px;
   text-align: left;
   cursor: pointer;
 }
 
+.flashcard-stage:focus-visible {
+  outline: 3px solid rgb(var(--mint) / 0.26);
+  outline-offset: 3px;
+}
+
 .flashcard-inner {
   position: relative;
-  height: 100%;
+  min-height: inherit;
   width: 100%;
   transform-style: preserve-3d;
   transition: transform 320ms var(--ease-out);
 }
 
-.flashcard-stage:hover .flashcard-inner {
-  transform: none;
-}
-
-.flashcard-inner.is-flipped,
-.flashcard-stage:hover .flashcard-inner.is-flipped {
+.flashcard-inner.is-flipped {
   transform: rotateY(180deg);
 }
 
 .flashcard-face {
-  position: absolute;
-  inset: 0;
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 0.85rem;
-  overflow: hidden;
+  min-height: inherit;
+  overflow: visible;
   border: 1px solid rgb(var(--line) / 0.96);
   border-radius: 0.75rem;
   padding: 1rem;
   backface-visibility: hidden;
   box-shadow: 0 1px 4px rgb(25 35 55 / 0.08);
   transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.flashcard:not(.is-flipped) .flashcard-back,
+.flashcard.is-flipped .flashcard-front {
+  position: absolute;
+  inset: 0;
+  min-height: 100%;
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.flashcard-stage:hover .flashcard-face {
+  border-color: rgb(var(--brand-blue) / 0.34);
+  box-shadow: 0 2px 7px rgb(25 35 55 / 0.1);
 }
 
 .flashcard-face > * {
@@ -634,10 +651,9 @@ input:focus-visible {
 }
 
 .flashcard-answer {
-  min-height: 0;
-  flex: 1;
-  overflow-y: auto;
-  padding-right: 0.25rem;
+  flex: 1 1 auto;
+  min-height: auto;
+  overflow: visible;
   color: rgb(var(--card-back-ink));
   font-size: 1.04rem;
   line-height: 1.85;
@@ -650,15 +666,6 @@ input:focus-visible {
   color: rgb(var(--ink-muted));
   font-size: 0.98rem;
   text-align: center;
-}
-
-.flashcard-answer::-webkit-scrollbar {
-  width: 0.35rem;
-}
-
-.flashcard-answer::-webkit-scrollbar-thumb {
-  border-radius: 999px;
-  background: rgb(var(--status-strong));
 }
 
 .kw {
@@ -976,7 +983,7 @@ input:focus-visible {
   }
 
   .flashcard-stage {
-    height: 17.75rem;
+    min-height: 17.75rem;
   }
 
   .flashcard-nav {
@@ -984,15 +991,7 @@ input:focus-visible {
   }
 
   .flashcard-nav.nav-hidden {
-    max-height: 0;
-  }
-
-  .flashcard-stage:hover .flashcard-inner {
-    transform: none;
-  }
-
-  .flashcard-stage:hover .flashcard-inner.is-flipped {
-    transform: rotateY(180deg);
+    border-bottom-color: transparent;
   }
 
   .flashcard-face {
@@ -1041,19 +1040,26 @@ input:focus-visible {
 .back-to-top {
   position: fixed;
   right: 1.25rem;
-  bottom: 1.5rem;
+  bottom: 1.25rem;
+  right: calc(clamp(1rem, 2vw, 1.4rem) + env(safe-area-inset-right));
+  bottom: calc(clamp(1rem, 2vw, 1.4rem) + env(safe-area-inset-bottom));
   z-index: 60;
   display: grid;
   place-items: center;
-  width: 2.75rem;
-  height: 2.75rem;
-  border: 1px solid rgb(var(--brand-blue) / 0.32);
+  width: 2.875rem;
+  height: 2.875rem;
+  border: 1px solid rgb(var(--brand-blue) / 0.24);
   border-radius: 999px;
-  background: rgb(var(--brand-blue));
-  color: white;
+  background: rgb(255 255 255 / 0.96);
+  color: rgb(var(--brand-blue));
   cursor: pointer;
-  box-shadow: 0 2px 8px rgb(25 117 255 / 0.22);
+  line-height: 0;
+  box-shadow: 0 2px 8px rgb(25 35 55 / 0.12);
+  touch-action: manipulation;
   transition:
+    border-color 200ms ease,
+    background-color 200ms ease,
+    color 200ms ease,
     transform 200ms ease,
     box-shadow 200ms ease,
     opacity 200ms ease;
@@ -1062,11 +1068,25 @@ input:focus-visible {
 
 .back-to-top:hover {
   transform: translateY(-2px);
-  box-shadow: 0 3px 8px rgb(25 117 255 / 0.28);
+  border-color: rgb(var(--brand-blue));
+  background: rgb(var(--brand-blue));
+  color: white;
+  box-shadow: 0 3px 8px rgb(25 117 255 / 0.26);
 }
 
 .back-to-top:active {
-  transform: scale(0.92);
+  transform: translateY(0) scale(0.94);
+}
+
+.back-to-top:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgb(var(--brand-blue) / 0.16), 0 2px 8px rgb(25 35 55 / 0.12);
+}
+
+.back-to-top svg {
+  width: 1.15rem;
+  height: 1.15rem;
+  stroke-width: 2.35;
 }
 
 @keyframes back-to-top-in {
@@ -1077,6 +1097,15 @@ input:focus-visible {
   to {
     opacity: 1;
     transform: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .back-to-top {
+    right: calc(0.875rem + env(safe-area-inset-right));
+    bottom: calc(0.875rem + env(safe-area-inset-bottom));
+    width: 2.65rem;
+    height: 2.65rem;
   }
 }
 

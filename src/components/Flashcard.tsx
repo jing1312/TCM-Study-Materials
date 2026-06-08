@@ -1,4 +1,4 @@
-import { memo, useState } from 'react';
+import { memo, type KeyboardEvent, useState } from 'react';
 import { Check, Pencil, Rotate3D, Sparkles, Trash2, Undo2, X } from 'lucide-react';
 import { chapterNames, type StudyCard } from '../data/cards';
 
@@ -23,11 +23,25 @@ export const Flashcard = memo(function Flashcard({ card, status, onSetStatus, on
     setFlipped((value) => !value);
   }
 
+  function handleStageKeyDown(event: KeyboardEvent<HTMLDivElement>) {
+    if (event.key !== 'Enter' && event.key !== ' ') return;
+    event.preventDefault();
+    toggleFlipped();
+  }
+
   return (
-    <article className={`flashcard ${statusClass}`}>
-      <button className="flashcard-stage" type="button" onClick={toggleFlipped} aria-pressed={flipped}>
+    <article className={`flashcard ${statusClass} ${flipped ? 'is-flipped' : ''}`}>
+      <div
+        className="flashcard-stage"
+        role="button"
+        tabIndex={0}
+        onClick={toggleFlipped}
+        onKeyDown={handleStageKeyDown}
+        aria-pressed={flipped}
+        aria-label={flipped ? `回到题目：${card.front}` : `查看答案：${card.front}`}
+      >
         <div className={flipped ? 'flashcard-inner is-flipped' : 'flashcard-inner'}>
-          <section className="flashcard-face flashcard-front">
+          <section className="flashcard-face flashcard-front" aria-hidden={flipped}>
             <CardHeader card={card} status={status} />
             <div className="flashcard-question">
               {card.front}
@@ -38,7 +52,7 @@ export const Flashcard = memo(function Flashcard({ card, status, onSetStatus, on
             </div>
           </section>
 
-          <section className="flashcard-face flashcard-back">
+          <section className="flashcard-face flashcard-back" aria-hidden={!flipped}>
             <CardHeader card={card} status={status} inverted />
             {hasSeenBack ? (
               <div className="flashcard-answer" dangerouslySetInnerHTML={{ __html: card.back }} />
@@ -51,7 +65,7 @@ export const Flashcard = memo(function Flashcard({ card, status, onSetStatus, on
             </div>
           </section>
         </div>
-      </button>
+      </div>
 
       <div className="flashcard-actions">
         <button className="success-button" type="button" onClick={() => onSetStatus(card.id, 'mastered')}>

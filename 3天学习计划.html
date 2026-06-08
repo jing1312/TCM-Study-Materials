@@ -68,7 +68,7 @@
     align-items: center;
     gap: 0.35rem;
     width: max-content;
-    margin: 0.75rem 1rem 1rem auto;
+    margin: 0.85rem auto 1rem 1rem;
     border: 1px solid #d6e2f6;
     border-radius: 999px;
     background: rgba(255, 255, 255, 0.9);
@@ -77,6 +77,10 @@
     font-size: 0.75rem;
     font-weight: 700;
     box-shadow: 0 3px 8px rgba(25, 117, 255, 0.08);
+  }
+  .plan-block-check:hover {
+    border-color: #9DD7FC;
+    background: #f8fbff;
   }
   .plan-block-check.is-checked {
     border-color: #9DD7FC;
@@ -867,6 +871,18 @@
     sync();
   }
 
+  function getPlanBlockTaskInputs(card) {
+    return Array.from(card.querySelectorAll('.plan-check, .check-animate input[type="checkbox"]'));
+  }
+
+  function syncPlanBlockFromTasks(card, input, key, label) {
+    const taskInputs = getPlanBlockTaskInputs(card);
+    const isComplete = taskInputs.length > 0 && taskInputs.every(task => task.checked);
+    input.checked = isComplete;
+    localStorage.setItem(key, isComplete.toString());
+    label.classList.toggle('is-checked', isComplete);
+  }
+
   function addPlanRowChecks() {
     document.querySelectorAll('.kp-table').forEach((table, tableIndex) => {
       const headRow = table.querySelector('thead tr');
@@ -897,6 +913,8 @@
   function addPlanBlockChecks() {
     document.querySelectorAll('.card-hover').forEach((card, index) => {
       if (card.querySelector('.plan-block-check')) return;
+      const taskInputs = getPlanBlockTaskInputs(card);
+      if (!taskInputs.length) return;
       const labelText = card.querySelector('.font-serif-cn')?.textContent || card.textContent || 'block';
       const label = document.createElement('label');
       label.className = 'plan-block-check no-print';
@@ -907,7 +925,34 @@
       label.appendChild(input);
       label.appendChild(document.createTextNode('完成'));
       card.appendChild(label);
-      wireCheckbox(input, planStorageKey('block', index, labelText), label);
+      const key = planStorageKey('block', index, labelText);
+      const savedBlockChecked = localStorage.getItem(key) === 'true';
+
+      if (savedBlockChecked && !taskInputs.every(task => task.checked)) {
+        taskInputs.forEach(task => {
+          if (!task.checked) {
+            task.checked = true;
+            task.dispatchEvent(new Event('change', { bubbles: true }));
+          }
+        });
+      }
+
+      taskInputs.forEach(task => {
+        task.addEventListener('change', () => syncPlanBlockFromTasks(card, input, key, label));
+      });
+
+      input.addEventListener('change', () => {
+        const shouldComplete = input.checked;
+        taskInputs.forEach(task => {
+          if (task.checked !== shouldComplete) {
+            task.checked = shouldComplete;
+            task.dispatchEvent(new Event('change', { bubbles: true }));
+          }
+        });
+        syncPlanBlockFromTasks(card, input, key, label);
+      });
+
+      syncPlanBlockFromTasks(card, input, key, label);
     });
   }
 
@@ -980,10 +1025,10 @@
   }, { threshold: 0.2 });
   document.querySelectorAll('.day-section').forEach(el => progressObserver.observe(el));
   addPlanRowChecks();
-  addPlanBlockChecks();
   document.querySelectorAll('.check-animate input[type="checkbox"]').forEach((cb, i) => {
     wireCheckbox(cb, 'tcm_check_' + i, cb.closest('.check-animate'));
   });
+  addPlanBlockChecks();
   document.querySelectorAll('nav a[href^="#"]').forEach(link => {
     link.addEventListener('click', (e) => {
       e.preventDefault();
