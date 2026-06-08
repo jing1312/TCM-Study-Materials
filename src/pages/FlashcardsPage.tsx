@@ -1,10 +1,12 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { type FormEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   Check,
   ChevronDown,
   Gamepad2,
   Heart,
+  Plus,
   RotateCcw,
+  Save,
   Search,
   Sparkles,
   Star,
@@ -12,7 +14,7 @@ import {
   X
 } from 'lucide-react';
 import { Flashcard } from '../components/Flashcard';
-import { cards, chapterNames, type ChapterId } from '../data/cards';
+import { cards, chapterNames, type ChapterId, type StudyCard } from '../data/cards';
 import { useAutoHideOnScroll } from '../hooks/useAutoHideOnScroll';
 import { useLocalStorageState } from '../hooks/useLocalStorageState';
 import { includesQuery } from '../utils/text';
@@ -21,6 +23,27 @@ type ChapterFilter = 'all' | ChapterId;
 type MasteryStatus = 'mastered' | 'unmastered';
 type StatusFilter = 'all' | MasteryStatus | 'fresh';
 type MasteryMap = Record<number, MasteryStatus>;
+type EditableCardFields = Omit<StudyCard, 'id'>;
+
+interface CardLibraryState {
+  customCards: StudyCard[];
+  editedCards: Record<number, EditableCardFields>;
+  deletedCardIds: number[];
+}
+
+interface CardEditorState {
+  mode: 'add' | 'edit';
+  id?: number;
+  ch: ChapterId;
+  front: string;
+  answer: string;
+}
+
+const emptyCardLibrary: CardLibraryState = {
+  customCards: [],
+  editedCards: {},
+  deletedCardIds: []
+};
 
 function getInitialVisibleCards() {
   if (typeof window === 'undefined') return 48;
@@ -44,6 +67,11 @@ const chapterOptions: Array<{ id: ChapterFilter; label: string }> = [
   }))
 ];
 
+const editableChapterOptions = Object.entries(chapterNames).map(([id, label]) => ({
+  id: Number(id) as ChapterId,
+  label
+}));
+
 const statusOptions: Array<{ id: StatusFilter; label: string }> = [
   { id: 'all', label: '全部' },
   { id: 'fresh', label: '新关卡' },
@@ -53,18 +81,32 @@ const statusOptions: Array<{ id: StatusFilter; label: string }> = [
 
 export function FlashcardsPage() {
   const [mastery, setMastery] = useLocalStorageState<MasteryMap>('tcm_mastery', {});
+  const [cardLibrary, setCardLibrary] = useLocalStorageState<CardLibraryState>('tcm_card_library_v1', emptyCardLibrary);
   const [chapter, setChapter] = useState<ChapterFilter>('all');
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
   const [query, setQuery] = useState('');
   const [expandedControls, setExpandedControls] = useState(false);
   const [visibleCount, setVisibleCount] = useState(getInitialVisibleCards);
+  const [editor, setEditor] = useState<CardEditorState | null>(null);
+  const [editorError, setEditorError] = useState('');
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
   const navHidden = useAutoHideOnScroll(48);
 
   const normalizedQuery = query.trim().toLocaleLowerCase();
+  const allCards = useMemo(() => {
+    const deletedIds = new Set(cardLibrary.deletedCardIds);
+    const baseCards = cards
+      .filter((card) => !deletedIds.has(card.id))
+      .map((card) => {
+        const edited = cardLibrary.editedCards[card.id];
+        return edited ? { id: card.id, ...edited } : card;
+      });
+
+    return [...cardLibrary.customCards, ...baseCards];
+  }, [cardLibrary]);
 
   const filteredCards = useMemo(() => {
-    return cards.filter((card) => {
+    return allCards.filter((card) => {
       if (chapter !== 'all' && card.ch !== chapter) return false;
 
       const status = mastery[card.id];
@@ -75,7 +117,7 @@ export function FlashcardsPage() {
       if (!normalizedQuery) return true;
       return includesQuery(card.front, normalizedQuery) || includesQuery(card.back, normalizedQuery);
     });
-  }, [chapter, mastery, normalizedQuery, statusFilter]);
+  }, [allCards, chapter, mastery, normalizedQuery, statusFilter]);
 
   useEffect(() => {
     setVisibleCount(getInitialVisibleCards());
@@ -102,18 +144,18 @@ export function FlashcardsPage() {
   const unmasteredCount = filteredCards.filter((card) => mastery[card.id] === 'unmastered').length;
   const progress = filteredCards.length ? Math.round((masteredCount / filteredCards.length) * 100) : 0;
 
-  const totalMastered = cards.filter((card) => mastery[card.id] === 'mastered').length;
-  const totalUnmastered = cards.filter((card) => mastery[card.id] === 'unmastered').length;
-  const totalProgress = Math.round((totalMastered / cards.length) * 100);
+  const totalMastered = allCards.filter((card) => mastery[card.id] === 'mastered').length;
+  const totalUnmastered = allCards.filter((card) => mastery[card.id] === 'unmastered').length;
+  const totalProgress = allCards.length ? Math.round((totalMastered / allCards.length) * 100) : 0;
   const visibleCards = filteredCards.slice(0, Math.min(visibleCount, filteredCards.length));
   const hasMoreCards = visibleCards.length < filteredCards.length;
   const level = Math.max(1, Math.floor(totalMastered / 8) + 1);
   const levelStart = Math.floor(totalMastered / 8) * 8;
-  const nextLevelAt = Math.min(cards.length, levelStart + 8);
+  const nextLevelAt = Math.min(allCards.length, levelStart + 8);
   const levelSpan = Math.max(nextLevelAt - levelStart, 1);
-  const levelProgress = totalMastered >= cards.length ? 100 : Math.round(((totalMastered - levelStart) / levelSpan) * 100);
+  const levelProgress = totalMastered >= allCards.length ? 100 : Math.round(((totalMastered - levelStart) / levelSpan) * 100);
   const cardsToNextLevel = Math.max(nextLevelAt - totalMastered, 0);
-  const nextLevelGoal = totalMastered >= cards.length ? '全图通关' : `距 Lv.${level + 1} 还差 ${cardsToNextLevel} 张`;
+  const nextLevelGoal = totalMastered >= allCards.length ? '全图通关' : `距 Lv.${level + 1} 还差 ${cardsToNextLevel} 张`;
 
   const setCardMastery = useCallback((id: number, status: MasteryStatus) => {
     setMastery((current) => ({ ...current, [id]: status }));
@@ -131,6 +173,110 @@ export function FlashcardsPage() {
     const confirmed = window.confirm('确认重置所有掌握进度？');
     if (confirmed) setMastery({});
   }, [setMastery]);
+
+  const openAddCard = useCallback(() => {
+    setEditor({
+      mode: 'add',
+      ch: chapter === 'all' ? 12 : chapter,
+      front: '',
+      answer: ''
+    });
+    setEditorError('');
+  }, [chapter]);
+
+  const openEditCard = useCallback((card: StudyCard) => {
+    setEditor({
+      mode: 'edit',
+      id: card.id,
+      ch: card.ch,
+      front: card.front,
+      answer: cardBackToEditableText(card.back)
+    });
+    setEditorError('');
+  }, []);
+
+  const closeEditor = useCallback(() => {
+    setEditor(null);
+    setEditorError('');
+  }, []);
+
+  const saveEditorCard = useCallback((event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!editor) return;
+
+    const front = editor.front.trim();
+    const answer = editor.answer.trim();
+    if (!front || !answer) {
+      setEditorError('正面和背面都要填写。');
+      return;
+    }
+
+    const cardFields: EditableCardFields = {
+      ch: editor.ch,
+      front,
+      back: editableTextToCardBack(answer)
+    };
+
+    setCardLibrary((current) => {
+      if (editor.mode === 'add') {
+        return {
+          ...current,
+          customCards: [...current.customCards, { id: Date.now(), ...cardFields }]
+        };
+      }
+
+      const editingCustom = current.customCards.some((card) => card.id === editor.id);
+      if (editingCustom) {
+        return {
+          ...current,
+          customCards: current.customCards.map((card) => (card.id === editor.id ? { id: card.id, ...cardFields } : card))
+        };
+      }
+
+      return {
+        ...current,
+        editedCards: {
+          ...current.editedCards,
+          [editor.id as number]: cardFields
+        }
+      };
+    });
+
+    setChapter(editor.ch);
+    setStatusFilter('all');
+    setEditor(null);
+    setEditorError('');
+  }, [editor, setCardLibrary]);
+
+  const deleteCard = useCallback((card: StudyCard) => {
+    const confirmed = window.confirm('确认删除这张卡片？');
+    if (!confirmed) return;
+
+    setCardLibrary((current) => {
+      const editingCustom = current.customCards.some((item) => item.id === card.id);
+      if (editingCustom) {
+        return {
+          ...current,
+          customCards: current.customCards.filter((item) => item.id !== card.id)
+        };
+      }
+
+      const nextEditedCards = { ...current.editedCards };
+      delete nextEditedCards[card.id];
+      return {
+        ...current,
+        editedCards: nextEditedCards,
+        deletedCardIds: Array.from(new Set([...current.deletedCardIds, card.id]))
+      };
+    });
+
+    clearCardMastery(card.id);
+  }, [clearCardMastery, setCardLibrary]);
+
+  const restoreDefaultCards = useCallback(() => {
+    const confirmed = window.confirm('恢复默认卡片库？新增、修改和删除的卡片会清空，学习进度会保留。');
+    if (confirmed) setCardLibrary(emptyCardLibrary);
+  }, [setCardLibrary]);
 
   const showMoreCards = useCallback(() => {
     setVisibleCount((count) => Math.min(count + getVisibleCardStep(), filteredCards.length));
@@ -178,6 +324,16 @@ export function FlashcardsPage() {
             <button className="secondary-button flashcard-control-button" type="button" onClick={() => setExpandedControls((value) => !value)}>
               <ChevronDown className={expandedControls ? 'rotate-180 transition' : 'transition'} size={17} aria-hidden="true" />
               筛选
+            </button>
+
+            <button className="secondary-button flashcard-control-button" type="button" onClick={openAddCard}>
+              <Plus size={17} aria-hidden="true" />
+              新增
+            </button>
+
+            <button className="secondary-button flashcard-control-button" type="button" onClick={restoreDefaultCards}>
+              <RotateCcw size={17} aria-hidden="true" />
+              默认库
             </button>
 
             <button className="secondary-button flashcard-control-button" type="button" onClick={resetAll}>
@@ -261,6 +417,8 @@ export function FlashcardsPage() {
                 status={mastery[card.id]}
                 onSetStatus={setCardMastery}
                 onClearStatus={clearCardMastery}
+                onEdit={openEditCard}
+                onDelete={deleteCard}
               />
             ))}
           </div>
@@ -282,8 +440,96 @@ export function FlashcardsPage() {
           </div>
         ) : null}
       </section>
+
+      {editor ? (
+        <div className="card-editor-backdrop" role="presentation">
+          <form className="card-editor-panel" onSubmit={saveEditorCard}>
+            <div className="card-editor-head">
+              <div>
+                <h2>{editor.mode === 'add' ? '新增卡片' : '修改卡片'}</h2>
+                <p>内容会保存在当前浏览器</p>
+              </div>
+              <button className="icon-button h-9 w-9" type="button" onClick={closeEditor} title="关闭" aria-label="关闭">
+                <X size={18} />
+              </button>
+            </div>
+
+            {editorError ? <div className="card-editor-error">{editorError}</div> : null}
+
+            <label className="card-editor-field">
+              <span>章节</span>
+              <select value={editor.ch} onChange={(event) => setEditor((current) => current ? { ...current, ch: Number(event.target.value) as ChapterId } : current)}>
+                {editableChapterOptions.map((option) => (
+                  <option key={option.id} value={option.id}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            <label className="card-editor-field">
+              <span>正面</span>
+              <textarea
+                value={editor.front}
+                onChange={(event) => setEditor((current) => current ? { ...current, front: event.target.value } : current)}
+                rows={3}
+                placeholder="写问题、关键词或考点"
+              />
+            </label>
+
+            <label className="card-editor-field">
+              <span>背面</span>
+              <textarea
+                value={editor.answer}
+                onChange={(event) => setEditor((current) => current ? { ...current, answer: event.target.value } : current)}
+                rows={7}
+                placeholder="写答案；换行会自动显示为分行"
+              />
+            </label>
+
+            <div className="card-editor-actions">
+              <button className="secondary-button" type="button" onClick={closeEditor}>
+                取消
+              </button>
+              <button className="success-button" type="submit">
+                <Save size={16} aria-hidden="true" />
+                保存
+              </button>
+            </div>
+          </form>
+        </div>
+      ) : null}
     </main>
   );
+}
+
+function cardBackToEditableText(back: string) {
+  return decodeHtmlEntities(back.replace(/<br\s*\/?>/gi, '\n').replace(/<\/p>\s*<p>/gi, '\n').replace(/<[^>]*>/g, ''));
+}
+
+function editableTextToCardBack(text: string) {
+  return text
+    .trim()
+    .split(/\n+/)
+    .map((line) => escapeHtml(line.trim()))
+    .filter(Boolean)
+    .join('<br>');
+}
+
+function escapeHtml(value: string) {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function decodeHtmlEntities(value: string) {
+  if (typeof document === 'undefined') return value;
+  const textarea = document.createElement('textarea');
+  textarea.innerHTML = value;
+  return textarea.value;
 }
 
 interface SegmentedControlProps {

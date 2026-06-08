@@ -1,5 +1,5 @@
 import { memo, useState } from 'react';
-import { Check, Rotate3D, Sparkles, Undo2, X } from 'lucide-react';
+import { Check, Pencil, Rotate3D, Sparkles, Trash2, Undo2, X } from 'lucide-react';
 import { chapterNames, type StudyCard } from '../data/cards';
 
 type MasteryStatus = 'mastered' | 'unmastered';
@@ -9,9 +9,11 @@ interface FlashcardProps {
   status?: MasteryStatus;
   onSetStatus: (id: number, status: MasteryStatus) => void;
   onClearStatus: (id: number) => void;
+  onEdit: (card: StudyCard) => void;
+  onDelete: (card: StudyCard) => void;
 }
 
-export const Flashcard = memo(function Flashcard({ card, status, onSetStatus, onClearStatus }: FlashcardProps) {
+export const Flashcard = memo(function Flashcard({ card, status, onSetStatus, onClearStatus, onEdit, onDelete }: FlashcardProps) {
   const [flipped, setFlipped] = useState(status === 'mastered');
   const [hasSeenBack, setHasSeenBack] = useState(status === 'mastered');
   const statusClass = status === 'mastered' ? 'is-mastered' : status === 'unmastered' ? 'is-unmastered' : '';
@@ -59,6 +61,12 @@ export const Flashcard = memo(function Flashcard({ card, status, onSetStatus, on
         <button className="warning-button" type="button" onClick={() => onSetStatus(card.id, 'unmastered')}>
           <X size={16} aria-hidden="true" />
           再练
+        </button>
+        <button className="icon-button flashcard-edit-button h-9 w-9" type="button" onClick={() => onEdit(card)} title="修改卡片" aria-label="修改卡片">
+          <Pencil size={16} />
+        </button>
+        <button className="icon-button flashcard-delete-button h-9 w-9" type="button" onClick={() => onDelete(card)} title="删除卡片" aria-label="删除卡片">
+          <Trash2 size={16} />
         </button>
         <button className="icon-button flashcard-clear-button h-9 w-9" type="button" onClick={() => onClearStatus(card.id)} title="取消标记" aria-label="取消标记">
           <Undo2 size={16} />
