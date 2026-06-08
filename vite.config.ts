@@ -7,6 +7,7 @@ export default defineConfig({
   base: './',
   plugins: [react(), tailwindcss()],
   build: {
+    emptyOutDir: false,
     rollupOptions: {
       input: {
         main: fileURLToPath(new URL('./index.html', import.meta.url)),

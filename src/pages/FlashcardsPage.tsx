@@ -92,6 +92,7 @@ export function FlashcardsPage() {
   const [editorError, setEditorError] = useState('');
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
   const navHidden = useAutoHideOnScroll(48);
+  const showBackToTop = !isEmbeddedWindow();
 
   const normalizedQuery = query.trim().toLocaleLowerCase();
   const allCards = useMemo(() => {
@@ -529,9 +530,18 @@ export function FlashcardsPage() {
         </div>
       ) : null}
 
-      <BackToTop />
+      {showBackToTop ? <BackToTop /> : null}
     </main>
   );
+}
+
+function isEmbeddedWindow() {
+  if (typeof window === 'undefined') return false;
+  try {
+    return window.self !== window.top;
+  } catch {
+    return true;
+  }
 }
 
 function cardBackToEditableText(back: string) {
