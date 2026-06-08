@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { CalendarDays, ClipboardList, Layers3, NotebookTabs } from 'lucide-react';
 
-const assetVersion = '20260608-nav-status';
+const assetVersion = '20260608-polished-system';
 
 const modules = [
   {

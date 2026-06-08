@@ -9,24 +9,30 @@
 tailwind.config={theme:{extend:{colors:{tcm:{accent:'#FF9F84',red:'#C41E3A',blue: '#4FBFA8',cream: '#FFF9F2',dark: '#2F8F7C',green:'#5FCFB5'}}}}}
 </script>
 <style>
+:root{--ink:#172a26;--muted:#536560;--line:#d8f2e9;--mint:#3ac4a7;--mint-soft:#e1faf2;--peach:#ff9f84;--peach-soft:#fff1eb}
+body{font-family:"Noto Sans SC","Microsoft YaHei",system-ui,sans-serif;background:radial-gradient(circle at 8% -4%,rgba(126,203,246,.16),transparent 30rem),radial-gradient(circle at 96% 4%,rgba(255,159,132,.16),transparent 32rem),linear-gradient(180deg,#fbfffd 0%,#f4fffb 48%,#fff8f4 100%)!important;color:var(--ink);text-rendering:geometricPrecision}
 ::-webkit-scrollbar{width:8px}
 ::-webkit-scrollbar-track{background:#FFF9F2}
 ::-webkit-scrollbar-thumb{background:#FF9F84;border-radius:4px}
 ::-webkit-scrollbar-thumb:hover{background:#4FBFA8}
-@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}
-}.fade-in{animation:fadeIn .3s ease-out}
-.answer-reveal{max-height:0;overflow:hidden;transition:max-height .5s ease-out,padding .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}
+}.fade-in{animation:fadeIn .4s cubic-bezier(.22,1,.36,1)}
+.answer-reveal{max-height:0;overflow:hidden;transition:max-height .5s cubic-bezier(.22,1,.36,1),padding .3s ease}
 .answer-reveal.open{max-height:4000px;padding-top:12px;padding-bottom:12px}
-.nav-link.active{background-color:#FFF0E8;color:#2F8F7C;border-color:#FFD6C7}
-#navbar{transition:transform 240ms cubic-bezier(.22,1,.36,1),opacity 240ms ease,box-shadow 240ms ease;will-change:transform}
+.nav-link.active{background-color:var(--peach-soft)!important;color:#258771!important;border-color:#FFD6C7!important}
+#navbar{background:rgba(255,255,255,.84)!important;border-bottom:1px solid rgba(216,242,233,.86)!important;box-shadow:0 1px 18px rgba(45,137,116,.08)!important;backdrop-filter:blur(18px) saturate(1.08);transition:transform 240ms cubic-bezier(.22,1,.36,1),opacity 240ms ease,box-shadow 240ms ease;will-change:transform}
 #navbar.nav-hidden{transform:translateY(calc(-100% - .5rem));opacity:.96;pointer-events:none}
-.question-card:hover{box-shadow:0 4px 20px rgba(255,159,132,.13)}
-input:focus{outline:none;border-color:#FF9F84;box-shadow:0 0 0 3px rgba(95,207,181,.24)}
+.nav-link{border-color:rgba(216,242,233,.92)!important;background:rgba(255,255,255,.82)!important;transition:background-color .18s ease,border-color .18s ease,transform .18s cubic-bezier(.22,1,.36,1)}
+.nav-link:hover{background:rgba(225,250,242,.78)!important;border-color:rgba(58,196,167,.45)!important;transform:translateY(-1px)}
+.question-card{border:1px solid rgba(216,242,233,.9)!important;background:rgba(255,255,255,.86)!important;box-shadow:0 12px 30px rgba(45,137,116,.08)!important;transition:transform .22s cubic-bezier(.22,1,.36,1),box-shadow .22s ease,border-color .22s ease}
+.question-card:hover{transform:translateY(-2px);border-color:rgba(58,196,167,.44)!important;box-shadow:0 18px 42px rgba(45,137,116,.13)!important}
+input:focus{outline:none;border-color:#3ac4a7!important;box-shadow:0 0 0 3px rgba(95,207,181,.2)}
+input[type="text"]{background:rgba(255,255,255,.78)!important;border-color:rgba(216,242,233,.95)!important}
 .mcq-option{transition:all .2s;cursor:pointer}
-.mcq-option:hover:not(.answered){transform:translateY(-1px);box-shadow:0 2px 8px rgba(0,0,0,.1)}
+.mcq-option:hover:not(.answered){transform:translateY(-1px);box-shadow:0 8px 18px rgba(45,137,116,.1)}
 .mcq-option.correct{background-color:#5FCFB5!important;color:white!important;border-color:#5FCFB5!important}
 .mcq-option.wrong{background-color:#C41E3A!important;color:white!important;border-color:#C41E3A!important}
-.score-bar{transition:width 1s ease-out}
+.score-bar{transition:width 1s cubic-bezier(.22,1,.36,1)}
 html,body{overflow-x:clip}
 .question-card{max-width:100%}
 input[type="text"]{max-width:100%}
@@ -54,6 +60,7 @@ section>.flex.items-center.gap-3 span.text-tcm-blue{width:100%;font-size:.85rem}
 #score-details>div{align-items:flex-start!important;flex-direction:column;gap:.45rem}
 #score-details .w-32{width:100%!important}
 button{min-width:0}
+.question-card:hover,.mcq-option:hover:not(.answered),.nav-link:hover{transform:none}
 }
 @media(max-width:380px){
 #navbar .max-w-5xl,
@@ -65,6 +72,7 @@ section{padding-left:.75rem!important;padding-right:.75rem!important}
 .nav-link{font-size:.74rem!important}
 h2.text-2xl{font-size:1.2rem!important}
 }
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
 </style>
 </head>
 <body class="bg-tcm-cream min-h-screen font-serif">

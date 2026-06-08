@@ -24,7 +24,7 @@ export function Flashcard({ card, status, onSetStatus, onClearStatus }: Flashcar
             <div className="flashcard-question">
               {card.front}
             </div>
-            <div className="flex items-center justify-center gap-1.5 text-xs font-medium text-[#7b8b84]">
+            <div className="flashcard-flip-hint flex items-center justify-center gap-1.5 text-xs font-medium">
               <Rotate3D size={15} aria-hidden="true" />
               翻牌
             </div>
@@ -33,7 +33,7 @@ export function Flashcard({ card, status, onSetStatus, onClearStatus }: Flashcar
           <section className="flashcard-face flashcard-back">
             <CardHeader card={card} status={status} inverted />
             <div className="flashcard-answer" dangerouslySetInnerHTML={{ __html: card.back }} />
-            <div className="flex items-center justify-center gap-1.5 text-xs font-medium text-[#8c7b70]">
+            <div className="flashcard-flip-hint is-back flex items-center justify-center gap-1.5 text-xs font-medium">
               <Rotate3D size={15} aria-hidden="true" />
               答案卡
             </div>
@@ -50,7 +50,7 @@ export function Flashcard({ card, status, onSetStatus, onClearStatus }: Flashcar
           <X size={16} aria-hidden="true" />
           再练
         </button>
-        <button className="icon-button h-9 w-9 border border-[#d7f4e8] bg-white" type="button" onClick={() => onClearStatus(card.id)} title="取消标记" aria-label="取消标记">
+        <button className="icon-button flashcard-clear-button h-9 w-9" type="button" onClick={() => onClearStatus(card.id)} title="取消标记" aria-label="取消标记">
           <Undo2 size={16} />
         </button>
       </div>
@@ -64,7 +64,7 @@ function CardHeader({ card, status, inverted = false }: { card: StudyCard; statu
 
   return (
     <div className="flex items-start justify-between gap-2">
-      <div className={inverted ? 'flex items-center gap-1 text-xs font-semibold text-[#7f6658]' : 'flex items-center gap-1 text-xs font-semibold text-[#3c9a84]'}>
+      <div className={inverted ? 'flashcard-chapter is-back flex items-center gap-1 text-xs font-semibold' : 'flashcard-chapter flex items-center gap-1 text-xs font-semibold'}>
         <Sparkles size={13} aria-hidden="true" />
         {chapterNames[card.ch]}
       </div>

@@ -95,9 +95,9 @@ export function FlashcardsPage() {
 
   return (
     <main className="flashcards-game min-h-screen text-slate-800">
-      <div className={navHidden ? 'flashcard-nav auto-hide-nav nav-hidden sticky top-0 z-40 border-b border-teal-100/90 bg-[#fffaf3]/90 backdrop-blur' : 'flashcard-nav auto-hide-nav sticky top-0 z-40 border-b border-teal-100/90 bg-[#fffaf3]/90 backdrop-blur'}>
-        <div className="h-1.5 bg-[#ffe8dc]">
-          <div className="h-full bg-[linear-gradient(90deg,#6ee7c8,#ffd0b5,#f9a8d4)] transition-all duration-300" style={{ width: `${progress}%` }} />
+      <div className={navHidden ? 'flashcard-nav auto-hide-nav nav-hidden sticky top-0 z-40' : 'flashcard-nav auto-hide-nav sticky top-0 z-40'}>
+        <div className="flashcard-nav-progress">
+          <div style={{ width: `${progress}%` }} />
         </div>
 
         <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-3">
@@ -107,17 +107,17 @@ export function FlashcardsPage() {
             </a>
 
             <div className="flashcard-title-block flex min-w-0 items-center gap-2">
-              <div className="grid size-9 shrink-0 place-items-center rounded-lg bg-[#ffb7a0] text-white shadow-sm">
+              <div className="flashcard-title-icon grid size-9 shrink-0 place-items-center rounded-lg text-white shadow-sm">
                 <Gamepad2 size={19} aria-hidden="true" />
               </div>
               <div className="min-w-0">
                 <h1 className="truncate text-base font-semibold tracking-normal">中医卡片闯关</h1>
-                <p className="text-xs text-slate-500">Lv.{level} · {totalMastered} 张通关 · {totalUnmastered} 张待挑战</p>
+                <p className="flashcard-subtitle text-xs">Lv.{level} · {totalMastered} 张通关 · {totalUnmastered} 张待挑战</p>
               </div>
             </div>
 
-            <div className="flashcard-search flex min-w-[220px] flex-1 items-center gap-2 rounded-lg border border-teal-100 bg-white px-3 py-2 shadow-sm focus-within:border-teal-300 focus-within:ring-2 focus-within:ring-teal-200/60">
-              <Search size={17} className="shrink-0 text-slate-500" aria-hidden="true" />
+            <div className="flashcard-search flex min-w-[220px] flex-1 items-center gap-2 rounded-lg px-3 py-2">
+              <Search size={17} className="shrink-0" aria-hidden="true" />
               <input
                 className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-slate-400"
                 value={query}
@@ -195,16 +195,16 @@ export function FlashcardsPage() {
 
         <div className="mb-4 grid gap-3 md:grid-cols-[1fr_auto] md:items-end">
           <div>
-            <div className="flex flex-wrap items-center gap-2 text-sm text-slate-600">
-              <span className="rounded-md bg-white px-2.5 py-1 shadow-sm ring-1 ring-teal-100">{filteredCards.length} 张本关</span>
-              <span className="rounded-md bg-emerald-50 px-2.5 py-1 text-emerald-700 ring-1 ring-emerald-200">{masteredCount} 通关</span>
-              <span className="rounded-md bg-[#fff0e8] px-2.5 py-1 text-[#c46a52] ring-1 ring-[#ffd6c7]">{unmasteredCount} 待挑战</span>
-              <span className="rounded-md bg-pink-50 px-2.5 py-1 text-pink-600 ring-1 ring-pink-100">{progress}%</span>
+            <div className="flashcard-summary flex flex-wrap items-center gap-2 text-sm">
+              <span>{filteredCards.length} 张本关</span>
+              <span className="summary-mastered">{masteredCount} 通关</span>
+              <span className="summary-unmastered">{unmasteredCount} 待挑战</span>
+              <span className="summary-progress">{progress}%</span>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 text-sm text-slate-500">
-            <Sparkles size={16} className="text-[#f59f85]" aria-hidden="true" />
+          <div className="flashcard-map-label flex items-center gap-2 text-sm">
+            <Sparkles size={16} aria-hidden="true" />
             <span>{chapter === 'all' ? '全地图' : chapterNames[chapter]}</span>
           </div>
         </div>
