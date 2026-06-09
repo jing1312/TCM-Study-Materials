@@ -77,6 +77,15 @@ button{min-width:0}
 .edit-indicator{position:fixed;right:12px;bottom:80px;z-index:100;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.96);border:1px solid rgba(214,226,246,.86);box-shadow:0 2px 12px rgba(25,117,255,.1);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;transition:all .2s ease}
 .edit-indicator:hover{transform:scale(1.1);box-shadow:0 4px 16px rgba(25,117,255,.15)}
 .edit-indicator.active{background:rgba(25,117,255,.12);border-color:#1975FF}
+/* Format toolbar for edit mode */
+.quiz-format-toolbar{position:absolute;z-index:120;display:none;background:rgba(255,255,255,.98);border:1px solid rgba(214,226,246,.9);border-radius:10px;box-shadow:0 4px 20px rgba(25,117,255,.14),0 1px 4px rgba(0,0,0,.06);padding:4px;gap:2px;align-items:center;backdrop-filter:blur(8px)}
+.quiz-format-toolbar.visible{display:flex}
+.quiz-format-toolbar .fmt-btn{width:32px;height:32px;border:none;border-radius:7px;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;color:#192337;transition:all .12s ease;font-family:inherit}
+.quiz-format-toolbar .fmt-btn:hover{background:rgba(226,239,255,.8)}
+.quiz-format-toolbar .fmt-btn:active{background:rgba(25,117,255,.15);transform:scale(.94)}
+.quiz-format-toolbar .fmt-blue{color:#2563eb;font-weight:600}
+.quiz-format-toolbar .fmt-red{color:#dc2626;font-weight:600}
+.quiz-format-toolbar .fmt-highlight .hl-text{background:#fde047;padding:0 3px;border-radius:2px;font-size:13px}
 /* Per-section score inline */
 .section-score{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:8px;font-size:13px;font-weight:600;margin-left:12px}
 .section-score.good{background:rgba(95,207,181,.15);color:#2a7a64}
@@ -121,6 +130,13 @@ body.memorize-mode .question-card{border-color:rgba(95,207,181,.3)!important}
 </div>
 <!-- Edit indicator -->
 <button class="edit-indicator" id="edit-indicator" onclick="toggleEditMode()" title="编辑答案模式">✏️</button>
+<!-- Format toolbar for edit mode -->
+<div class="quiz-format-toolbar" id="quiz-format-toolbar">
+  <button type="button" class="fmt-btn fmt-bold" id="fmt-bold-btn" title="加粗"><strong>B</strong></button>
+  <button type="button" class="fmt-btn fmt-blue" id="fmt-blue-btn" title="蓝色">A</button>
+  <button type="button" class="fmt-btn fmt-red" id="fmt-red-btn" title="红色">A</button>
+  <button type="button" class="fmt-btn fmt-highlight" id="fmt-highlight-btn" title="高亮"><span class="hl-text">A</span></button>
+</div>
 
 
 <nav id="navbar" class="sticky top-0 z-50 bg-white/90 shadow-sm border-b border-teal-100">
@@ -1136,7 +1152,6 @@ body.memorize-mode .question-card{border-color:rgba(95,207,181,.3)!important}
 
 // === State ===
 let memorizeMode = false;
-let editMode = false;
 
 // === Core Functions ===
 function toggleAnswer(id) {
@@ -1290,6 +1305,10 @@ function toggleMemorize() {
 }
 
 // === Edit Answer Mode ===
+let editMode = false;
+let _editSavedRange = null;
+let _editToolbarVisible = false;
+
 function toggleEditMode() {
   editMode = !editMode;
   const indicator = document.getElementById('edit-indicator');
@@ -1304,6 +1323,191 @@ function toggleEditMode() {
       el.classList.remove('editable');
     }
   });
+  
+  if (editMode) {
+    _initEditToolbarListeners();
+  } else {
+    _destroyEditToolbarListeners();
+    _hideFormatToolbar();
+  }
+}
+
+function _showFormatToolbar(x, y) {
+  const tb = document.getElementById('quiz-format-toolbar');
+  tb.style.left = x + 'px';
+  tb.style.top = y + 'px';
+  tb.classList.add('visible');
+  _editToolbarVisible = true;
+}
+
+function _hideFormatToolbar() {
+  const tb = document.getElementById('quiz-format-toolbar');
+  tb.classList.remove('visible');
+  _editToolbarVisible = false;
+}
+
+function _saveCurrentRange() {
+  const sel = window.getSelection();
+  if (sel && sel.rangeCount > 0 && !sel.isCollapsed) {
+    _editSavedRange = sel.getRangeAt(0).cloneRange();
+  }
+}
+
+function _restoreRange() {
+  if (_editSavedRange) {
+    const sel = window.getSelection();
+    if (sel) {
+      sel.removeAllRanges();
+      sel.addRange(_editSavedRange);
+    }
+  }
+}
+
+function _editMouseUpHandler() {
+  if (!editMode) return;
+  setTimeout(() => {
+    const sel = window.getSelection();
+    if (sel && sel.rangeCount > 0 && !sel.isCollapsed) {
+      _editSavedRange = sel.getRangeAt(0).cloneRange();
+      const rect = _editSavedRange.getBoundingClientRect();
+      const tb = document.getElementById('quiz-format-toolbar');
+      // Position toolbar above selection
+      const tbHeight = 40;
+      let top = rect.top + window.scrollY - tbHeight - 6;
+      let left = rect.left + window.scrollX + (rect.width / 2) - (tb.offsetWidth || 140) / 2;
+      // Clamp to viewport
+      if (top < window.scrollY + 4) top = rect.bottom + window.scrollY + 6;
+      if (left < 4) left = 4;
+      if (left + 160 > window.innerWidth) left = window.innerWidth - 164;
+      _showFormatToolbar(left, top);
+    } else {
+      if (_editToolbarVisible) _hideFormatToolbar();
+    }
+  }, 10);
+}
+
+function _editBtnMouseDown(e) {
+  e.preventDefault();
+  e.stopPropagation();
+  _saveCurrentRange();
+}
+
+function _editApplyBold() {
+  _restoreRange();
+  document.execCommand('bold', false);
+  const sel = window.getSelection();
+  if (sel && sel.rangeCount > 0 && !sel.isCollapsed) {
+    _editSavedRange = sel.getRangeAt(0).cloneRange();
+  }
+}
+
+function _editApplyBlue() {
+  _restoreRange();
+  // Toggle: check if already blue
+  const sel = window.getSelection();
+  if (sel && sel.rangeCount > 0) {
+    const node = sel.anchorNode;
+    const parent = node && node.parentElement;
+    if (parent && parent.style && parent.style.color === 'rgb(37, 99, 235)') {
+      document.execCommand('removeFormat', false);
+    } else {
+      document.execCommand('foreColor', false, '#2563eb');
+    }
+  }
+  const sel2 = window.getSelection();
+  if (sel2 && sel2.rangeCount > 0 && !sel2.isCollapsed) {
+    _editSavedRange = sel2.getRangeAt(0).cloneRange();
+  }
+}
+
+function _editApplyRed() {
+  _restoreRange();
+  const sel = window.getSelection();
+  if (sel && sel.rangeCount > 0) {
+    const node = sel.anchorNode;
+    const parent = node && node.parentElement;
+    if (parent && parent.style && parent.style.color === 'rgb(220, 38, 38)') {
+      document.execCommand('removeFormat', false);
+    } else {
+      document.execCommand('foreColor', false, '#dc2626');
+    }
+  }
+  const sel2 = window.getSelection();
+  if (sel2 && sel2.rangeCount > 0 && !sel2.isCollapsed) {
+    _editSavedRange = sel2.getRangeAt(0).cloneRange();
+  }
+}
+
+function _editApplyHighlight() {
+  _restoreRange();
+  const sel = window.getSelection();
+  if (sel && sel.rangeCount > 0) {
+    const node = sel.anchorNode;
+    const parent = node && node.parentElement;
+    if (parent && parent.style && parent.style.backgroundColor === 'rgb(253, 224, 71)') {
+      document.execCommand('removeFormat', false);
+    } else {
+      document.execCommand('hiliteColor', false, '#fde047');
+    }
+  }
+  const sel2 = window.getSelection();
+  if (sel2 && sel2.rangeCount > 0 && !sel2.isCollapsed) {
+    _editSavedRange = sel2.getRangeAt(0).cloneRange();
+  }
+}
+
+let _editListenersAttached = false;
+function _initEditToolbarListeners() {
+  if (_editListenersAttached) return;
+  _editListenersAttached = true;
+  
+  // Attach mouseup to document for selection detection in editable areas
+  document.addEventListener('mouseup', _editMouseUpHandler);
+  
+  // Attach mousedown to each format button (preventDefault to keep selection)
+  ['fmt-bold-btn', 'fmt-blue-btn', 'fmt-red-btn', 'fmt-highlight-btn'].forEach(id => {
+    const btn = document.getElementById(id);
+    if (btn) btn.addEventListener('mousedown', _editBtnMouseDown);
+  });
+  
+  // Attach click handlers
+  document.getElementById('fmt-bold-btn').addEventListener('click', _editApplyBold);
+  document.getElementById('fmt-blue-btn').addEventListener('click', _editApplyBlue);
+  document.getElementById('fmt-red-btn').addEventListener('click', _editApplyRed);
+  document.getElementById('fmt-highlight-btn').addEventListener('click', _editApplyHighlight);
+  
+  // Hide toolbar on click outside editable areas
+  document.addEventListener('mousedown', _editDocMouseDown);
+}
+
+function _editDocMouseDown(e) {
+  if (!editMode || !_editToolbarVisible) return;
+  const tb = document.getElementById('quiz-format-toolbar');
+  if (tb && tb.contains(e.target)) return; // clicked toolbar button
+  const editable = e.target.closest && e.target.closest('.answer-reveal.editable');
+  if (!editable) {
+    _hideFormatToolbar();
+  }
+}
+
+function _destroyEditToolbarListeners() {
+  if (!_editListenersAttached) return;
+  _editListenersAttached = false;
+  
+  document.removeEventListener('mouseup', _editMouseUpHandler);
+  document.removeEventListener('mousedown', _editDocMouseDown);
+  
+  ['fmt-bold-btn', 'fmt-blue-btn', 'fmt-red-btn', 'fmt-highlight-btn'].forEach(id => {
+    const btn = document.getElementById(id);
+    if (btn) {
+      btn.removeEventListener('mousedown', _editBtnMouseDown);
+    }
+  });
+  
+  document.getElementById('fmt-bold-btn').removeEventListener('click', _editApplyBold);
+  document.getElementById('fmt-blue-btn').removeEventListener('click', _editApplyBlue);
+  document.getElementById('fmt-red-btn').removeEventListener('click', _editApplyRed);
+  document.getElementById('fmt-highlight-btn').removeEventListener('click', _editApplyHighlight);
 }
 
 // === State Management ===
