@@ -54,16 +54,90 @@ section>.flex.items-center.gap-3 span.text-tcm-blue{width:100%;font-size:.85rem}
 .question-card .flex.flex-wrap{display:grid!important;grid-template-columns:1fr!important;gap:.55rem!important}
 .question-card input[type="text"]{width:100%!important;min-width:0}
 .mcq-option{align-items:flex-start!important;gap:.55rem!important}
-.answer-reveal{overflow-wrap:anywhere}
+.answer-reveal{overflow-wrap:anywhere;white-space:pre-line}
 #score-details>div{align-items:flex-start!important;flex-direction:column;gap:.45rem}
 #score-details .w-32{width:100%!important}
 button{min-width:0}
 .question-card:hover,.mcq-option:hover:not(.answered),.nav-link:hover{transform:none}
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+
+/* === Left Sidebar === */
+.quiz-sidebar{position:fixed;left:0;top:50%;transform:translateY(-50%);z-index:100;display:flex;flex-direction:column;gap:6px;padding:8px;background:rgba(255,255,255,.96);border-right:1px solid rgba(214,226,246,.86);border-radius:0 12px 12px 0;box-shadow:2px 4px 16px rgba(25,117,255,.08);backdrop-filter:blur(8px)}
+.quiz-sidebar .sb-btn{display:flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid rgba(214,226,246,.7);border-radius:8px;background:rgba(255,255,255,.9);color:#192337;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s ease;white-space:nowrap;font-family:inherit}
+.quiz-sidebar .sb-btn:hover{background:rgba(226,239,255,.8);border-color:rgba(25,117,255,.3);transform:translateX(2px)}
+.quiz-sidebar .sb-btn.active{background:rgba(25,117,255,.12);border-color:#1975FF;color:#1975FF}
+.quiz-sidebar .sb-divider{height:1px;background:rgba(214,226,246,.6);margin:4px 8px}
+.quiz-sidebar .sb-toggle{position:relative}
+.quiz-sidebar .sb-toggle.sb-on{background:linear-gradient(135deg,rgba(95,207,181,.2),rgba(25,117,255,.1));border-color:#5FCFB5;color:#2a7a64}
+.sb-icon{width:18px;height:18px;flex-shrink:0}
+/* Edit mode */
+.answer-reveal.editable{outline:2px dashed rgba(25,117,255,.4);outline-offset:2px;cursor:text;max-height:8000px;overflow:visible;padding-top:12px;padding-bottom:12px}
+.answer-reveal.editable:focus{outline-color:#1975FF;background:rgba(226,239,255,.3)}
+.edit-indicator{position:fixed;right:12px;bottom:80px;z-index:100;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.96);border:1px solid rgba(214,226,246,.86);box-shadow:0 2px 12px rgba(25,117,255,.1);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;transition:all .2s ease}
+.edit-indicator:hover{transform:scale(1.1);box-shadow:0 4px 16px rgba(25,117,255,.15)}
+.edit-indicator.active{background:rgba(25,117,255,.12);border-color:#1975FF}
+/* Format toolbar for edit mode */
+.quiz-format-toolbar{position:fixed;z-index:120;display:none;background:rgba(255,255,255,.98);border:1px solid rgba(214,226,246,.9);border-radius:10px;box-shadow:0 4px 20px rgba(25,117,255,.14),0 1px 4px rgba(0,0,0,.06);padding:4px;gap:2px;align-items:center;backdrop-filter:blur(8px)}
+.quiz-format-toolbar.visible{display:flex}
+.quiz-format-toolbar .fmt-btn{width:32px;height:32px;border:none;border-radius:7px;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;color:#192337;transition:all .12s ease;font-family:inherit}
+.quiz-format-toolbar .fmt-btn:hover{background:rgba(226,239,255,.8)}
+.quiz-format-toolbar .fmt-btn:active{background:rgba(25,117,255,.15);transform:scale(.94)}
+.quiz-format-toolbar .fmt-blue{color:#2563eb;font-weight:600}
+.quiz-format-toolbar .fmt-red{color:#dc2626;font-weight:600}
+.quiz-format-toolbar .fmt-highlight .hl-text{background:#fde047;padding:0 3px;border-radius:2px;font-size:13px}
+/* Per-section score inline */
+.section-score{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:8px;font-size:13px;font-weight:600;margin-left:12px}
+.section-score.good{background:rgba(95,207,181,.15);color:#2a7a64}
+.section-score.mid{background:rgba(255,183,77,.15);color:#a85640}
+.section-score.low{background:rgba(196,30,58,.12);color:#c41e3a}
+/* Memorize mode styling */
+body.memorize-mode input[type="text"]{background:rgba(95,207,181,.08)!important;border-color:rgba(95,207,181,.4)!important;color:#192337!important;font-weight:600}
+body.memorize-mode .question-card{border-color:rgba(95,207,181,.3)!important}
+@media(max-width:768px){.quiz-sidebar{top:auto;bottom:0;left:0;right:0;transform:none;flex-direction:row;flex-wrap:wrap;border-radius:12px 12px 0 0;padding:6px;gap:4px}.quiz-sidebar .sb-btn{font-size:11px;padding:5px 8px}.edit-indicator{bottom:60px;right:8px}}
+
 </style>
 </head>
 <body class="bg-tcm-cream min-h-screen font-serif">
+
+<!-- Left Sidebar -->
+<div class="quiz-sidebar" id="quiz-sidebar">
+  <button class="sb-btn" onclick="testSection('fb')" title="测试填空题">
+    <svg class="sb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+    填空
+  </button>
+  <button class="sb-btn" onclick="testSection('mcq')" title="测试选择题">
+    <svg class="sb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/></svg>
+    选择
+  </button>
+  <button class="sb-btn" onclick="testSection('td')" title="测试名词解释">
+    <svg class="sb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+    名词
+  </button>
+  <button class="sb-btn" onclick="testSection('sa')" title="测试简答题">
+    <svg class="sb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+    简答
+  </button>
+  <button class="sb-btn" onclick="testSection('es')" title="测试论述题">
+    <svg class="sb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/><line x1="8" y1="8" x2="16" y2="8"/><line x1="8" y1="12" x2="14" y2="12"/></svg>
+    论述
+  </button>
+  <div class="sb-divider"></div>
+  <button class="sb-btn sb-toggle" id="memorize-btn" onclick="toggleMemorize()" title="背题模式：答案直接显示">
+    <svg class="sb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
+    背题
+  </button>
+</div>
+<!-- Edit indicator -->
+<button class="edit-indicator" id="edit-indicator" onclick="toggleEditMode()" title="编辑答案模式">✏️</button>
+<!-- Format toolbar for edit mode -->
+<div class="quiz-format-toolbar" id="quiz-format-toolbar">
+  <button type="button" class="fmt-btn fmt-bold" id="fmt-bold-btn" title="加粗"><strong>B</strong></button>
+  <button type="button" class="fmt-btn fmt-blue" id="fmt-blue-btn" title="蓝色">A</button>
+  <button type="button" class="fmt-btn fmt-red" id="fmt-red-btn" title="红色">A</button>
+  <button type="button" class="fmt-btn fmt-highlight" id="fmt-highlight-btn" title="高亮"><span class="hl-text">A</span></button>
+</div>
+
 
 <nav id="navbar" class="sticky top-0 z-50 bg-white/90 shadow-sm border-b border-teal-100">
 <div class="max-w-5xl mx-auto px-4">
@@ -95,6 +169,7 @@ button{min-width:0}
 <span class="bg-tcm-red text-white text-sm font-bold px-3 py-1 rounded">一</span>
 <h3 class="text-tcm-dark text-xl font-bold">填空题（47题）</h3>
 <span class="text-tcm-blue text-sm">A卷13题 + B卷14题 + 自拟20题 | 红色加粗为答案要点</span>
+<button onclick="testSection('fb')" class="ml-auto px-4 py-1.5 bg-tcm-red/10 text-tcm-red text-sm font-bold rounded-lg hover:bg-tcm-red/20 transition border border-tcm-red/30">测试填空</button>
 </div>
 <div id="fill-blank-container" class="space-y-4">
 
@@ -103,8 +178,6 @@ button{min-width:0}
 <div class="flex flex-wrap gap-3 items-center mb-2">
 <input type="text" id="fb1_0" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第1空" oninput="saveState()"><input type="text" id="fb1_1" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第2空" oninput="saveState()"><input type="text" id="fb1_2" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第3空" oninput="saveState()"><input type="text" id="fb1_3" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第4空" oninput="saveState()">
 </div>
-<div id="fb1_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>后天；先天；皮；筋</div>
-<button onclick="toggleAnswer('fb1_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-accent/20 text-tcm-blue rounded-lg hover:bg-tcm-accent/40 transition">显示答案</button>
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="fb2">
@@ -112,8 +185,6 @@ button{min-width:0}
 <div class="flex flex-wrap gap-3 items-center mb-2">
 <input type="text" id="fb2_0" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第1空" oninput="saveState()"><input type="text" id="fb2_1" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第2空" oninput="saveState()"><input type="text" id="fb2_2" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第3空" oninput="saveState()">
 </div>
-<div id="fb2_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>任脉；冲脉；督脉</div>
-<button onclick="toggleAnswer('fb2_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-accent/20 text-tcm-blue rounded-lg hover:bg-tcm-accent/40 transition">显示答案</button>
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="fb3">
@@ -121,8 +192,6 @@ button{min-width:0}
 <div class="flex flex-wrap gap-3 items-center mb-2">
 <input type="text" id="fb3_0" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第1空" oninput="saveState()"><input type="text" id="fb3_1" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第2空" oninput="saveState()">
 </div>
-<div id="fb3_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>思；口</div>
-<button onclick="toggleAnswer('fb3_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-accent/20 text-tcm-blue rounded-lg hover:bg-tcm-accent/40 transition">显示答案</button>
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="fb4">
@@ -130,8 +199,6 @@ button{min-width:0}
 <div class="flex flex-wrap gap-3 items-center mb-2">
 <input type="text" id="fb4_0" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第1空" oninput="saveState()"><input type="text" id="fb4_1" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第2空" oninput="saveState()">
 </div>
-<div id="fb4_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>急则治标；缓则治本</div>
-<button onclick="toggleAnswer('fb4_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-accent/20 text-tcm-blue rounded-lg hover:bg-tcm-accent/40 transition">显示答案</button>
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="fb5">
@@ -139,8 +206,6 @@ button{min-width:0}
 <div class="flex flex-wrap gap-3 items-center mb-2">
 <input type="text" id="fb5_0" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第1空" oninput="saveState()"><input type="text" id="fb5_1" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第2空" oninput="saveState()">
 </div>
-<div id="fb5_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>伤寒；中寒</div>
-<button onclick="toggleAnswer('fb5_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-accent/20 text-tcm-blue rounded-lg hover:bg-tcm-accent/40 transition">显示答案</button>
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="fb6">
@@ -148,8 +213,6 @@ button{min-width:0}
 <div class="flex flex-wrap gap-3 items-center mb-2">
 <input type="text" id="fb6_0" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第1空" oninput="saveState()"><input type="text" id="fb6_1" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第2空" oninput="saveState()">
 </div>
-<div id="fb6_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>推动；固摄</div>
-<button onclick="toggleAnswer('fb6_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-accent/20 text-tcm-blue rounded-lg hover:bg-tcm-accent/40 transition">显示答案</button>
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="fb7">
@@ -157,8 +220,6 @@ button{min-width:0}
 <div class="flex flex-wrap gap-3 items-center mb-2">
 <input type="text" id="fb7_0" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第1空" oninput="saveState()"><input type="text" id="fb7_1" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第2空" oninput="saveState()"><input type="text" id="fb7_2" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第3空" oninput="saveState()"><input type="text" id="fb7_3" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第4空" oninput="saveState()">
 </div>
-<div id="fb7_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>火；木；土；水</div>
-<button onclick="toggleAnswer('fb7_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-accent/20 text-tcm-blue rounded-lg hover:bg-tcm-accent/40 transition">显示答案</button>
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="fb8">
@@ -166,8 +227,6 @@ button{min-width:0}
 <div class="flex flex-wrap gap-3 items-center mb-2">
 <input type="text" id="fb8_0" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第1空" oninput="saveState()"><input type="text" id="fb8_1" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第2空" oninput="saveState()">
 </div>
-<div id="fb8_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>气的生成；水液的代谢</div>
-<button onclick="toggleAnswer('fb8_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-accent/20 text-tcm-blue rounded-lg hover:bg-tcm-accent/40 transition">显示答案</button>
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="fb9">
@@ -175,8 +234,6 @@ button{min-width:0}
 <div class="flex flex-wrap gap-3 items-center mb-2">
 <input type="text" id="fb9_0" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第1空" oninput="saveState()"><input type="text" id="fb9_1" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第2空" oninput="saveState()"><input type="text" id="fb9_2" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第3空" oninput="saveState()">
 </div>
-<div id="fb9_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>贮藏血液；调节血量；出血</div>
-<button onclick="toggleAnswer('fb9_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-accent/20 text-tcm-blue rounded-lg hover:bg-tcm-accent/40 transition">显示答案</button>
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="fb10">
@@ -184,8 +241,6 @@ button{min-width:0}
 <div class="flex flex-wrap gap-3 items-center mb-2">
 <input type="text" id="fb10_0" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第1空" oninput="saveState()"><input type="text" id="fb10_1" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第2空" oninput="saveState()">
 </div>
-<div id="fb10_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>化生和贮藏精气；受盛和传化水谷</div>
-<button onclick="toggleAnswer('fb10_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-accent/20 text-tcm-blue rounded-lg hover:bg-tcm-accent/40 transition">显示答案</button>
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="fb11">
@@ -193,8 +248,6 @@ button{min-width:0}
 <div class="flex flex-wrap gap-3 items-center mb-2">
 <input type="text" id="fb11_0" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第1空" oninput="saveState()"><input type="text" id="fb11_1" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第2空" oninput="saveState()"><input type="text" id="fb11_2" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第3空" oninput="saveState()">
 </div>
-<div id="fb11_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>发病急骤,病情险恶；传染性强,病状相似；一气一病</div>
-<button onclick="toggleAnswer('fb11_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-accent/20 text-tcm-blue rounded-lg hover:bg-tcm-accent/40 transition">显示答案</button>
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="fb12">
@@ -202,8 +255,6 @@ button{min-width:0}
 <div class="flex flex-wrap gap-3 items-center mb-2">
 <input type="text" id="fb12_0" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第1空" oninput="saveState()"><input type="text" id="fb12_1" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第2空" oninput="saveState()"><input type="text" id="fb12_2" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第3空" oninput="saveState()">
 </div>
-<div id="fb12_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>手；头；足三阳</div>
-<button onclick="toggleAnswer('fb12_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-accent/20 text-tcm-blue rounded-lg hover:bg-tcm-accent/40 transition">显示答案</button>
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="fb13">
@@ -211,8 +262,6 @@ button{min-width:0}
 <div class="flex flex-wrap gap-3 items-center mb-2">
 <input type="text" id="fb13_0" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第1空" oninput="saveState()"><input type="text" id="fb13_1" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第2空" oninput="saveState()"><input type="text" id="fb13_2" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第3空" oninput="saveState()">
 </div>
-<div id="fb13_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>足；胸腹；足三阴</div>
-<button onclick="toggleAnswer('fb13_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-accent/20 text-tcm-blue rounded-lg hover:bg-tcm-accent/40 transition">显示答案</button>
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="fb14">
@@ -220,8 +269,6 @@ button{min-width:0}
 <div class="flex flex-wrap gap-3 items-center mb-2">
 <input type="text" id="fb14_0" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第1空" oninput="saveState()"><input type="text" id="fb14_1" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第2空" oninput="saveState()">
 </div>
-<div id="fb14_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>肝；脾</div>
-<button onclick="toggleAnswer('fb14_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-accent/20 text-tcm-blue rounded-lg hover:bg-tcm-accent/40 transition">显示答案</button>
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="fb15">
@@ -229,8 +276,6 @@ button{min-width:0}
 <div class="flex flex-wrap gap-3 items-center mb-2">
 <input type="text" id="fb15_0" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第1空" oninput="saveState()"><input type="text" id="fb15_1" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第2空" oninput="saveState()"><input type="text" id="fb15_2" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第3空" oninput="saveState()">
 </div>
-<div id="fb15_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>肺；肝；脾</div>
-<button onclick="toggleAnswer('fb15_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-accent/20 text-tcm-blue rounded-lg hover:bg-tcm-accent/40 transition">显示答案</button>
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="fb16">
@@ -238,8 +283,6 @@ button{min-width:0}
 <div class="flex flex-wrap gap-3 items-center mb-2">
 <input type="text" id="fb16_0" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第1空" oninput="saveState()"><input type="text" id="fb16_1" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第2空" oninput="saveState()">
 </div>
-<div id="fb16_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>未病先防；既病防变</div>
-<button onclick="toggleAnswer('fb16_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-accent/20 text-tcm-blue rounded-lg hover:bg-tcm-accent/40 transition">显示答案</button>
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="fb17">
@@ -247,8 +290,6 @@ button{min-width:0}
 <div class="flex flex-wrap gap-3 items-center mb-2">
 <input type="text" id="fb17_0" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第1空" oninput="saveState()"><input type="text" id="fb17_1" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第2空" oninput="saveState()">
 </div>
-<div id="fb17_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>通行元气；运行水液</div>
-<button onclick="toggleAnswer('fb17_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-accent/20 text-tcm-blue rounded-lg hover:bg-tcm-accent/40 transition">显示答案</button>
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="fb18">
@@ -256,8 +297,6 @@ button{min-width:0}
 <div class="flex flex-wrap gap-3 items-center mb-2">
 <input type="text" id="fb18_0" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第1空" oninput="saveState()"><input type="text" id="fb18_1" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第2空" oninput="saveState()"><input type="text" id="fb18_2" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第3空" oninput="saveState()">
 </div>
-<div id="fb18_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>十五络脉；孙络；浮络</div>
-<button onclick="toggleAnswer('fb18_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-accent/20 text-tcm-blue rounded-lg hover:bg-tcm-accent/40 transition">显示答案</button>
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="fb19">
@@ -265,8 +304,6 @@ button{min-width:0}
 <div class="flex flex-wrap gap-3 items-center mb-2">
 <input type="text" id="fb19_0" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第1空" oninput="saveState()"><input type="text" id="fb19_1" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第2空" oninput="saveState()"><input type="text" id="fb19_2" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第3空" oninput="saveState()">
 </div>
-<div id="fb19_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>肺；心；胸中</div>
-<button onclick="toggleAnswer('fb19_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-accent/20 text-tcm-blue rounded-lg hover:bg-tcm-accent/40 transition">显示答案</button>
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="fb20">
@@ -274,8 +311,6 @@ button{min-width:0}
 <div class="flex flex-wrap gap-3 items-center mb-2">
 <input type="text" id="fb20_0" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第1空" oninput="saveState()"><input type="text" id="fb20_1" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第2空" oninput="saveState()"><input type="text" id="fb20_2" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第3空" oninput="saveState()">
 </div>
-<div id="fb20_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>劳力过度；劳神过度；房劳过度</div>
-<button onclick="toggleAnswer('fb20_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-accent/20 text-tcm-blue rounded-lg hover:bg-tcm-accent/40 transition">显示答案</button>
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="fb21">
@@ -283,8 +318,6 @@ button{min-width:0}
 <div class="flex flex-wrap gap-3 items-center mb-2">
 <input type="text" id="fb21_0" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第1空" oninput="saveState()"><input type="text" id="fb21_1" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第2空" oninput="saveState()">
 </div>
-<div id="fb21_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>整体观念；辨证论治</div>
-<button onclick="toggleAnswer('fb21_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-accent/20 text-tcm-blue rounded-lg hover:bg-tcm-accent/40 transition">显示答案</button>
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="fb22">
@@ -292,8 +325,6 @@ button{min-width:0}
 <div class="flex flex-wrap gap-3 items-center mb-2">
 <input type="text" id="fb22_0" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第1空" oninput="saveState()"><input type="text" id="fb22_1" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第2空" oninput="saveState()"><input type="text" id="fb22_2" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第3空" oninput="saveState()">
 </div>
-<div id="fb22_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>胸；手；手三阳</div>
-<button onclick="toggleAnswer('fb22_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-accent/20 text-tcm-blue rounded-lg hover:bg-tcm-accent/40 transition">显示答案</button>
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="fb23">
@@ -301,8 +332,6 @@ button{min-width:0}
 <div class="flex flex-wrap gap-3 items-center mb-2">
 <input type="text" id="fb23_0" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第1空" oninput="saveState()"><input type="text" id="fb23_1" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第2空" oninput="saveState()">
 </div>
-<div id="fb23_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>人体的抗病能力和康复能力,是人体各种生理功能的总和；各种致病因素</div>
-<button onclick="toggleAnswer('fb23_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-accent/20 text-tcm-blue rounded-lg hover:bg-tcm-accent/40 transition">显示答案</button>
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="fb24">
@@ -310,8 +339,6 @@ button{min-width:0}
 <div class="flex flex-wrap gap-3 items-center mb-2">
 <input type="text" id="fb24_0" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第1空" oninput="saveState()"><input type="text" id="fb24_1" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第2空" oninput="saveState()">
 </div>
-<div id="fb24_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>舌质；舌苔</div>
-<button onclick="toggleAnswer('fb24_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-accent/20 text-tcm-blue rounded-lg hover:bg-tcm-accent/40 transition">显示答案</button>
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="fb25">
@@ -319,8 +346,6 @@ button{min-width:0}
 <div class="flex flex-wrap gap-3 items-center mb-2">
 <input type="text" id="fb25_0" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第1空" oninput="saveState()"><input type="text" id="fb25_1" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第2空" oninput="saveState()"><input type="text" id="fb25_2" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第3空" oninput="saveState()"><input type="text" id="fb25_3" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第4空" oninput="saveState()">
 </div>
-<div id="fb25_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>相杀；相畏；相恶；相反</div>
-<button onclick="toggleAnswer('fb25_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-accent/20 text-tcm-blue rounded-lg hover:bg-tcm-accent/40 transition">显示答案</button>
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="fb26">
@@ -328,8 +353,6 @@ button{min-width:0}
 <div class="flex flex-wrap gap-3 items-center mb-2">
 <input type="text" id="fb26_0" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第1空" oninput="saveState()"><input type="text" id="fb26_1" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第2空" oninput="saveState()">
 </div>
-<div id="fb26_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>气为血之帅；血为气之母</div>
-<button onclick="toggleAnswer('fb26_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-accent/20 text-tcm-blue rounded-lg hover:bg-tcm-accent/40 transition">显示答案</button>
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="fb27">
@@ -337,8 +360,6 @@ button{min-width:0}
 <div class="flex flex-wrap gap-3 items-center mb-2">
 <input type="text" id="fb27_0" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第1空" oninput="saveState()"><input type="text" id="fb27_1" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第2空" oninput="saveState()">
 </div>
-<div id="fb27_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>黄帝内经；脉经</div>
-<button onclick="toggleAnswer('fb27_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-accent/20 text-tcm-blue rounded-lg hover:bg-tcm-accent/40 transition">显示答案</button>
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="fb28">
@@ -346,8 +367,6 @@ button{min-width:0}
 <div class="flex flex-wrap gap-3 items-center mb-2">
 <input type="text" id="fb28_0" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第1空" oninput="saveState()"><input type="text" id="fb28_1" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第2空" oninput="saveState()"><input type="text" id="fb28_2" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第3空" oninput="saveState()"><input type="text" id="fb28_3" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第4空" oninput="saveState()">
 </div>
-<div id="fb28_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>阴阳对立；阴阳消长；阴阳互根；阴阳转化</div>
-<button onclick="toggleAnswer('fb28_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-accent/20 text-tcm-blue rounded-lg hover:bg-tcm-accent/40 transition">显示答案</button>
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="fb29">
@@ -355,8 +374,6 @@ button{min-width:0}
 <div class="flex flex-wrap gap-3 items-center mb-2">
 <input type="text" id="fb29_0" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第1空" oninput="saveState()"><input type="text" id="fb29_1" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第2空" oninput="saveState()"><input type="text" id="fb29_2" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第3空" oninput="saveState()"><input type="text" id="fb29_3" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第4空" oninput="saveState()"><input type="text" id="fb29_4" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第5空" oninput="saveState()">
 </div>
-<div id="fb29_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>木曰曲直；火曰炎上；土爰稼穑；金曰从革；水曰润下</div>
-<button onclick="toggleAnswer('fb29_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-accent/20 text-tcm-blue rounded-lg hover:bg-tcm-accent/40 transition">显示答案</button>
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="fb30">
@@ -364,8 +381,6 @@ button{min-width:0}
 <div class="flex flex-wrap gap-3 items-center mb-2">
 <input type="text" id="fb30_0" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第1空" oninput="saveState()"><input type="text" id="fb30_1" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第2空" oninput="saveState()"><input type="text" id="fb30_2" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第3空" oninput="saveState()"><input type="text" id="fb30_3" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第4空" oninput="saveState()"><input type="text" id="fb30_4" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第5空" oninput="saveState()">
 </div>
-<div id="fb30_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>推动作用；温煦作用；防御作用；固摄作用；气化作用</div>
-<button onclick="toggleAnswer('fb30_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-accent/20 text-tcm-blue rounded-lg hover:bg-tcm-accent/40 transition">显示答案</button>
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="fb31">
@@ -373,8 +388,6 @@ button{min-width:0}
 <div class="flex flex-wrap gap-3 items-center mb-2">
 <input type="text" id="fb31_0" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第1空" oninput="saveState()"><input type="text" id="fb31_1" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第2空" oninput="saveState()"><input type="text" id="fb31_2" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第3空" oninput="saveState()"><input type="text" id="fb31_3" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第4空" oninput="saveState()"><input type="text" id="fb31_4" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第5空" oninput="saveState()"><input type="text" id="fb31_5" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第6空" oninput="saveState()">
 </div>
-<div id="fb31_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>火；脉；面；舌；喜；汗</div>
-<button onclick="toggleAnswer('fb31_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-accent/20 text-tcm-blue rounded-lg hover:bg-tcm-accent/40 transition">显示答案</button>
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="fb32">
@@ -382,8 +395,6 @@ button{min-width:0}
 <div class="flex flex-wrap gap-3 items-center mb-2">
 <input type="text" id="fb32_0" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第1空" oninput="saveState()"><input type="text" id="fb32_1" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第2空" oninput="saveState()"><input type="text" id="fb32_2" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第3空" oninput="saveState()"><input type="text" id="fb32_3" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第4空" oninput="saveState()"><input type="text" id="fb32_4" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第5空" oninput="saveState()"><input type="text" id="fb32_5" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第6空" oninput="saveState()">
 </div>
-<div id="fb32_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>木；筋；爪；目；怒；泪</div>
-<button onclick="toggleAnswer('fb32_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-accent/20 text-tcm-blue rounded-lg hover:bg-tcm-accent/40 transition">显示答案</button>
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="fb33">
@@ -391,8 +402,6 @@ button{min-width:0}
 <div class="flex flex-wrap gap-3 items-center mb-2">
 <input type="text" id="fb33_0" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第1空" oninput="saveState()"><input type="text" id="fb33_1" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第2空" oninput="saveState()"><input type="text" id="fb33_2" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第3空" oninput="saveState()"><input type="text" id="fb33_3" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第4空" oninput="saveState()"><input type="text" id="fb33_4" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第5空" oninput="saveState()"><input type="text" id="fb33_5" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第6空" oninput="saveState()">
 </div>
-<div id="fb33_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>土；肉；唇；口；思；涎</div>
-<button onclick="toggleAnswer('fb33_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-accent/20 text-tcm-blue rounded-lg hover:bg-tcm-accent/40 transition">显示答案</button>
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="fb34">
@@ -400,8 +409,6 @@ button{min-width:0}
 <div class="flex flex-wrap gap-3 items-center mb-2">
 <input type="text" id="fb34_0" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第1空" oninput="saveState()"><input type="text" id="fb34_1" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第2空" oninput="saveState()"><input type="text" id="fb34_2" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第3空" oninput="saveState()"><input type="text" id="fb34_3" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第4空" oninput="saveState()"><input type="text" id="fb34_4" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第5空" oninput="saveState()"><input type="text" id="fb34_5" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第6空" oninput="saveState()">
 </div>
-<div id="fb34_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>金；皮；毛；鼻；忧(悲)；涕</div>
-<button onclick="toggleAnswer('fb34_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-accent/20 text-tcm-blue rounded-lg hover:bg-tcm-accent/40 transition">显示答案</button>
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="fb35">
@@ -409,8 +416,6 @@ button{min-width:0}
 <div class="flex flex-wrap gap-3 items-center mb-2">
 <input type="text" id="fb35_0" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第1空" oninput="saveState()"><input type="text" id="fb35_1" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第2空" oninput="saveState()"><input type="text" id="fb35_2" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第3空" oninput="saveState()"><input type="text" id="fb35_3" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第4空" oninput="saveState()"><input type="text" id="fb35_4" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第5空" oninput="saveState()"><input type="text" id="fb35_5" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第6空" oninput="saveState()">
 </div>
-<div id="fb35_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>水；骨；发；耳及二阴；恐；唾</div>
-<button onclick="toggleAnswer('fb35_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-accent/20 text-tcm-blue rounded-lg hover:bg-tcm-accent/40 transition">显示答案</button>
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="fb36">
@@ -418,8 +423,6 @@ button{min-width:0}
 <div class="flex flex-wrap gap-3 items-center mb-2">
 <input type="text" id="fb36_0" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第1空" oninput="saveState()"><input type="text" id="fb36_1" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第2空" oninput="saveState()"><input type="text" id="fb36_2" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第3空" oninput="saveState()"><input type="text" id="fb36_3" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第4空" oninput="saveState()">
 </div>
-<div id="fb36_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>手三阴经从胸走手；手三阳经从手走头；足三阳经从头走足；足三阴经从足走腹(胸)</div>
-<button onclick="toggleAnswer('fb36_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-accent/20 text-tcm-blue rounded-lg hover:bg-tcm-accent/40 transition">显示答案</button>
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="fb37">
@@ -427,8 +430,6 @@ button{min-width:0}
 <div class="flex flex-wrap gap-3 items-center mb-2">
 <input type="text" id="fb37_0" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第1空" oninput="saveState()"><input type="text" id="fb37_1" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第2空" oninput="saveState()"><input type="text" id="fb37_2" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第3空" oninput="saveState()"><input type="text" id="fb37_3" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第4空" oninput="saveState()"><input type="text" id="fb37_4" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第5空" oninput="saveState()"><input type="text" id="fb37_5" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第6空" oninput="saveState()">
 </div>
-<div id="fb37_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>气上；气缓；气消；气下；气乱；气结</div>
-<button onclick="toggleAnswer('fb37_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-accent/20 text-tcm-blue rounded-lg hover:bg-tcm-accent/40 transition">显示答案</button>
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="fb38">
@@ -436,8 +437,6 @@ button{min-width:0}
 <div class="flex flex-wrap gap-3 items-center mb-2">
 <input type="text" id="fb38_0" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第1空" oninput="saveState()"><input type="text" id="fb38_1" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第2空" oninput="saveState()"><input type="text" id="fb38_2" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第3空" oninput="saveState()"><input type="text" id="fb38_3" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第4空" oninput="saveState()">
 </div>
-<div id="fb38_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>寒；热；温；凉</div>
-<button onclick="toggleAnswer('fb38_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-accent/20 text-tcm-blue rounded-lg hover:bg-tcm-accent/40 transition">显示答案</button>
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="fb39">
@@ -445,8 +444,6 @@ button{min-width:0}
 <div class="flex flex-wrap gap-3 items-center mb-2">
 <input type="text" id="fb39_0" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第1空" oninput="saveState()"><input type="text" id="fb39_1" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第2空" oninput="saveState()"><input type="text" id="fb39_2" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第3空" oninput="saveState()"><input type="text" id="fb39_3" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第4空" oninput="saveState()"><input type="text" id="fb39_4" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第5空" oninput="saveState()"><input type="text" id="fb39_5" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第6空" oninput="saveState()">
 </div>
-<div id="fb39_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>辛、甘、酸、苦、咸；散、行；补、和、缓；收、涩；泄、燥；软坚、散结</div>
-<button onclick="toggleAnswer('fb39_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-accent/20 text-tcm-blue rounded-lg hover:bg-tcm-accent/40 transition">显示答案</button>
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="fb40">
@@ -454,8 +451,6 @@ button{min-width:0}
 <div class="flex flex-wrap gap-3 items-center mb-2">
 <input type="text" id="fb40_0" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第1空" oninput="saveState()">
 </div>
-<div id="fb40_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>汗、吐、下、和、温、清、消、补</div>
-<button onclick="toggleAnswer('fb40_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-accent/20 text-tcm-blue rounded-lg hover:bg-tcm-accent/40 transition">显示答案</button>
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="fb41">
@@ -463,8 +458,6 @@ button{min-width:0}
 <div class="flex flex-wrap gap-3 items-center mb-2">
 <input type="text" id="fb41_0" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第1空" oninput="saveState()"><input type="text" id="fb41_1" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第2空" oninput="saveState()"><input type="text" id="fb41_2" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第3空" oninput="saveState()"><input type="text" id="fb41_3" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第4空" oninput="saveState()"><input type="text" id="fb41_4" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第5空" oninput="saveState()">
 </div>
-<div id="fb41_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>宋；陈无择；外因(六淫)；内因(七情)；不内外因(饮食、劳逸等)</div>
-<button onclick="toggleAnswer('fb41_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-accent/20 text-tcm-blue rounded-lg hover:bg-tcm-accent/40 transition">显示答案</button>
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="fb42">
@@ -472,8 +465,6 @@ button{min-width:0}
 <div class="flex flex-wrap gap-3 items-center mb-2">
 <input type="text" id="fb42_0" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第1空" oninput="saveState()"><input type="text" id="fb42_1" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第2空" oninput="saveState()"><input type="text" id="fb42_2" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第3空" oninput="saveState()">
 </div>
-<div id="fb42_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>因时制宜；因地制宜；因人制宜</div>
-<button onclick="toggleAnswer('fb42_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-accent/20 text-tcm-blue rounded-lg hover:bg-tcm-accent/40 transition">显示答案</button>
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="fb43">
@@ -481,8 +472,6 @@ button{min-width:0}
 <div class="flex flex-wrap gap-3 items-center mb-2">
 <input type="text" id="fb43_0" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第1空" oninput="saveState()"><input type="text" id="fb43_1" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第2空" oninput="saveState()"><input type="text" id="fb43_2" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第3空" oninput="saveState()"><input type="text" id="fb43_3" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第4空" oninput="saveState()">
 </div>
-<div id="fb43_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>君药；臣药；佐药；使药</div>
-<button onclick="toggleAnswer('fb43_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-accent/20 text-tcm-blue rounded-lg hover:bg-tcm-accent/40 transition">显示答案</button>
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="fb44">
@@ -490,8 +479,6 @@ button{min-width:0}
 <div class="flex flex-wrap gap-3 items-center mb-2">
 <input type="text" id="fb44_0" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第1空" oninput="saveState()"><input type="text" id="fb44_1" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第2空" oninput="saveState()"><input type="text" id="fb44_2" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第3空" oninput="saveState()"><input type="text" id="fb44_3" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第4空" oninput="saveState()"><input type="text" id="fb44_4" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第5空" oninput="saveState()"><input type="text" id="fb44_5" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第6空" oninput="saveState()"><input type="text" id="fb44_6" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第7空" oninput="saveState()">
 </div>
-<div id="fb44_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>砂锅(砂罐)；高出饮片 3-5cm；冷水浸泡 30 分钟；武火；文火；3；2</div>
-<button onclick="toggleAnswer('fb44_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-accent/20 text-tcm-blue rounded-lg hover:bg-tcm-accent/40 transition">显示答案</button>
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="fb45">
@@ -499,8 +486,6 @@ button{min-width:0}
 <div class="flex flex-wrap gap-3 items-center mb-2">
 <input type="text" id="fb45_0" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第1空" oninput="saveState()"><input type="text" id="fb45_1" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第2空" oninput="saveState()"><input type="text" id="fb45_2" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第3空" oninput="saveState()"><input type="text" id="fb45_3" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第4空" oninput="saveState()">
 </div>
-<div id="fb45_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>《黄帝内经》；《伤寒杂病论》；《神农本草经》；《新修本草》</div>
-<button onclick="toggleAnswer('fb45_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-accent/20 text-tcm-blue rounded-lg hover:bg-tcm-accent/40 transition">显示答案</button>
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="fb46">
@@ -508,8 +493,6 @@ button{min-width:0}
 <div class="flex flex-wrap gap-3 items-center mb-2">
 <input type="text" id="fb46_0" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第1空" oninput="saveState()"><input type="text" id="fb46_1" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第2空" oninput="saveState()"><input type="text" id="fb46_2" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第3空" oninput="saveState()"><input type="text" id="fb46_3" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第4空" oninput="saveState()"><input type="text" id="fb46_4" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第5空" oninput="saveState()"><input type="text" id="fb46_5" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第6空" oninput="saveState()"><input type="text" id="fb46_6" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第7空" oninput="saveState()"><input type="text" id="fb46_7" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第8空" oninput="saveState()">
 </div>
-<div id="fb46_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>刘完素；寒凉派；张从正；攻下派；李杲；补土派；朱震亨(丹溪)；滋阴派(养阴派)</div>
-<button onclick="toggleAnswer('fb46_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-accent/20 text-tcm-blue rounded-lg hover:bg-tcm-accent/40 transition">显示答案</button>
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="fb47">
@@ -517,8 +500,6 @@ button{min-width:0}
 <div class="flex flex-wrap gap-3 items-center mb-2">
 <input type="text" id="fb47_0" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第1空" oninput="saveState()"><input type="text" id="fb47_1" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第2空" oninput="saveState()"><input type="text" id="fb47_2" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第3空" oninput="saveState()"><input type="text" id="fb47_3" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第4空" oninput="saveState()"><input type="text" id="fb47_4" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第5空" oninput="saveState()"><input type="text" id="fb47_5" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第6空" oninput="saveState()"><input type="text" id="fb47_6" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第7空" oninput="saveState()"><input type="text" id="fb47_7" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第8空" oninput="saveState()"><input type="text" id="fb47_8" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第9空" oninput="saveState()"><input type="text" id="fb47_9" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第10空" oninput="saveState()"><input type="text" id="fb47_10" class="w-40 border-2 border-tcm-blue/30 rounded-lg px-3 py-2 text-sm bg-tcm-cream/50" placeholder="第11空" oninput="saveState()">
 </div>
-<div id="fb47_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">答案：</strong>督脉；任脉；冲脉；带脉；阴跷脉；阳跷脉；阴维脉；阳维脉；督脉；任脉；冲脉</div>
-<button onclick="toggleAnswer('fb47_ans')" class="mt-2 text-sm px-4 py-1 bg-tcm-accent/20 text-tcm-blue rounded-lg hover:bg-tcm-accent/40 transition">显示答案</button>
 </div>
 </div>
 </section>
@@ -529,6 +510,7 @@ button{min-width:0}
 <span class="bg-tcm-blue text-white text-sm font-bold px-3 py-1 rounded">二</span>
 <h3 class="text-tcm-dark text-xl font-bold">选择题（35题）</h3>
 <span class="text-tcm-blue text-sm">A卷10题 + B卷10题 + 易混点自拟15题</span>
+<button onclick="testSection('mcq')" class="ml-auto px-4 py-1.5 bg-tcm-blue/10 text-tcm-blue text-sm font-bold rounded-lg hover:bg-tcm-blue/20 transition border border-tcm-blue/30">测试选择</button>
 </div>
 <div id="mcq-container" class="space-y-4">
 
@@ -537,8 +519,6 @@ button{min-width:0}
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
 <div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq1','A','D')">A. 外寒证</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq1','B','D')">B. 实寒证</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq1','C','D')">C. 假寒证</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq1','D','D')">D. 虚寒证</div>
 </div>
-<div id="mcq1_explain" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">正确答案：D</strong></div>
-
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="mcq2">
@@ -546,8 +526,6 @@ button{min-width:0}
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
 <div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq2','A','C')">A. 肺</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq2','B','C')">B. 脾</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq2','C','C')">C. 心</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq2','D','C')">D. 肾</div>
 </div>
-<div id="mcq2_explain" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">正确答案：C</strong></div>
-
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="mcq3">
@@ -555,8 +533,6 @@ button{min-width:0}
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
 <div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq3','A','B')">A. 任脉</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq3','B','B')">B. 督脉</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq3','C','B')">C. 冲脉</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq3','D','B')">D. 阳维脉</div>
 </div>
-<div id="mcq3_explain" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">正确答案：B</strong></div>
-
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="mcq4">
@@ -564,8 +540,6 @@ button{min-width:0}
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
 <div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq4','A','A')">A. 齿</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq4','B','A')">B. 发</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq4','C','A')">C. 肾</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq4','D','A')">D. 筋</div>
 </div>
-<div id="mcq4_explain" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">正确答案：A</strong></div>
-
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="mcq5">
@@ -573,8 +547,6 @@ button{min-width:0}
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
 <div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq5','A','B')">A. 木克土</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq5','B','B')">B. 木乘土</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq5','C','B')">C. 土侮木</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq5','D','B')">D. 木胜土</div>
 </div>
-<div id="mcq5_explain" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">正确答案：B</strong></div>
-
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="mcq6">
@@ -582,8 +554,6 @@ button{min-width:0}
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
 <div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq6','A','D')">A. 刘完素</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq6','B','D')">B. 李杲</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq6','C','D')">C. 张从正</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq6','D','D')">D. 朱丹溪</div>
 </div>
-<div id="mcq6_explain" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">正确答案：D</strong></div>
-
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="mcq7">
@@ -591,8 +561,6 @@ button{min-width:0}
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
 <div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq7','A','D')">A. 心在液为汗</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq7','B','D')">B. 肺在液为涕</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq7','C','D')">C. 脾在液为涎</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq7','D','D')">D. 肾在液为尿</div>
 </div>
-<div id="mcq7_explain" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">正确答案：D</strong></div>
-
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="mcq8">
@@ -600,8 +568,6 @@ button{min-width:0}
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
 <div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq8','A','B')">A. 从头走手</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq8','B','B')">B. 从手走头</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq8','C','B')">C. 从胸走手</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq8','D','B')">D. 从手走胸</div>
 </div>
-<div id="mcq8_explain" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">正确答案：B</strong></div>
-
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="mcq9">
@@ -609,8 +575,6 @@ button{min-width:0}
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
 <div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq9','A','C')">A. 阴盛格阳</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq9','B','C')">B. 阳虚则寒</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq9','C','C')">C. 阳盛格阴</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq9','D','C')">D. 阴盛则寒</div>
 </div>
-<div id="mcq9_explain" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">正确答案：C</strong></div>
-
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="mcq10">
@@ -618,8 +582,6 @@ button{min-width:0}
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
 <div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq10','A','A')">A. 正治法</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq10','B','A')">B. 反治法</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq10','C','A')">C. 治标法</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq10','D','A')">D. 标本兼顾法</div>
 </div>
-<div id="mcq10_explain" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">正确答案：A</strong></div>
-
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="mcq11">
@@ -627,8 +589,6 @@ button{min-width:0}
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
 <div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq11','A','B')">A. 四气</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq11','B','B')">B. 炮制</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq11','C','B')">C. 归经</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq11','D','B')">D. 升降浮沉</div>
 </div>
-<div id="mcq11_explain" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">正确答案：B</strong></div>
-
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="mcq12">
@@ -636,8 +596,6 @@ button{min-width:0}
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
 <div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq12','A','C')">A. 肺主气,司呼吸      B、肺主通调水道</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq12','C','C')">C. 肺主升清</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq12','D','C')">D. 肺主治节</div>
 </div>
-<div id="mcq12_explain" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">正确答案：C</strong></div>
-
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="mcq13">
@@ -645,8 +603,6 @@ button{min-width:0}
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
 <div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq13','A','D')">A. 脾有推动血液在经脉中流行的作用</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq13','B','D')">B. 脾有调节经脉中血流量的作用</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq13','C','D')">C. 脾有贮藏血液的作用</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq13','D','D')">D. 脾有统摄血液在经脉中运行的作用</div>
 </div>
-<div id="mcq13_explain" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">正确答案：D</strong></div>
-
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="mcq14">
@@ -654,8 +610,6 @@ button{min-width:0}
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
 <div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq14','A','B')">A. 气滞</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq14','B','B')">B. 气逆</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq14','C','B')">C. 气陷</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq14','D','B')">D. 气脱</div>
 </div>
-<div id="mcq14_explain" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">正确答案：B</strong></div>
-
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="mcq15">
@@ -663,8 +617,6 @@ button{min-width:0}
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
 <div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq15','A','A')">A. 李杲</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq15','B','A')">B. 张从正</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq15','C','A')">C. 刘完素</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq15','D','A')">D. 朱丹溪</div>
 </div>
-<div id="mcq15_explain" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">正确答案：A</strong></div>
-
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="mcq16">
@@ -672,8 +624,6 @@ button{min-width:0}
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
 <div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq16','A','D')">A. 症状</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq16','B','D')">B. 体征</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq16','C','D')">C. 君药</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq16','D','D')">D. 辨证</div>
 </div>
-<div id="mcq16_explain" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">正确答案：D</strong></div>
-
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="mcq17">
@@ -681,8 +631,6 @@ button{min-width:0}
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
 <div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq17','A','B')">A. 人迎</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq17','B','B')">B. 寸口</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq17','C','B')">C. 趺阳</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq17','D','B')">D. 内关</div>
 </div>
-<div id="mcq17_explain" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">正确答案：B</strong></div>
-
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="mcq18">
@@ -690,8 +638,6 @@ button{min-width:0}
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
 <div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq18','A','A')">A. 汗法</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq18','B','A')">B. 和法</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq18','C','A')">C. 吐法</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq18','D','A')">D. 消法</div>
 </div>
-<div id="mcq18_explain" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">正确答案：A</strong></div>
-
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="mcq19">
@@ -699,8 +645,6 @@ button{min-width:0}
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
 <div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq19','A','C')">A. 湿为阴邪</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq19','B','C')">B. 湿性重浊</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq19','C','C')">C. 湿性粘滞</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq19','D','C')">D. 湿性趋下</div>
 </div>
-<div id="mcq19_explain" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">正确答案：C</strong></div>
-
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="mcq20">
@@ -708,8 +652,6 @@ button{min-width:0}
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
 <div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq20','A','D')">A. 胀痛</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq20','B','D')">B. 隐痛</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq20','C','D')">C. 重痛</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq20','D','D')">D. 瘀血疼痛</div>
 </div>
-<div id="mcq20_explain" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">正确答案：D</strong></div>
-
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="mcq21">
@@ -717,7 +659,6 @@ button{min-width:0}
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
 <div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq21','A','D')">A. 外因(六淫)</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq21','B','D')">B. 内因(七情)</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq21','C','D')">C. 不内外因(饮食劳逸等)</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq21','D','D')">D. 因时制宜</div>
 </div>
-<div id="mcq21_explain" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">正确答案：D</strong></div>
 <div class="mt-2 text-xs text-tcm-blue/80 bg-tcm-blue/5 rounded-lg px-3 py-2">注:★ &quot;三因学说&quot;=病因分类(陈无择),&quot;三因制宜&quot;=治病原则(因时/因地/因人),易混</div>
 </div>
 
@@ -726,7 +667,6 @@ button{min-width:0}
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
 <div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq22','A','B')">A. 六味地黄丸</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq22','B','B')">B. 人参</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq22','C','B')">C. 感冒灵颗粒</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq22','D','B')">D. 藿香正气水</div>
 </div>
-<div id="mcq22_explain" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">正确答案：B</strong></div>
 <div class="mt-2 text-xs text-tcm-blue/80 bg-tcm-blue/5 rounded-lg px-3 py-2">注:★ 中成药 = 以中药饮片为原料、按规定处方制成的成品;人参是中药饮片</div>
 </div>
 
@@ -735,7 +675,6 @@ button{min-width:0}
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
 <div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq23','A','B')">A. 《神农本草经》</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq23','B','B')">B. 《新修本草》</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq23','C','B')">C. 《本草纲目》</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq23','D','B')">D. 《脉经》</div>
 </div>
-<div id="mcq23_explain" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">正确答案：B</strong></div>
 <div class="mt-2 text-xs text-tcm-blue/80 bg-tcm-blue/5 rounded-lg px-3 py-2">注:★ 《新修本草》(唐)=世界最早国家药典;《神农本草经》=最早药学专著(非药典)</div>
 </div>
 
@@ -744,8 +683,6 @@ button{min-width:0}
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
 <div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq24','A','A')">A. 《黄帝内经》</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq24','B','A')">B. 《伤寒杂病论》</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq24','C','A')">C. 《神农本草经》</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq24','D','A')">D. 《脉经》</div>
 </div>
-<div id="mcq24_explain" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">正确答案：A</strong></div>
-
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="mcq25">
@@ -753,7 +690,6 @@ button{min-width:0}
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
 <div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq25','A','B')">A. 张仲景</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq25','B','B')">B. 王叔和</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq25','C','B')">C. 李时珍</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq25','D','B')">D. 孙思邈</div>
 </div>
-<div id="mcq25_explain" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">正确答案：B</strong></div>
 <div class="mt-2 text-xs text-tcm-blue/80 bg-tcm-blue/5 rounded-lg px-3 py-2">注:王叔和《脉经》— 西晋</div>
 </div>
 
@@ -762,8 +698,6 @@ button{min-width:0}
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
 <div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq26','A','D')">A. 刘完素</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq26','B','D')">B. 张从正</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq26','C','D')">C. 李杲</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq26','D','D')">D. 朱丹溪</div>
 </div>
-<div id="mcq26_explain" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">正确答案：D</strong></div>
-
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="mcq27">
@@ -771,7 +705,6 @@ button{min-width:0}
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
 <div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq27','A','B')">A. 从手走胸</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq27','B','B')">B. 从胸走手</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq27','C','B')">C. 从头走手</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq27','D','B')">D. 从手走头</div>
 </div>
-<div id="mcq27_explain" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">正确答案：B</strong></div>
 <div class="mt-2 text-xs text-tcm-blue/80 bg-tcm-blue/5 rounded-lg px-3 py-2">注:从胸走手 / 手三阳 = 从手走头</div>
 </div>
 
@@ -780,7 +713,6 @@ button{min-width:0}
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
 <div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq28','A','C')">A. 任脉</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq28','B','C')">B. 督脉</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq28','C','C')">C. 冲脉</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq28','D','C')">D. 带脉</div>
 </div>
-<div id="mcq28_explain" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">正确答案：C</strong></div>
 <div class="mt-2 text-xs text-tcm-blue/80 bg-tcm-blue/5 rounded-lg px-3 py-2">注:冲脉 = 十二经脉之海 = 血海</div>
 </div>
 
@@ -789,7 +721,6 @@ button{min-width:0}
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
 <div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq29','A','B')">A. 气滞</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq29','B','B')">B. 气陷</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq29','C','B')">C. 气脱</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq29','D','B')">D. 气逆</div>
 </div>
-<div id="mcq29_explain" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">正确答案：B</strong></div>
 <div class="mt-2 text-xs text-tcm-blue/80 bg-tcm-blue/5 rounded-lg px-3 py-2">注:气陷 = 气上升不及或下降太过</div>
 </div>
 
@@ -798,7 +729,6 @@ button{min-width:0}
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
 <div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq30','A','C')">A. 尿</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq30','B','C')">B. 汗</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq30','C','C')">C. 唾</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq30','D','C')">D. 泪</div>
 </div>
-<div id="mcq30_explain" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">正确答案：C</strong></div>
 <div class="mt-2 text-xs text-tcm-blue/80 bg-tcm-blue/5 rounded-lg px-3 py-2">注:心汗/肝泪/脾涎/肺涕/肾唾</div>
 </div>
 
@@ -807,7 +737,6 @@ button{min-width:0}
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
 <div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq31','A','C')">A. 相畏</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq31','B','C')">B. 相杀</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq31','C','C')">C. 相须、相使</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq31','D','C')">D. 相恶、相反</div>
 </div>
-<div id="mcq31_explain" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">正确答案：C</strong></div>
 <div class="mt-2 text-xs text-tcm-blue/80 bg-tcm-blue/5 rounded-lg px-3 py-2">注:相须/相使 = 增效;相畏/相杀 = 减毒;相恶 = 减效;相反 = 产生毒性</div>
 </div>
 
@@ -816,8 +745,6 @@ button{min-width:0}
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
 <div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq32','A','A')">A. 张仲景 — 临床医学和方剂学</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq32','B','A')">B. 王叔和 — 脉学</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq32','C','A')">C. 陈无择 — 病因学</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq32','D','A')">D. 李时珍 — 本草学</div>
 </div>
-<div id="mcq32_explain" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">正确答案：A</strong></div>
-
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in" data-q="mcq33">
@@ -825,7 +752,6 @@ button{min-width:0}
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
 <div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq33','A','D')">A. 相生</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq33','B','D')">B. 相克</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq33','C','D')">C. 相乘</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq33','D','D')">D. 相侮</div>
 </div>
-<div id="mcq33_explain" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">正确答案：D</strong></div>
 <div class="mt-2 text-xs text-tcm-blue/80 bg-tcm-blue/5 rounded-lg px-3 py-2">注:相乘 = 克太过;相侮 = 反克</div>
 </div>
 
@@ -834,7 +760,6 @@ button{min-width:0}
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
 <div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq34','A','B')">A. 肝</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq34','B','B')">B. 心</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq34','C','B')">C. 脾</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq34','D','B')">D. 肺</div>
 </div>
-<div id="mcq34_explain" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">正确答案：B</strong></div>
 <div class="mt-2 text-xs text-tcm-blue/80 bg-tcm-blue/5 rounded-lg px-3 py-2">注:怒伤肝/喜伤心/思伤脾/忧悲伤肺/恐惊伤肾</div>
 </div>
 
@@ -843,8 +768,6 @@ button{min-width:0}
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
 <div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq35','A','A')">A. 未病先防、既病防变</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq35','B','A')">B. 辨证论治</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq35','C','A')">C. 调和阴阳</div><div class="mcq-option flex items-center gap-3 p-3 rounded-lg border-2 border-gray-200 bg-white cursor-pointer" onclick="checkMCQ(this,'mcq35','D','A')">D. 扶正祛邪</div>
 </div>
-<div id="mcq35_explain" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">正确答案：A</strong></div>
-
 </div>
 </div>
 </section>
@@ -855,6 +778,7 @@ button{min-width:0}
 <span class="bg-tcm-accent text-white text-sm font-bold px-3 py-1 rounded">三</span>
 <h3 class="text-tcm-dark text-xl font-bold">名词解释（17题）</h3>
 <span class="text-tcm-blue text-sm">A卷5题 + B卷5题 + 自拟7题 | 点击展开答案</span>
+<button onclick="testSection('td')" class="ml-auto px-4 py-1.5 bg-tcm-accent/10 text-tcm-accent text-sm font-bold rounded-lg hover:bg-tcm-accent/20 transition border border-tcm-accent/30">测试名词</button>
 </div>
 <div id="term-container" class="space-y-4">
 
@@ -985,6 +909,7 @@ button{min-width:0}
 <span class="bg-green-600 text-white text-sm font-bold px-3 py-1 rounded">四</span>
 <h3 class="text-tcm-dark text-xl font-bold">简答题（13题）</h3>
 <span class="text-tcm-blue text-sm">A卷4题 + B卷4题 + 自拟5题 | 每题5分</span>
+<button onclick="testSection('sa')" class="ml-auto px-4 py-1.5 bg-green-600/10 text-green-700 text-sm font-bold rounded-lg hover:bg-green-600/20 transition border border-green-600/30">测试简答</button>
 </div>
 <div id="short-container" class="space-y-4">
 
@@ -993,9 +918,7 @@ button{min-width:0}
 <p class="text-tcm-dark font-medium">1. 简述中药方剂组方的目的(5 分) <span class="text-xs text-tcm-blue/70 ml-1">[SA1]</span></p>
 <p class="text-tcm-blue text-xs mt-1">点击展开答案</p>
 </div>
-<div id="sa1_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">参考答案：</strong><br>(1) 增强药物作用、综合并产生新的作用,以 提高疗效 、满足病情需要(2 分)。
-(2) 随证选药组方,以 全面照顾病情 、扩大治疗范围 (2 分)。
-(3) 降低药物毒性 、缓和峻猛之性、调和药味,以达到 安全用药 以及便于服用的目的(1 分)。</div>
+<div id="sa1_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">参考答案：</strong><br>(1) 增强药物作用、综合并产生新的作用,以 提高疗效 、满足病情需要(2 分)。<br>(2) 随证选药组方,以 全面照顾病情 、扩大治疗范围 (2 分)。<br>(3) 降低药物毒性 、缓和峻猛之性、调和药味,以达到 安全用药 以及便于服用的目的(1 分)。</div>
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in">
@@ -1003,10 +926,7 @@ button{min-width:0}
 <p class="text-tcm-dark font-medium">2. 试述火热邪气的性质和致病特点(5 分) <span class="text-xs text-tcm-blue/70 ml-1">[SA2]</span></p>
 <p class="text-tcm-blue text-xs mt-1">点击展开答案</p>
 </div>
-<div id="sa2_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">参考答案：</strong><br>(1) 火为阳邪、其性炎上 ,易扰心神(2 分)。
-(2) 火性燔灼 ,易伤筋耗气(1 分)。
-(3) 火性急迫 ,易生风动血(1 分)。
-(4) 火毒结聚 ,易致肿疡(肿毒) (1 分)。</div>
+<div id="sa2_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">参考答案：</strong><br>(1) 火为阳邪、其性炎上 ,易扰心神(2 分)。<br>(2) 火性燔灼 ,易伤筋耗气(1 分)。<br>(3) 火性急迫 ,易生风动血(1 分)。<br>(4) 火毒结聚 ,易致肿疡(肿毒) (1 分)。</div>
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in">
@@ -1024,10 +944,7 @@ button{min-width:0}
 <p class="text-tcm-dark font-medium">4. 内伤七情的致病特点有哪些(5 分) <span class="text-xs text-tcm-blue/70 ml-1">[SA4]</span></p>
 <p class="text-tcm-blue text-xs mt-1">点击展开答案</p>
 </div>
-<div id="sa4_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">参考答案：</strong><br>(1) 直接伤及内脏:造成特异性损伤和普遍性损伤(1 分)。
-(2) 影响脏腑气机:怒则气上、喜则气缓、悲则气消、恐则气下、惊则气乱、思则气结(2 分)。
-(3) 多发为情志病证 (1 分)。
-(4) 七情变化影响病情 (1 分)。</div>
+<div id="sa4_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">参考答案：</strong><br>(1) 直接伤及内脏:造成特异性损伤和普遍性损伤(1 分)。<br>(2) 影响脏腑气机:怒则气上、喜则气缓、悲则气消、恐则气下、惊则气乱、思则气结(2 分)。<br>(3) 多发为情志病证 (1 分)。<br>(4) 七情变化影响病情 (1 分)。</div>
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in">
@@ -1084,9 +1001,7 @@ button{min-width:0}
 <p class="text-tcm-dark font-medium">9. 疫疠致病有何特点(5 分) <span class="text-tcm-red text-xs font-bold ml-1">自拟</span> <span class="text-xs text-tcm-blue/70 ml-1">[SS1]</span></p>
 <p class="text-tcm-blue text-xs mt-1">点击展开答案</p>
 </div>
-<div id="sa9_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">参考答案：</strong><br>(1) 发病急骤,病情险恶 — 起病暴急,变化迅速,病势险恶。
-(2) 传染性强,易于流行 — 通过空气、饮食、接触等途径传播,患者证状相似。
-(3) 一气一病,症状相似 — 一种疫疠之气导致一种特定疾病,具有特异性。</div>
+<div id="sa9_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">参考答案：</strong><br>(1) 发病急骤,病情险恶 — 起病暴急,变化迅速,病势险恶。<br>(2) 传染性强,易于流行 — 通过空气、饮食、接触等途径传播,患者证状相似。<br>(3) 一气一病,症状相似 — 一种疫疠之气导致一种特定疾病,具有特异性。</div>
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in">
@@ -1124,11 +1039,7 @@ button{min-width:0}
 <p class="text-tcm-dark font-medium">12. 中药炮制的目的(5 分) <span class="text-tcm-red text-xs font-bold ml-1">自拟</span> <span class="text-xs text-tcm-blue/70 ml-1">[SS4]</span></p>
 <p class="text-tcm-blue text-xs mt-1">点击展开答案</p>
 </div>
-<div id="sa12_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">参考答案：</strong><br>(1) 降低或消除药物的毒副作用 ,保证用药安全(如附子炮制后毒性大减)。
-(2) 改变药物的性能或功效 ,使之更能适应病情。
-(3) 增强药物疗效 (如蜜炙黄芪增强补气作用)。
-(4) 改变药物的形状,便于贮存和制剂 。
-(5) 纯净药材,矫味矫臭,便于服用 。</div>
+<div id="sa12_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">参考答案：</strong><br>(1) 降低或消除药物的毒副作用 ,保证用药安全(如附子炮制后毒性大减)。<br>(2) 改变药物的性能或功效 ,使之更能适应病情。<br>(3) 增强药物疗效 (如蜜炙黄芪增强补气作用)。<br>(4) 改变药物的形状,便于贮存和制剂 。<br>(5) 纯净药材,矫味矫臭,便于服用 。</div>
 </div>
 
 <div class="question-card bg-white rounded-xl p-5 border-2 border-tcm-accent/30 shadow-sm fade-in">
@@ -1136,11 +1047,7 @@ button{min-width:0}
 <p class="text-tcm-dark font-medium">13. 汤剂的煎煮要点(5 分) <span class="text-tcm-red text-xs font-bold ml-1">自拟</span> <span class="text-xs text-tcm-blue/70 ml-1">[SS5]</span></p>
 <p class="text-tcm-blue text-xs mt-1">点击展开答案</p>
 </div>
-<div id="sa13_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">参考答案：</strong><br>(1) 煎药器具:首选 砂锅、砂罐 ,不用铝锅、铁锅(防化学反应)。
-(2) 用水:用 冷水 浸泡,加水至 液面高出饮片 3-5cm 。
-(3) 浸泡时间:煎煮前先浸泡 30 分钟 左右。
-(4) 火候:先武火(大火)煮沸,后文火(小火)慢煎 。
-(5) 煎煮次数:一般煎 3 次,最少 2 次 ;特殊药物需要先煎、后下、包煎、烊化等。</div>
+<div id="sa13_ans" class="answer-reveal bg-tcm-green/10 rounded-lg px-4 text-sm text-tcm-dark"><strong class="text-tcm-green">参考答案：</strong><br>(1) 煎药器具:首选 砂锅、砂罐 ,不用铝锅、铁锅(防化学反应)。<br>(2) 用水:用 冷水 浸泡,加水至 液面高出饮片 3-5cm 。<br>(3) 浸泡时间:煎煮前先浸泡 30 分钟 左右。<br>(4) 火候:先武火(大火)煮沸,后文火(小火)慢煎 。<br>(5) 煎煮次数:一般煎 3 次,最少 2 次 ;特殊药物需要先煎、后下、包煎、烊化等。</div>
 </div>
 </div>
 </section>
@@ -1151,6 +1058,7 @@ button{min-width:0}
 <span class="bg-purple-600 text-white text-sm font-bold px-3 py-1 rounded">五</span>
 <h3 class="text-tcm-dark text-xl font-bold">论述题（2题）</h3>
 <span class="text-tcm-blue text-sm">A/B卷各1题，每题20分，占总分1/5，务必背熟</span>
+<button onclick="testSection('es')" class="ml-auto px-4 py-1.5 bg-purple-600/10 text-purple-700 text-sm font-bold rounded-lg hover:bg-purple-600/20 transition border border-purple-600/30">测试论述</button>
 </div>
 <div id="essay-container" class="space-y-4">
 
@@ -1192,9 +1100,7 @@ button{min-width:0}
 </div>
 </div>
 
-<script>
-// === Answer Data ===
-const fbAnswers = {
+<script>const fbAnswers = {
   fb1: ["后天", "先天", "皮", "筋"],
   fb2: ["任脉", "冲脉", "督脉"],
   fb3: ["思", "口"],
@@ -1244,35 +1150,386 @@ const fbAnswers = {
   fb47: ["督脉", "任脉", "冲脉", "带脉", "阴跷脉", "阳跷脉", "阴维脉", "阳维脉", "督脉", "任脉", "冲脉"]
 };
 
+// === State ===
+let memorizeMode = false;
+
 // === Core Functions ===
 function toggleAnswer(id) {
   const el = document.getElementById(id);
   if (el) { el.classList.toggle('open'); saveState(); }
 }
 
-function parseMCQOption(option) {
-  const match = option?.getAttribute('onclick')?.match(/checkMCQ\(this,'([^']+)','([A-D])','([A-D])'\)/);
-  return match ? { qId: match[1], choice: match[2], correct: match[3] } : null;
-}
-
-function applyMCQState(card, choice, correct) {
-  if (!card || !choice || !correct) return;
-  card.classList.add('answered');
-  card.querySelectorAll('.mcq-option').forEach(o => {
-    const data = parseMCQOption(o);
-    if (!data) return;
-    if (data.choice === correct) o.classList.add('correct');
-    else if (data.choice === choice && choice !== correct) o.classList.add('wrong');
-  });
-  const explain = document.getElementById(card.getAttribute('data-q') + '_explain');
-  if (explain) explain.classList.add('open');
-}
-
 function checkMCQ(optEl, qId, choice, correct) {
   const card = optEl.closest('.question-card');
   if (card.classList.contains('answered')) return;
-  applyMCQState(card, choice, correct);
+  card.classList.add('answered');
+  card.querySelectorAll('.mcq-option').forEach(o => {
+    const c = o.getAttribute('onclick').match(/'([A-D])'/);
+    if (c && c[1] === correct) o.classList.add('correct');
+    else if (o === optEl && choice !== correct) o.classList.add('wrong');
+  });
+  // 不再自动弹出正确答案面板，直接在选项上标记对错
   saveState();
+}
+
+// === Per-section Testing ===
+function testSection(type) {
+  const details = document.getElementById('score-details');
+  let resultHtml = '';
+  
+  if (type === 'fb') {
+    let correct = 0, total = 47;
+    for (let i = 1; i <= 47; i++) {
+      const qid = 'fb' + i;
+      const answers = fbAnswers[qid];
+      if (!answers) continue;
+      let qOk = true;
+      answers.forEach((ans, idx) => {
+        const inp = document.getElementById(qid + '_' + idx);
+        if (!inp || !inp.value.trim() || inp.value.trim() !== ans) qOk = false;
+      });
+      if (qOk) correct++;
+    }
+    const pct = Math.round(correct / total * 100);
+    showSectionResult('填空题', correct, total, pct);
+    // Show all fill-blank answers
+    document.querySelectorAll('#fill-blank .answer-reveal').forEach(el => el.classList.add('open'));
+  }
+  else if (type === 'mcq') {
+    let correct = 0, total = 35;
+    document.querySelectorAll('#mcq-container .question-card').forEach(card => {
+      const c = card.querySelector('.mcq-option.correct');
+      const w = card.querySelector('.mcq-option.wrong');
+      if (c && !w) correct++;
+    });
+    const pct = Math.round(correct / total * 100);
+    showSectionResult('选择题', correct, total, pct);
+    // 不再弹出答案解析
+  }
+  else if (type === 'td') {
+    let opened = 0, total = 17;
+    document.querySelectorAll('#term-container .answer-reveal').forEach(el => {
+      el.classList.add('open');
+      opened++;
+    });
+    showSectionResult('名词解释', opened, total, Math.round(opened/total*100), true);
+  }
+  else if (type === 'sa') {
+    let opened = 0, total = 13;
+    document.querySelectorAll('#short-container .answer-reveal').forEach(el => {
+      el.classList.add('open');
+      opened++;
+    });
+    showSectionResult('简答题', opened, total, Math.round(opened/total*100), true);
+  }
+  else if (type === 'es') {
+    let opened = 0, total = 2;
+    document.querySelectorAll('#essay-container .answer-reveal').forEach(el => {
+      el.classList.add('open');
+      opened++;
+    });
+    showSectionResult('论述题', opened, total, Math.round(opened/total*100), true);
+  }
+  saveStateNow();
+  // Scroll to the section
+  const sectionMap = {fb:'fill-blank', mcq:'mcq', td:'term-def', sa:'short-answer', es:'essay'};
+  const target = document.getElementById(sectionMap[type]);
+  if (target) target.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function showSectionResult(name, correct, total, pct, isViewed) {
+  const cls = pct >= 80 ? 'good' : pct >= 50 ? 'mid' : 'low';
+  const label = isViewed ? '已查看' : '正确';
+  // Find section header and add score badge
+  const sectionMap = {'填空题':'fill-blank','选择题':'mcq','名词解释':'term-def','简答题':'short-answer','论述题':'essay'};
+  const secEl = document.getElementById(sectionMap[name]);
+  if (secEl) {
+    // Remove existing score
+    const existing = secEl.querySelector('.section-score');
+    if (existing) existing.remove();
+    const badge = document.createElement('span');
+    badge.className = 'section-score ' + cls;
+    badge.textContent = label + ' ' + correct + '/' + total + ' (' + pct + '%)';
+    secEl.querySelector('.flex.items-center.gap-3.mb-6').appendChild(badge);
+  }
+}
+
+// === Memorization Mode ===
+function toggleMemorize() {
+  memorizeMode = !memorizeMode;
+  const btn = document.getElementById('memorize-btn');
+  document.body.classList.toggle('memorize-mode', memorizeMode);
+  btn.classList.toggle('sb-on', memorizeMode);
+  
+  if (memorizeMode) {
+    // Pre-fill all fill-blank answers
+    for (let i = 1; i <= 47; i++) {
+      const qid = 'fb' + i;
+      const answers = fbAnswers[qid];
+      if (!answers) continue;
+      answers.forEach((ans, idx) => {
+        const inp = document.getElementById(qid + '_' + idx);
+        if (inp) inp.value = ans;
+      });
+    }
+    // Expand all answer reveals
+    document.querySelectorAll('.answer-reveal').forEach(el => el.classList.add('open'));
+    // Mark all MCQ correct options green
+    document.querySelectorAll('#mcq-container .mcq-option').forEach(opt => {
+      const oc = opt.getAttribute('onclick') || '';
+      const parts = oc.match(/'([A-D])','([A-D])'/);
+      if (parts && parts[1] === parts[2]) opt.classList.add('correct');
+    });
+  } else {
+    // Clear fill-blank inputs (only auto-filled ones)
+    for (let i = 1; i <= 47; i++) {
+      const qid = 'fb' + i;
+      const answers = fbAnswers[qid];
+      if (!answers) continue;
+      answers.forEach((ans, idx) => {
+        const inp = document.getElementById(qid + '_' + idx);
+        if (inp && inp.value === ans) inp.value = '';
+      });
+    }
+    // Collapse all answer reveals
+    document.querySelectorAll('.answer-reveal').forEach(el => el.classList.remove('open'));
+    // Remove all MCQ marks (both correct and wrong)
+    document.querySelectorAll('#mcq-container .mcq-option').forEach(opt => {
+      opt.classList.remove('correct', 'wrong');
+    });
+    document.querySelectorAll('#mcq-container .question-card').forEach(c => {
+      c.classList.remove('answered');
+    });
+  }
+  saveStateNow();
+}
+
+// === Edit Answer Mode ===
+let editMode = false;
+let _editSavedRange = null;
+let _editToolbarVisible = false;
+
+function toggleEditMode() {
+  editMode = !editMode;
+  const indicator = document.getElementById('edit-indicator');
+  indicator.classList.toggle('active', editMode);
+  
+  document.querySelectorAll('.answer-reveal').forEach(el => {
+    if (editMode) {
+      el.setAttribute('contenteditable', 'true');
+      el.classList.add('editable');
+    } else {
+      el.removeAttribute('contenteditable');
+      el.classList.remove('editable');
+    }
+  });
+  
+  if (editMode) {
+    _initEditToolbarListeners();
+    // 自动滚动到第一个可编辑答案区域，让用户立刻看到编辑框
+    const firstEditable = document.querySelector('.answer-reveal.editable');
+    if (firstEditable) {
+      firstEditable.scrollIntoView({behavior: 'smooth', block: 'center'});
+      // 短暂高亮闪烁提示
+      firstEditable.style.transition = 'background-color .3s ease';
+      firstEditable.style.backgroundColor = 'rgba(25,117,255,.12)';
+      setTimeout(() => { firstEditable.style.backgroundColor = ''; }, 1200);
+    }
+  } else {
+    _destroyEditToolbarListeners();
+    _hideFormatToolbar();
+  }
+}
+
+function _showFormatToolbar(x, y) {
+  const tb = document.getElementById('quiz-format-toolbar');
+  tb.style.left = x + 'px';
+  tb.style.top = y + 'px';
+  tb.classList.add('visible');
+  _editToolbarVisible = true;
+}
+
+function _hideFormatToolbar() {
+  const tb = document.getElementById('quiz-format-toolbar');
+  tb.classList.remove('visible');
+  _editToolbarVisible = false;
+}
+
+function _saveCurrentRange() {
+  const sel = window.getSelection();
+  if (sel && sel.rangeCount > 0 && !sel.isCollapsed) {
+    _editSavedRange = sel.getRangeAt(0).cloneRange();
+  }
+}
+
+function _restoreRange() {
+  if (_editSavedRange) {
+    const sel = window.getSelection();
+    if (sel) {
+      sel.removeAllRanges();
+      sel.addRange(_editSavedRange);
+    }
+  }
+}
+
+let _selChangeTimer = null;
+function _editSelectionChangeHandler() {
+  if (!editMode) return;
+  clearTimeout(_selChangeTimer);
+  _selChangeTimer = setTimeout(() => {
+    const sel = window.getSelection();
+    if (sel && sel.rangeCount > 0 && !sel.isCollapsed) {
+      // Check if selection is inside an editable area
+      const anchorEditable = sel.anchorNode && sel.anchorNode.parentElement && sel.anchorNode.parentElement.closest('.answer-reveal.editable');
+      if (!anchorEditable) {
+        if (_editToolbarVisible) _hideFormatToolbar();
+        return;
+      }
+      _editSavedRange = sel.getRangeAt(0).cloneRange();
+      const rect = _editSavedRange.getBoundingClientRect();
+      if (rect.width === 0 && rect.height === 0) {
+        if (_editToolbarVisible) _hideFormatToolbar();
+        return;
+      }
+      const tb = document.getElementById('quiz-format-toolbar');
+      const tbHeight = 40;
+      let top = rect.top - tbHeight - 6;
+      let left = rect.left + (rect.width / 2) - (tb.offsetWidth || 140) / 2;
+      if (top < 4) top = rect.bottom + 6;
+      if (left < 4) left = 4;
+      if (left + 160 > window.innerWidth) left = window.innerWidth - 164;
+      _showFormatToolbar(left, top);
+    } else {
+      if (_editToolbarVisible) _hideFormatToolbar();
+    }
+  }, 120);
+}
+
+function _editBtnMouseDown(e) {
+  e.preventDefault();
+  e.stopPropagation();
+  _saveCurrentRange();
+}
+
+function _editApplyBold() {
+  _restoreRange();
+  document.execCommand('bold', false);
+  const sel = window.getSelection();
+  if (sel && sel.rangeCount > 0 && !sel.isCollapsed) {
+    _editSavedRange = sel.getRangeAt(0).cloneRange();
+  }
+}
+
+function _editApplyBlue() {
+  _restoreRange();
+  // Toggle: check if already blue
+  const sel = window.getSelection();
+  if (sel && sel.rangeCount > 0) {
+    const node = sel.anchorNode;
+    const parent = node && node.parentElement;
+    if (parent && parent.style && parent.style.color === 'rgb(37, 99, 235)') {
+      document.execCommand('removeFormat', false);
+    } else {
+      document.execCommand('foreColor', false, '#2563eb');
+    }
+  }
+  const sel2 = window.getSelection();
+  if (sel2 && sel2.rangeCount > 0 && !sel2.isCollapsed) {
+    _editSavedRange = sel2.getRangeAt(0).cloneRange();
+  }
+}
+
+function _editApplyRed() {
+  _restoreRange();
+  const sel = window.getSelection();
+  if (sel && sel.rangeCount > 0) {
+    const node = sel.anchorNode;
+    const parent = node && node.parentElement;
+    if (parent && parent.style && parent.style.color === 'rgb(220, 38, 38)') {
+      document.execCommand('removeFormat', false);
+    } else {
+      document.execCommand('foreColor', false, '#dc2626');
+    }
+  }
+  const sel2 = window.getSelection();
+  if (sel2 && sel2.rangeCount > 0 && !sel2.isCollapsed) {
+    _editSavedRange = sel2.getRangeAt(0).cloneRange();
+  }
+}
+
+function _editApplyHighlight() {
+  _restoreRange();
+  const sel = window.getSelection();
+  if (sel && sel.rangeCount > 0) {
+    const node = sel.anchorNode;
+    const parent = node && node.parentElement;
+    if (parent && parent.style && parent.style.backgroundColor === 'rgb(253, 224, 71)') {
+      document.execCommand('removeFormat', false);
+    } else {
+      document.execCommand('hiliteColor', false, '#fde047');
+    }
+  }
+  const sel2 = window.getSelection();
+  if (sel2 && sel2.rangeCount > 0 && !sel2.isCollapsed) {
+    _editSavedRange = sel2.getRangeAt(0).cloneRange();
+  }
+}
+
+let _editListenersAttached = false;
+function _initEditToolbarListeners() {
+  if (_editListenersAttached) return;
+  _editListenersAttached = true;
+  
+  // Use selectionchange — more reliable for contentEditable than mouseup alone
+  document.addEventListener('selectionchange', _editSelectionChangeHandler);
+  // Keep mouseup as backup trigger
+  document.addEventListener('mouseup', _editSelectionChangeHandler);
+  
+  // Attach mousedown to each format button (preventDefault to keep selection)
+  ['fmt-bold-btn', 'fmt-blue-btn', 'fmt-red-btn', 'fmt-highlight-btn'].forEach(id => {
+    const btn = document.getElementById(id);
+    if (btn) btn.addEventListener('mousedown', _editBtnMouseDown);
+  });
+  
+  // Attach click handlers
+  document.getElementById('fmt-bold-btn').addEventListener('click', _editApplyBold);
+  document.getElementById('fmt-blue-btn').addEventListener('click', _editApplyBlue);
+  document.getElementById('fmt-red-btn').addEventListener('click', _editApplyRed);
+  document.getElementById('fmt-highlight-btn').addEventListener('click', _editApplyHighlight);
+  
+  // Hide toolbar on click outside editable areas
+  document.addEventListener('mousedown', _editDocMouseDown);
+}
+
+function _editDocMouseDown(e) {
+  if (!editMode || !_editToolbarVisible) return;
+  const tb = document.getElementById('quiz-format-toolbar');
+  if (tb && tb.contains(e.target)) return; // clicked toolbar button
+  const editable = e.target.closest && e.target.closest('.answer-reveal.editable');
+  if (!editable) {
+    _hideFormatToolbar();
+  }
+}
+
+function _destroyEditToolbarListeners() {
+  if (!_editListenersAttached) return;
+  _editListenersAttached = false;
+  
+  document.removeEventListener('selectionchange', _editSelectionChangeHandler);
+  document.removeEventListener('mouseup', _editSelectionChangeHandler);
+  document.removeEventListener('mousedown', _editDocMouseDown);
+  
+  ['fmt-bold-btn', 'fmt-blue-btn', 'fmt-red-btn', 'fmt-highlight-btn'].forEach(id => {
+    const btn = document.getElementById(id);
+    if (btn) {
+      btn.removeEventListener('mousedown', _editBtnMouseDown);
+    }
+  });
+  
+  document.getElementById('fmt-bold-btn').removeEventListener('click', _editApplyBold);
+  document.getElementById('fmt-blue-btn').removeEventListener('click', _editApplyBlue);
+  document.getElementById('fmt-red-btn').removeEventListener('click', _editApplyRed);
+  document.getElementById('fmt-highlight-btn').removeEventListener('click', _editApplyHighlight);
 }
 
 // === State Management ===
@@ -1290,10 +1547,7 @@ function collectState() {
     if (el.classList.contains('open')) state['reveal_' + el.id] = true;
   });
   document.querySelectorAll('.question-card.answered').forEach(el => {
-    const qId = el.getAttribute('data-q');
-    const correct = parseMCQOption(el.querySelector('.mcq-option.correct'))?.choice;
-    const selected = parseMCQOption(el.querySelector('.mcq-option.wrong'))?.choice || correct;
-    if (qId && selected && correct) state['mcq_' + qId] = { choice: selected, correct };
+    state['mcq_' + el.getAttribute('data-q')] = true;
   });
   return state;
 }
@@ -1308,8 +1562,7 @@ function loadState() {
         const el = document.getElementById(k.slice(7));
         if (el) el.classList.add('open');
       } else if (k.startsWith('mcq_')) {
-        const card = document.querySelector('.question-card[data-q="' + k.slice(4) + '"]');
-        if (card && v && typeof v === 'object') applyMCQState(card, v.choice, v.correct);
+        // MCQ state restoration is complex, skip for now
       } else {
         const el = document.getElementById(k);
         if (el) el.value = v;
@@ -1326,12 +1579,17 @@ function resetAll() {
     el.classList.remove('answered');
     el.querySelectorAll('.mcq-option').forEach(o => o.classList.remove('correct','wrong'));
   });
+  document.querySelectorAll('.section-score').forEach(el => el.remove());
   document.getElementById('total-score').textContent = '—';
   document.getElementById('total-bar').style.width = '0%';
   document.getElementById('score-details').innerHTML = '';
+  // Exit memorize mode if active
+  if (memorizeMode) toggleMemorize();
+  // Re-fill answers after reset
+  initAnswers();
 }
 
-// === Scoring ===
+// === Global Scoring ===
 function checkAll() {
   const details = document.getElementById('score-details');
   details.innerHTML = '';
@@ -1384,17 +1642,9 @@ function checkAll() {
 }
 
 // --- Nav ---
-function isEmbeddedWindow() {
-  try {
-    return window.self !== window.top;
-  } catch {
-    return true;
-  }
-}
 const sections = ['fill-blank','mcq','term-def','short-answer','essay'];
 const navLinks = document.querySelectorAll('.nav-link');
 const navbar = document.getElementById('navbar');
-const shouldAutoHideNav = !isEmbeddedWindow();
 let lastNavY = Math.max(window.scrollY || 0, 0);
 let navTicking = false;
 function updateNavState() {
@@ -1409,7 +1659,7 @@ function updateNavState() {
     link.classList.remove('active');
     if (link.getAttribute('href') === '#' + current) link.classList.add('active');
   });
-  if (navbar && shouldAutoHideNav) {
+  if (navbar) {
     if (currentY <= 24) navbar.classList.remove('nav-hidden');
     else if (diff > 8 && currentY > 96) navbar.classList.add('nav-hidden');
     else if (diff < -8) navbar.classList.remove('nav-hidden');
@@ -1421,15 +1671,85 @@ window.addEventListener('scroll', () => {
   if (!navTicking) { window.requestAnimationFrame(updateNavState); navTicking = true; }
 }, {passive: true});
 
-function setupAutosave() {
-  document.querySelectorAll('input[type="text"]').forEach(el => {
-    el.addEventListener('input', saveState);
-  });
+function initAnswers() {
+  // 填空题：将答案预填入空白的输入框（不覆盖已有值）
+  for (const [qid, answers] of Object.entries(fbAnswers)) {
+    answers.forEach((ans, idx) => {
+      const inp = document.getElementById(qid + '_' + idx);
+      if (inp && !inp.value) {
+        inp.value = ans;
+        inp.style.color = '#2a7a64';
+        inp.style.fontWeight = '600';
+      }
+    });
+  }
 }
 
+// === 键盘快捷键 ===
+document.addEventListener('keydown', function(e) {
+  const ae = document.activeElement;
+  const isInput = ae && (ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA');
+
+  // Enter: 跳到下一个输入框
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    const inputs = Array.from(document.querySelectorAll('input[type="text"]'));
+    if (inputs.length === 0) return;
+    const idx = inputs.indexOf(ae);
+    const next = inputs[idx + 1] || inputs[0];
+    next.focus();
+    next.scrollIntoView({behavior:'smooth', block:'center'});
+    return;
+  }
+
+  // ↑↓: 在题目之间跳转
+  if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+    e.preventDefault();
+    const cards = Array.from(document.querySelectorAll('.question-card'));
+    if (cards.length === 0) return;
+    let curIdx = -1;
+    if (ae) {
+      const curCard = ae.closest ? ae.closest('.question-card') : null;
+      if (curCard) curIdx = cards.indexOf(curCard);
+    }
+    let nextIdx;
+    if (e.key === 'ArrowUp') nextIdx = Math.max(0, curIdx - 1);
+    else nextIdx = Math.min(cards.length - 1, curIdx + 1);
+    const target = cards[nextIdx];
+    const focusable = target.querySelector('input[type="text"]') || target.querySelector('.mcq-option');
+    if (focusable) {
+      focusable.focus();
+      target.scrollIntoView({behavior:'smooth', block:'center'});
+    }
+    return;
+  }
+
+  // A/B/C/D: 选择选择题选项（仅在非输入状态时）
+  if (!isInput) {
+    const letter = e.key.toUpperCase();
+    if (['A','B','C','D'].includes(letter)) {
+      // 找到当前最近的 MCQ 题目卡片，或第一个未作答的 MCQ
+      let card = null;
+      if (ae && ae.closest) card = ae.closest('.question-card[data-q^="mcq"]');
+      if (!card) {
+        // 找第一个没有 .answered 的 MCQ 卡片
+        card = document.querySelector('.question-card[data-q^="mcq"]:not(.answered)');
+      }
+      if (card) {
+        const opt = Array.from(card.querySelectorAll('.mcq-option')).find(o => {
+          const oc = o.getAttribute('onclick') || '';
+          const m = oc.match(/'([A-D])'/);
+          return m && m[1] === letter;
+        });
+        if (opt) opt.click();
+      }
+    }
+  }
+});
+
 window.addEventListener('DOMContentLoaded', () => {
-  loadState();
-  setupAutosave();
+  loadState();    // 先恢复用户保存的作答
+  initAnswers(); // 再预填剩余空白的输入框（不会覆盖已有值）
 });
 </script>
 

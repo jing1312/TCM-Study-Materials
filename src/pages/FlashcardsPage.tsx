@@ -92,7 +92,7 @@ export function FlashcardsPage() {
   const [editorError, setEditorError] = useState('');
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
   const isEmbedded = isEmbeddedWindow();
-  const navHidden = useAutoHideOnScroll(48, !isEmbedded);
+  const navHidden = useAutoHideOnScroll(48, true);
   const showBackToTop = !isEmbedded;
 
   const normalizedQuery = query.trim().toLocaleLowerCase();
@@ -216,16 +216,20 @@ export function FlashcardsPage() {
     setEditorError('');
   }, [chapter]);
 
-  const openEditCard = useCallback((card: StudyCard) => {
-    setEditor({
-      mode: 'edit',
-      id: card.id,
-      ch: card.ch,
-      front: card.front,
-      answer: cardBackToEditableText(card.back)
-    });
-    setEditorError('');
-  }, []);
+  const saveCardEdit = useCallback((id: number, front: string, back: string) => {
+    const isCustom = cardLibrary.customCards.some((c) => c.id === id);
+    if (isCustom) {
+      setCardLibrary((current) => ({
+        ...current,
+        customCards: current.customCards.map((c) => c.id === id ? { ...c, front, back } : c),
+      }));
+    } else {
+      setCardLibrary((current) => ({
+        ...current,
+        editedCards: { ...current.editedCards, [id]: { ch: cards.find((c) => c.id === id)?.ch ?? 12, front, back } },
+      }));
+    }
+  }, [cardLibrary.customCards, setCardLibrary]);
 
   const closeEditor = useCallback(() => {
     setEditor(null);
@@ -448,7 +452,7 @@ export function FlashcardsPage() {
                 status={mastery[card.id]}
                 onSetStatus={setCardMastery}
                 onClearStatus={clearCardMastery}
-                onEdit={openEditCard}
+                onSaveEdit={saveCardEdit}
                 onDelete={deleteCard}
               />
             ))}
@@ -472,12 +476,12 @@ export function FlashcardsPage() {
         ) : null}
       </section>
 
-      {editor ? (
+      {editor && editor.mode === 'add' ? (
         <div className="card-editor-backdrop" role="presentation">
           <form className="card-editor-panel" onSubmit={saveEditorCard}>
             <div className="card-editor-head">
               <div>
-                <h2>{editor.mode === 'add' ? '新增卡片' : '修改卡片'}</h2>
+                <h2>新增卡片</h2>
                 <p>内容会保存在当前浏览器</p>
               </div>
               <button className="icon-button h-9 w-9" type="button" onClick={closeEditor} title="关闭" aria-label="关闭">
