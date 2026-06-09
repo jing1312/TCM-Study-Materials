@@ -515,10 +515,10 @@ input:focus-visible {
 }
 
 .flashcard.is-mastered {
-  --card-back-ink: 22 92 77;
-  --status-main: 142 202 184;
-  --status-strong: 39 132 112;
-  --status-soft: 239 250 247;
+  --card-back-ink: 18 100 83;
+  --status-main: 112 210 181;
+  --status-strong: 20 134 106;
+  --status-soft: 236 252 246;
 }
 
 .flashcard.is-unmastered {
@@ -742,8 +742,13 @@ input:focus-visible {
 }
 
 .flashcard.is-mastered .success-button {
-  background: rgb(39 132 112);
-  box-shadow: none;
+  background: rgb(20 134 106);
+  box-shadow: 0 2px 6px rgb(20 134 106 / 0.14);
+}
+
+.flashcard.is-mastered .success-button:hover {
+  background: rgb(15 122 96);
+  transform: translateY(-1px);
 }
 
 .warning-button {

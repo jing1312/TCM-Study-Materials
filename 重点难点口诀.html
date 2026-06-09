@@ -58,6 +58,7 @@ table th { background: linear-gradient(135deg, #e2efff, #f1edff) !important; col
 html, body { overflow-x: clip; }
 table { max-width: 100%; }
 section { max-width: 100%; }
+.overflow-x-auto .table-center-column { text-align: center; }
 @media (max-width: 640px) {
   body { min-width: 0; }
   .sticky-nav > div { align-items: flex-start; gap: 0.55rem; }
@@ -101,7 +102,11 @@ section { max-width: 100%; }
     white-space: normal;
     overflow-wrap: break-word;
     word-break: normal;
-    vertical-align: top;
+    vertical-align: middle;
+  }
+  .overflow-x-auto th {
+    text-align: center;
+    white-space: nowrap;
   }
   .overflow-x-auto th { padding: 0.58rem 0.7rem !important; }
   .overflow-x-auto td { padding: 0.55rem 0.7rem !important; }
@@ -991,6 +996,28 @@ function toggleSection(id) {
 </footer>
 
 <script>
+(function () {
+  const centerHeaders = new Set([
+    '序号', '模块', '五脏', '五行', '五行/颜色', '脏', '腑', '季节', '颜色', '情志',
+    '气名', '关系组', '口诀关键词', '腑名', '经脉类别', '走向', '邪气', '神候',
+    '面色', '类别', '类型', '疼痛性质', '对应证型', '概念', '七情', '味', '口诀',
+    '组成', '八法'
+  ]);
+  const punctuationPattern = /[，。；：、,.;:]/;
+
+  document.querySelectorAll('.overflow-x-auto table').forEach((table) => {
+    const headers = Array.from(table.querySelectorAll('thead th')).map((th) => th.textContent.trim());
+    headers.forEach((header, columnIndex) => {
+      const cells = Array.from(table.querySelectorAll('tbody tr')).map((row) => row.children[columnIndex]).filter(Boolean);
+      const values = cells.map((cell) => cell.textContent.trim());
+      const isCompactColumn = values.length > 0 && values.every((text) => text && text.length <= 8 && !punctuationPattern.test(text));
+
+      if (!centerHeaders.has(header) && !isCompactColumn) return;
+      cells.forEach((cell) => cell.classList.add('table-center-column'));
+    });
+  });
+})();
+
 (function () {
   function isEmbeddedWindow() {
     try {
