@@ -25,7 +25,6 @@ export const Flashcard = memo(function Flashcard({ card, status, onSetStatus, on
 
   // --- 选区保存/恢复机制 ---
   const savedRangeRef = useRef<Range | null>(null);
-  const toolbarClickedRef = useRef(false);
   const toolbarVisibleRef = useRef(false);
   const statusClass = status === 'mastered' ? 'is-mastered' : status === 'unmastered' ? 'is-unmastered' : '';
 
@@ -70,37 +69,15 @@ export const Flashcard = memo(function Flashcard({ card, status, onSetStatus, on
     window.getSelection()?.removeAllRanges();
   }
 
-  // 在可编辑区域按下鼠标时保存选区（防止工具栏点击丢失选区）
-  function handleEditableMouseDown() {
-    toolbarClickedRef.current = false;
-    const sel = window.getSelection();
-    if (sel && sel.rangeCount > 0) {
-      savedRangeRef.current = sel.getRangeAt(0).cloneRange();
-    }
-  }
-
-  // 检查文字选区并显示/隐藏工具栏
+  // 在可编辑区域 mouseUp 后检查选区（显示/隐藏工具栏）
   function handleMouseUp() {
     if (!editing) return;
-
-    // 如果点击了工具栏按钮，恢复保存的选区并跳过状态更新
-    if (toolbarClickedRef.current) {
-      toolbarClickedRef.current = false;
-      if (savedRangeRef.current) {
-        const sel = window.getSelection();
-        if (sel) {
-          sel.removeAllRanges();
-          sel.addRange(savedRangeRef.current);
-        }
-      }
-      return; // 不触发 setToolbar，避免无意义的重新渲染
-    }
-
     setTimeout(() => {
       const sel = window.getSelection();
       if (sel && sel.rangeCount > 0 && !sel.isCollapsed) {
-        const range = sel.getRangeAt(0);
-        const rect = range.getBoundingClientRect();
+        // 保存选区（工具栏按钮点击时需要恢复）
+        savedRangeRef.current = sel.getRangeAt(0).cloneRange();
+        const rect = sel.getRangeAt(0).getBoundingClientRect();
         const cardRect = cardRef.current?.getBoundingClientRect();
         if (cardRect) {
           toolbarVisibleRef.current = true;
@@ -111,7 +88,6 @@ export const Flashcard = memo(function Flashcard({ card, status, onSetStatus, on
           });
         }
       } else {
-        // 只在工具栏确实可见时才更新状态（避免无意义的重新渲染导致光标跳动）
         if (toolbarVisibleRef.current) {
           toolbarVisibleRef.current = false;
           setToolbar({ show: false, x: 0, y: 0 });
@@ -120,51 +96,63 @@ export const Flashcard = memo(function Flashcard({ card, status, onSetStatus, on
     }, 10);
   }
 
-  // 恢复之前保存的选区
-  function restoreSelection() {
-    if (savedRangeRef.current) {
-      const sel = window.getSelection();
-      if (sel) {
-        sel.removeAllRanges();
-        sel.addRange(savedRangeRef.current);
-      }
+  // 工具栏按钮 mousedown：阻止默认行为 + 保存当前选区
+  function handleFormatBtnMouseDown(e: React.MouseEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+    const sel = window.getSelection();
+    if (sel && sel.rangeCount > 0 && !sel.isCollapsed) {
+      savedRangeRef.current = sel.getRangeAt(0).cloneRange();
     }
   }
 
-  // 格式命令：先恢复选区，再执行格式操作
+  // 恢复选区并执行格式命令
+  // 格式按钮：先恢复选区再判断 toggle
   function applyBold() {
-    restoreSelection();
+    const range = savedRangeRef.current;
+    if (range) {
+      const sel = window.getSelection();
+      if (sel) { sel.removeAllRanges(); sel.addRange(range); }
+    }
     document.execCommand('bold', false);
+    const sel2 = window.getSelection();
+    if (sel2 && sel2.rangeCount > 0 && !sel2.isCollapsed) savedRangeRef.current = sel2.getRangeAt(0).cloneRange();
   }
 
   function applyBlue() {
-    restoreSelection();
-    const color = document.queryCommandValue('foreColor');
-    if (color === 'rgb(37, 99, 235)' || color === '#2563eb') {
-      document.execCommand('foreColor', false, '#1e293b');
-    } else {
-      document.execCommand('foreColor', false, '#2563eb');
+    const range = savedRangeRef.current;
+    if (range) {
+      const sel = window.getSelection();
+      if (sel) { sel.removeAllRanges(); sel.addRange(range); }
     }
+    const color = document.queryCommandValue('foreColor');
+    document.execCommand('foreColor', false, (color === 'rgb(37, 99, 235)' || color === '#2563eb') ? '#1e293b' : '#2563eb');
+    const sel2 = window.getSelection();
+    if (sel2 && sel2.rangeCount > 0 && !sel2.isCollapsed) savedRangeRef.current = sel2.getRangeAt(0).cloneRange();
   }
 
   function applyRed() {
-    restoreSelection();
-    const color = document.queryCommandValue('foreColor');
-    if (color === 'rgb(220, 38, 38)' || color === '#dc2626') {
-      document.execCommand('foreColor', false, '#1e293b');
-    } else {
-      document.execCommand('foreColor', false, '#dc2626');
+    const range = savedRangeRef.current;
+    if (range) {
+      const sel = window.getSelection();
+      if (sel) { sel.removeAllRanges(); sel.addRange(range); }
     }
+    const color = document.queryCommandValue('foreColor');
+    document.execCommand('foreColor', false, (color === 'rgb(220, 38, 38)' || color === '#dc2626') ? '#1e293b' : '#dc2626');
+    const sel2 = window.getSelection();
+    if (sel2 && sel2.rangeCount > 0 && !sel2.isCollapsed) savedRangeRef.current = sel2.getRangeAt(0).cloneRange();
   }
 
   function applyHighlight() {
-    restoreSelection();
-    const bg = document.queryCommandValue('hiliteColor') || document.queryCommandValue('backColor');
-    if (bg === 'rgb(253, 224, 71)' || bg === '#fde047' || bg === 'yellow') {
-      document.execCommand('hiliteColor', false, 'transparent');
-    } else {
-      document.execCommand('hiliteColor', false, '#fde047');
+    const range = savedRangeRef.current;
+    if (range) {
+      const sel = window.getSelection();
+      if (sel) { sel.removeAllRanges(); sel.addRange(range); }
     }
+    const bg = document.queryCommandValue('hiliteColor') || document.queryCommandValue('backColor');
+    document.execCommand('hiliteColor', false, (bg === 'rgb(253, 224, 71)' || bg === '#fde047' || bg === 'yellow') ? 'transparent' : '#fde047');
+    const sel2 = window.getSelection();
+    if (sel2 && sel2.rangeCount > 0 && !sel2.isCollapsed) savedRangeRef.current = sel2.getRangeAt(0).cloneRange();
   }
 
   // Close toolbar when clicking outside
@@ -193,21 +181,17 @@ export const Flashcard = memo(function Flashcard({ card, status, onSetStatus, on
           ref={toolbarRef}
           className="flashcard-format-toolbar"
           style={{ left: toolbar.x, top: toolbar.y }}
-          onMouseDown={(e) => {
-            e.preventDefault(); // 防止失去焦点和选区
-            toolbarClickedRef.current = true; // 标记为工具栏点击
-          }}
         >
-          <button type="button" className="fmt-btn fmt-bold" onClick={applyBold} title="加粗 (再点取消)">
+          <button type="button" className="fmt-btn fmt-bold" onMouseDown={handleFormatBtnMouseDown} onClick={applyBold} title="加粗 (再点取消)">
             <strong>B</strong>
           </button>
-          <button type="button" className="fmt-btn fmt-blue" onClick={applyBlue} title="蓝色字体 (再点取消)">
+          <button type="button" className="fmt-btn fmt-blue" onMouseDown={handleFormatBtnMouseDown} onClick={applyBlue} title="蓝色字体 (再点取消)">
             A
           </button>
-          <button type="button" className="fmt-btn fmt-red" onClick={applyRed} title="红色字体 (再点取消)">
+          <button type="button" className="fmt-btn fmt-red" onMouseDown={handleFormatBtnMouseDown} onClick={applyRed} title="红色字体 (再点取消)">
             A
           </button>
-          <button type="button" className="fmt-btn fmt-highlight" onClick={applyHighlight} title="黄色高亮 (再点取消)">
+          <button type="button" className="fmt-btn fmt-highlight" onMouseDown={handleFormatBtnMouseDown} onClick={applyHighlight} title="黄色高亮 (再点取消)">
             <span style={{ background: '#fde047', padding: '0 3px', borderRadius: 2 }}>A</span>
           </button>
         </div>
@@ -230,7 +214,6 @@ export const Flashcard = memo(function Flashcard({ card, status, onSetStatus, on
               className="flashcard-question"
               contentEditable={editing}
               suppressContentEditableWarning
-              onMouseDown={handleEditableMouseDown}
               onMouseUp={handleMouseUp}
               onClick={(e) => editing && e.stopPropagation()}
             />
@@ -250,7 +233,6 @@ export const Flashcard = memo(function Flashcard({ card, status, onSetStatus, on
                 className="flashcard-answer"
                 contentEditable={editing}
                 suppressContentEditableWarning
-                onMouseDown={handleEditableMouseDown}
                 onMouseUp={handleMouseUp}
                 onClick={(e) => editing && e.stopPropagation()}
               />
