@@ -12,23 +12,19 @@ export function useAutoHideOnScroll(hideAfter = 96, enabled = true) {
       return;
     }
 
-    const delta = 8;
     const showAtTop = 24;
     let lastTouchY: number | null = null;
     let animationFrameId = 0;
-    let lastInputDirection: 'up' | 'down' | null = null;
 
     function update() {
       const currentY = Math.max(window.scrollY, 0);
-      const diff = currentY - lastScrollY.current;
 
       if (currentY <= showAtTop) {
         setHidden(false);
-      } else if (diff > delta && currentY > hideAfter) {
+      } else if (currentY > lastScrollY.current && currentY > hideAfter) {
         setHidden(true);
-      } else if (diff < -delta && lastInputDirection === 'up') {
-        setHidden(false);
       }
+      // 向上滚动不再重新显示，只有回到顶部才出现
 
       lastScrollY.current = currentY;
       ticking.current = false;
@@ -44,21 +40,9 @@ export function useAutoHideOnScroll(hideAfter = 96, enabled = true) {
 
     function onWheel(event: WheelEvent) {
       if (event.deltaY > 12 && window.scrollY > hideAfter) {
-        lastInputDirection = 'down';
         setHidden(true);
-      } else if (event.deltaY < -12) {
-        lastInputDirection = 'up';
-        setHidden(false);
       }
-    }
-
-    function onKeyDown(event: KeyboardEvent) {
-      if (['ArrowDown', 'End', 'PageDown', 'Space'].includes(event.code)) {
-        lastInputDirection = 'down';
-      } else if (['ArrowUp', 'Home', 'PageUp'].includes(event.code)) {
-        lastInputDirection = 'up';
-        setHidden(false);
-      }
+      // 向上滚轮不再触发显示
     }
 
     function onTouchStart(event: TouchEvent) {
@@ -71,12 +55,9 @@ export function useAutoHideOnScroll(hideAfter = 96, enabled = true) {
 
       const touchDiff = currentTouchY - lastTouchY;
       if (touchDiff < -10 && window.scrollY > hideAfter) {
-        lastInputDirection = 'down';
         setHidden(true);
-      } else if (touchDiff > 10) {
-        lastInputDirection = 'up';
-        setHidden(false);
       }
+      // 向下滑动不再触发显示
 
       lastTouchY = currentTouchY;
     }
@@ -84,13 +65,11 @@ export function useAutoHideOnScroll(hideAfter = 96, enabled = true) {
     lastScrollY.current = Math.max(window.scrollY, 0);
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('wheel', onWheel, { passive: true });
-    window.addEventListener('keydown', onKeyDown);
     window.addEventListener('touchstart', onTouchStart, { passive: true });
     window.addEventListener('touchmove', onTouchMove, { passive: true });
     return () => {
       window.removeEventListener('scroll', onScroll);
       window.removeEventListener('wheel', onWheel);
-      window.removeEventListener('keydown', onKeyDown);
       window.removeEventListener('touchstart', onTouchStart);
       window.removeEventListener('touchmove', onTouchMove);
       if (animationFrameId) window.cancelAnimationFrame(animationFrameId);

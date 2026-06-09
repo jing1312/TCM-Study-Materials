@@ -22,7 +22,21 @@ export const Flashcard = memo(function Flashcard({ card, status, onSetStatus, on
   const backRef = useRef<HTMLDivElement>(null);
   const cardRef = useRef<HTMLElement>(null);
   const toolbarRef = useRef<HTMLDivElement>(null);
+
+  // --- 选区保存/恢复机制 ---
+  const savedRangeRef = useRef<Range | null>(null);
+  const toolbarClickedRef = useRef(false);
+  const toolbarVisibleRef = useRef(false);
   const statusClass = status === 'mastered' ? 'is-mastered' : status === 'unmastered' ? 'is-unmastered' : '';
+
+  // --- 用 ref 管理 contentEditable 内容，避免 React 重新渲染干扰编辑 ---
+  useEffect(() => {
+    if (frontRef.current) frontRef.current.innerHTML = card.front;
+  }, [card.front]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
+    if (backRef.current) backRef.current.innerHTML = card.back;
+  }, [card.back]); // eslint-disable-line react-hooks/exhaustive-deps
 
   function toggleFlipped() {
     if (editing) return;
@@ -51,12 +65,36 @@ export const Flashcard = memo(function Flashcard({ card, status, onSetStatus, on
     onSaveEdit(card.id, frontText, backText);
     setEditing(false);
     setToolbar({ show: false, x: 0, y: 0 });
+    toolbarVisibleRef.current = false;
     window.getSelection()?.removeAllRanges();
   }
 
-  // Check text selection and show toolbar
+  // 在可编辑区域按下鼠标时保存选区（防止工具栏点击丢失选区）
+  function handleEditableMouseDown() {
+    toolbarClickedRef.current = false;
+    const sel = window.getSelection();
+    if (sel && sel.rangeCount > 0) {
+      savedRangeRef.current = sel.getRangeAt(0).cloneRange();
+    }
+  }
+
+  // 检查文字选区并显示/隐藏工具栏
   function handleMouseUp() {
     if (!editing) return;
+
+    // 如果点击了工具栏按钮，恢复保存的选区并跳过状态更新
+    if (toolbarClickedRef.current) {
+      toolbarClickedRef.current = false;
+      if (savedRangeRef.current) {
+        const sel = window.getSelection();
+        if (sel) {
+          sel.removeAllRanges();
+          sel.addRange(savedRangeRef.current);
+        }
+      }
+      return; // 不触发 setToolbar，避免无意义的重新渲染
+    }
+
     setTimeout(() => {
       const sel = window.getSelection();
       if (sel && sel.rangeCount > 0 && !sel.isCollapsed) {
@@ -64,6 +102,7 @@ export const Flashcard = memo(function Flashcard({ card, status, onSetStatus, on
         const rect = range.getBoundingClientRect();
         const cardRect = cardRef.current?.getBoundingClientRect();
         if (cardRect) {
+          toolbarVisibleRef.current = true;
           setToolbar({
             show: true,
             x: rect.left + rect.width / 2 - cardRect.left,
@@ -71,68 +110,59 @@ export const Flashcard = memo(function Flashcard({ card, status, onSetStatus, on
           });
         }
       } else {
-        setToolbar({ show: false, x: 0, y: 0 });
+        // 只在工具栏确实可见时才更新状态（避免无意义的重新渲染导致光标跳动）
+        if (toolbarVisibleRef.current) {
+          toolbarVisibleRef.current = false;
+          setToolbar({ show: false, x: 0, y: 0 });
+        }
       }
     }, 10);
   }
 
-  // Format commands
-  function applyFormat(command: string, value?: string) {
-    document.execCommand(command, false, value);
-    // Keep focus on the editable area
-    const sel = window.getSelection();
-    if (sel && sel.rangeCount > 0) {
-      // Selection stays, toolbar stays
+  // 恢复之前保存的选区
+  function restoreSelection() {
+    if (savedRangeRef.current) {
+      const sel = window.getSelection();
+      if (sel) {
+        sel.removeAllRanges();
+        sel.addRange(savedRangeRef.current);
+      }
     }
   }
 
+  // 格式命令：先恢复选区，再执行格式操作
   function applyBold() {
-    // Toggle bold: check if current selection is already bold
-    const sel = window.getSelection();
-    if (sel && sel.rangeCount > 0) {
-      const isBold = document.queryCommandState('bold');
-      if (isBold) {
-        document.execCommand('bold', false);
-      } else {
-        document.execCommand('bold', false);
-      }
-    }
+    restoreSelection();
+    document.execCommand('bold', false);
   }
 
   function applyBlue() {
-    const sel = window.getSelection();
-    if (sel && sel.rangeCount > 0) {
-      const color = document.queryCommandValue('foreColor');
-      // If already blue, remove (reset to black)
-      if (color === 'rgb(37, 99, 235)' || color === '#2563eb') {
-        document.execCommand('foreColor', false, '#1e293b');
-      } else {
-        document.execCommand('foreColor', false, '#2563eb');
-      }
+    restoreSelection();
+    const color = document.queryCommandValue('foreColor');
+    if (color === 'rgb(37, 99, 235)' || color === '#2563eb') {
+      document.execCommand('foreColor', false, '#1e293b');
+    } else {
+      document.execCommand('foreColor', false, '#2563eb');
     }
   }
 
   function applyRed() {
-    const sel = window.getSelection();
-    if (sel && sel.rangeCount > 0) {
-      const color = document.queryCommandValue('foreColor');
-      if (color === 'rgb(220, 38, 38)' || color === '#dc2626') {
-        document.execCommand('foreColor', false, '#1e293b');
-      } else {
-        document.execCommand('foreColor', false, '#dc2626');
-      }
+    restoreSelection();
+    const color = document.queryCommandValue('foreColor');
+    if (color === 'rgb(220, 38, 38)' || color === '#dc2626') {
+      document.execCommand('foreColor', false, '#1e293b');
+    } else {
+      document.execCommand('foreColor', false, '#dc2626');
     }
   }
 
   function applyHighlight() {
-    const sel = window.getSelection();
-    if (sel && sel.rangeCount > 0) {
-      const bg = document.queryCommandValue('hiliteColor') || document.queryCommandValue('backColor');
-      if (bg === 'rgb(253, 224, 71)' || bg === '#fde047' || bg === 'yellow') {
-        document.execCommand('hiliteColor', false, 'transparent');
-      } else {
-        document.execCommand('hiliteColor', false, '#fde047');
-      }
+    restoreSelection();
+    const bg = document.queryCommandValue('hiliteColor') || document.queryCommandValue('backColor');
+    if (bg === 'rgb(253, 224, 71)' || bg === '#fde047' || bg === 'yellow') {
+      document.execCommand('hiliteColor', false, 'transparent');
+    } else {
+      document.execCommand('hiliteColor', false, '#fde047');
     }
   }
 
@@ -143,7 +173,10 @@ export const Flashcard = memo(function Flashcard({ card, status, onSetStatus, on
       if (toolbarRef.current && !toolbarRef.current.contains(e.target as Node)) {
         const sel = window.getSelection();
         if (!sel || sel.isCollapsed) {
-          setToolbar({ show: false, x: 0, y: 0 });
+          if (toolbarVisibleRef.current) {
+            toolbarVisibleRef.current = false;
+            setToolbar({ show: false, x: 0, y: 0 });
+          }
         }
       }
     }
@@ -159,7 +192,10 @@ export const Flashcard = memo(function Flashcard({ card, status, onSetStatus, on
           ref={toolbarRef}
           className="flashcard-format-toolbar"
           style={{ left: toolbar.x, top: toolbar.y }}
-          onMouseDown={(e) => e.preventDefault()}
+          onMouseDown={(e) => {
+            e.preventDefault(); // 防止失去焦点和选区
+            toolbarClickedRef.current = true; // 标记为工具栏点击
+          }}
         >
           <button type="button" className="fmt-btn fmt-bold" onClick={applyBold} title="加粗 (再点取消)">
             <strong>B</strong>
@@ -193,9 +229,9 @@ export const Flashcard = memo(function Flashcard({ card, status, onSetStatus, on
               className="flashcard-question"
               contentEditable={editing}
               suppressContentEditableWarning
+              onMouseDown={handleEditableMouseDown}
               onMouseUp={handleMouseUp}
               onClick={(e) => editing && e.stopPropagation()}
-              dangerouslySetInnerHTML={{ __html: card.front }}
             />
             {!editing && (
               <div className="flashcard-flip-hint flex items-center justify-center gap-1.5 text-xs font-medium">
@@ -213,9 +249,9 @@ export const Flashcard = memo(function Flashcard({ card, status, onSetStatus, on
                 className="flashcard-answer"
                 contentEditable={editing}
                 suppressContentEditableWarning
+                onMouseDown={handleEditableMouseDown}
                 onMouseUp={handleMouseUp}
                 onClick={(e) => editing && e.stopPropagation()}
-                dangerouslySetInnerHTML={{ __html: card.back }}
               />
             ) : (
               <div className="flashcard-answer flashcard-answer-placeholder">翻开后显示答案</div>
