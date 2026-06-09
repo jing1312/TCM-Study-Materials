@@ -1372,19 +1372,29 @@ function _restoreRange() {
   }
 }
 
-function _editMouseUpHandler() {
+let _selChangeTimer = null;
+function _editSelectionChangeHandler() {
   if (!editMode) return;
-  setTimeout(() => {
+  clearTimeout(_selChangeTimer);
+  _selChangeTimer = setTimeout(() => {
     const sel = window.getSelection();
     if (sel && sel.rangeCount > 0 && !sel.isCollapsed) {
+      // Check if selection is inside an editable area
+      const anchorEditable = sel.anchorNode && sel.anchorNode.parentElement && sel.anchorNode.parentElement.closest('.answer-reveal.editable');
+      if (!anchorEditable) {
+        if (_editToolbarVisible) _hideFormatToolbar();
+        return;
+      }
       _editSavedRange = sel.getRangeAt(0).cloneRange();
       const rect = _editSavedRange.getBoundingClientRect();
+      if (rect.width === 0 && rect.height === 0) {
+        if (_editToolbarVisible) _hideFormatToolbar();
+        return;
+      }
       const tb = document.getElementById('quiz-format-toolbar');
-      // Position toolbar above selection (viewport-relative for position:fixed)
       const tbHeight = 40;
       let top = rect.top - tbHeight - 6;
       let left = rect.left + (rect.width / 2) - (tb.offsetWidth || 140) / 2;
-      // Clamp: if toolbar would go above viewport, show below selection
       if (top < 4) top = rect.bottom + 6;
       if (left < 4) left = 4;
       if (left + 160 > window.innerWidth) left = window.innerWidth - 164;
@@ -1392,7 +1402,7 @@ function _editMouseUpHandler() {
     } else {
       if (_editToolbarVisible) _hideFormatToolbar();
     }
-  }, 10);
+  }, 120);
 }
 
 function _editBtnMouseDown(e) {
@@ -1470,8 +1480,10 @@ function _initEditToolbarListeners() {
   if (_editListenersAttached) return;
   _editListenersAttached = true;
   
-  // Attach mouseup to document for selection detection in editable areas
-  document.addEventListener('mouseup', _editMouseUpHandler);
+  // Use selectionchange — more reliable for contentEditable than mouseup alone
+  document.addEventListener('selectionchange', _editSelectionChangeHandler);
+  // Keep mouseup as backup trigger
+  document.addEventListener('mouseup', _editSelectionChangeHandler);
   
   // Attach mousedown to each format button (preventDefault to keep selection)
   ['fmt-bold-btn', 'fmt-blue-btn', 'fmt-red-btn', 'fmt-highlight-btn'].forEach(id => {
@@ -1503,7 +1515,8 @@ function _destroyEditToolbarListeners() {
   if (!_editListenersAttached) return;
   _editListenersAttached = false;
   
-  document.removeEventListener('mouseup', _editMouseUpHandler);
+  document.removeEventListener('selectionchange', _editSelectionChangeHandler);
+  document.removeEventListener('mouseup', _editSelectionChangeHandler);
   document.removeEventListener('mousedown', _editDocMouseDown);
   
   ['fmt-bold-btn', 'fmt-blue-btn', 'fmt-red-btn', 'fmt-highlight-btn'].forEach(id => {
