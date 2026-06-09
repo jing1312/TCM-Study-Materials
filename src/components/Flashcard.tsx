@@ -35,8 +35,9 @@ export const Flashcard = memo(function Flashcard({ card, status, onSetStatus, on
   }, [card.front]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
+    // hasSeenBack 控制背面 div 是否渲染，必须在依赖中以确保 ref 可用时设置内容
     if (backRef.current) backRef.current.innerHTML = card.back;
-  }, [card.back]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [card.back, hasSeenBack]); // eslint-disable-line react-hooks/exhaustive-deps
 
   function toggleFlipped() {
     if (editing) return;

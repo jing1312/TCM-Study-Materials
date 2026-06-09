@@ -1459,6 +1459,68 @@ function initAnswers() {
   }
 }
 
+// === 键盘快捷键 ===
+document.addEventListener('keydown', function(e) {
+  const ae = document.activeElement;
+  const isInput = ae && (ae.tagName === 'INPUT' || ae.tagName === 'TEXTAREA');
+
+  // Enter: 跳到下一个输入框
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    const inputs = Array.from(document.querySelectorAll('input[type="text"]'));
+    if (inputs.length === 0) return;
+    const idx = inputs.indexOf(ae);
+    const next = inputs[idx + 1] || inputs[0];
+    next.focus();
+    next.scrollIntoView({behavior:'smooth', block:'center'});
+    return;
+  }
+
+  // ↑↓: 在题目之间跳转
+  if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+    e.preventDefault();
+    const cards = Array.from(document.querySelectorAll('.question-card'));
+    if (cards.length === 0) return;
+    let curIdx = -1;
+    if (ae) {
+      const curCard = ae.closest ? ae.closest('.question-card') : null;
+      if (curCard) curIdx = cards.indexOf(curCard);
+    }
+    let nextIdx;
+    if (e.key === 'ArrowUp') nextIdx = Math.max(0, curIdx - 1);
+    else nextIdx = Math.min(cards.length - 1, curIdx + 1);
+    const target = cards[nextIdx];
+    const focusable = target.querySelector('input[type="text"]') || target.querySelector('.mcq-option');
+    if (focusable) {
+      focusable.focus();
+      target.scrollIntoView({behavior:'smooth', block:'center'});
+    }
+    return;
+  }
+
+  // A/B/C/D: 选择选择题选项（仅在非输入状态时）
+  if (!isInput) {
+    const letter = e.key.toUpperCase();
+    if (['A','B','C','D'].includes(letter)) {
+      // 找到当前最近的 MCQ 题目卡片，或第一个未作答的 MCQ
+      let card = null;
+      if (ae && ae.closest) card = ae.closest('.question-card[data-q^="mcq"]');
+      if (!card) {
+        // 找第一个没有 .answered 的 MCQ 卡片
+        card = document.querySelector('.question-card[data-q^="mcq"]:not(.answered)');
+      }
+      if (card) {
+        const opt = Array.from(card.querySelectorAll('.mcq-option')).find(o => {
+          const oc = o.getAttribute('onclick') || '';
+          const m = oc.match(/'([A-D])'/);
+          return m && m[1] === letter;
+        });
+        if (opt) opt.click();
+      }
+    }
+  }
+});
+
 window.addEventListener('DOMContentLoaded', () => {
   loadState();    // 先恢复用户保存的作答
   initAnswers(); // 再预填剩余空白的输入框（不会覆盖已有值）
