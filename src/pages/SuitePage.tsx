@@ -1,9 +1,8 @@
 import { type SyntheticEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { CalendarDays, ClipboardList, Layers3, NotebookTabs } from 'lucide-react';
-import { useAutoHideOnScroll } from '../hooks/useAutoHideOnScroll';
 import { BackToTop } from '../components/BackToTop';
 
-const assetVersion = '20260608-tablet-nav-perf';
+const assetVersion = '20260608-ui-polish';
 
 const modules = [
   {
@@ -34,12 +33,13 @@ const modules = [
 
 export function SuitePage() {
   const [activeId, setActiveId] = useState(modules[0].id);
-  const navHidden = useAutoHideOnScroll(48);
   const [frameNavHidden, setFrameNavHidden] = useState(false);
+  const [frameScrollWindow, setFrameScrollWindow] = useState<Window | null>(null);
+  const [frameScrollVersion, setFrameScrollVersion] = useState(0);
   const frameCleanup = useRef<null | (() => void)>(null);
   const activeModule = useMemo(() => modules.find((module) => module.id === activeId) ?? modules[0], [activeId]);
   const activeHref = `${activeModule.href}?v=${assetVersion}`;
-  const navIsHidden = navHidden || frameNavHidden;
+  const navIsHidden = frameNavHidden;
 
   useEffect(() => {
     return () => frameCleanup.current?.();
@@ -49,69 +49,38 @@ export function SuitePage() {
     frameCleanup.current?.();
     frameCleanup.current = null;
     setFrameNavHidden(false);
+    setFrameScrollWindow(null);
 
     const frameWindow = event.currentTarget.contentWindow;
     if (!frameWindow) return;
+    setFrameScrollWindow(frameWindow);
+    setFrameScrollVersion((version) => version + 1);
 
-    let lastY = Math.max(frameWindow.scrollY || 0, 0);
     let ticking = false;
-    const delta = 8;
-    const showAtTop = 24;
-    const hideAfter = 48;
-    let lastTouchY: number | null = null;
+    const showAtTop = 8;
+    let animationFrameId = 0;
 
     function update() {
       const currentY = Math.max(frameWindow?.scrollY || 0, 0);
-      const diff = currentY - lastY;
-
-      if (currentY <= showAtTop) {
-        setFrameNavHidden(false);
-      } else if (diff > delta && currentY > hideAfter) {
-        setFrameNavHidden(true);
-      }
-
-      lastY = currentY;
+      setFrameNavHidden(currentY > showAtTop);
       ticking = false;
+      animationFrameId = 0;
     }
 
     function onScroll() {
       if (!ticking) {
-        frameWindow?.requestAnimationFrame(update);
+        animationFrameId = frameWindow?.requestAnimationFrame(update) ?? 0;
         ticking = true;
       }
     }
 
-    function onWheel(event: WheelEvent) {
-      if (event.deltaY > 12 && Math.max(frameWindow?.scrollY || 0, 0) > hideAfter) {
-        setFrameNavHidden(true);
-      }
-    }
-
-    function onTouchStart(event: TouchEvent) {
-      lastTouchY = event.touches[0]?.clientY ?? null;
-    }
-
-    function onTouchMove(event: TouchEvent) {
-      const currentTouchY = event.touches[0]?.clientY;
-      if (typeof currentTouchY !== 'number' || lastTouchY === null) return;
-
-      const touchDiff = currentTouchY - lastTouchY;
-      if (touchDiff < -10 && Math.max(frameWindow?.scrollY || 0, 0) > hideAfter) {
-        setFrameNavHidden(true);
-      }
-
-      lastTouchY = currentTouchY;
-    }
-
     frameWindow.addEventListener('scroll', onScroll, { passive: true });
-    frameWindow.addEventListener('wheel', onWheel, { passive: true });
-    frameWindow.addEventListener('touchstart', onTouchStart, { passive: true });
-    frameWindow.addEventListener('touchmove', onTouchMove, { passive: true });
+    update();
     frameCleanup.current = () => {
       frameWindow.removeEventListener('scroll', onScroll);
-      frameWindow.removeEventListener('wheel', onWheel);
-      frameWindow.removeEventListener('touchstart', onTouchStart);
-      frameWindow.removeEventListener('touchmove', onTouchMove);
+      if (animationFrameId) frameWindow.cancelAnimationFrame(animationFrameId);
+      ticking = false;
+      animationFrameId = 0;
     };
   }
 
@@ -150,7 +119,7 @@ export function SuitePage() {
 
       <iframe className="suite-frame" title={activeModule.label} src={activeHref} onLoad={handleFrameLoad} />
 
-      <BackToTop />
+      <BackToTop key={frameScrollVersion} scrollWindow={frameScrollWindow} />
     </main>
   );
 }

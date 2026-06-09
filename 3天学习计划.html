@@ -68,7 +68,7 @@
     align-items: center;
     gap: 0.35rem;
     width: max-content;
-    margin: 0.75rem 1rem 1rem auto;
+    margin: 0.85rem auto 1rem 1rem;
     border: 1px solid #d6e2f6;
     border-radius: 999px;
     background: rgba(255, 255, 255, 0.9);
@@ -77,6 +77,10 @@
     font-size: 0.75rem;
     font-weight: 700;
     box-shadow: 0 3px 8px rgba(25, 117, 255, 0.08);
+  }
+  .plan-block-check:hover {
+    border-color: #9DD7FC;
+    background: #f8fbff;
   }
   .plan-block-check.is-checked {
     border-color: #9DD7FC;
@@ -87,6 +91,14 @@
   .decorative-line { background: linear-gradient(90deg, transparent, #1975FF, transparent); height: 1px; }
   .kp-table th { font-family: 'Noto Serif SC', serif; }
   .kp-table td, .kp-table th { padding: 6px 10px; border: 1px solid #d6e2f6; }
+  .mobile-table-scroll {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-inline: contain;
+  }
   #mainNav {
     border-bottom: 1px solid rgba(214, 226, 246, 0.86) !important;
     background: rgba(255, 255, 255, 0.94) !important;
@@ -115,9 +127,6 @@
     background: rgba(213, 232, 249, 0.9) !important;
   }
   .nav-scrolled { background: rgba(255, 255, 255, 0.92) !important; }
-  ::-webkit-scrollbar { width: 8px; }
-  ::-webkit-scrollbar-track { background: #F5F7FF; }
-  ::-webkit-scrollbar-thumb { background: #1975FF; border-radius: 4px; }
   html, body { overflow-x: clip; }
   table { max-width: 100%; }
   .check-animate { min-width: 0; }
@@ -156,11 +165,11 @@
   @media (max-width: 640px) {
     body { min-width: 0; }
     #mainNav > div { flex-wrap: wrap; align-items: center; gap: 0.5rem; padding: 0.65rem 1rem; }
-    #mainNav > div > div:first-child { min-width: 0; flex: 1 1 100%; }
-    #mainNav > div > div:first-child span { font-size: 1rem; white-space: normal; }
+    #mainNav > div > div:first-child { min-width: 0; flex: 1 1 0; }
+    #mainNav > div > div:first-child span { font-size: 1rem; white-space: nowrap; }
     #mainNav > div > div:nth-child(2) { order: 3; width: 100%; justify-content: space-between; gap: 0.25rem; font-size: 0.78rem; }
-    #mainNav button { order: 2; margin-left: auto; }
-    header { padding-top: 8.25rem !important; padding-bottom: 1.75rem !important; }
+    #mainNav button { order: 2; align-self: center; margin-left: auto; }
+    header { padding-top: 6.75rem !important; padding-bottom: 1.75rem !important; }
     header .absolute.top-8 { display: none; }
     header h1 { font-size: 2rem !important; line-height: 1.15; }
     header h2 { font-size: 1.35rem !important; }
@@ -182,9 +191,7 @@
     .font-serif-cn.text-2xl { font-size: 1.28rem !important; line-height: 1.35; }
     .font-serif-cn.text-lg { font-size: 1rem !important; line-height: 1.35; }
     .card-hover p,
-    .check-animate span,
-    .kp-table td,
-    #summary table td { overflow-wrap: anywhere; }
+    .check-animate span { overflow-wrap: anywhere; }
     .tag-float { animation: none; white-space: normal; }
     .fade-in { opacity: 1; transform: none; }
     .card-hover .flex.items-center.gap-2,
@@ -194,33 +201,35 @@
     .check-animate .ml-auto { margin-left: 1.9rem !important; }
     .grid.grid-cols-3,
     .grid.grid-cols-4 { grid-template-columns: 1fr !important; }
-    .kp-table,
-    #summary table { display: block; border: 0; }
-    .kp-table thead,
-    #summary table thead { display: none; }
-    .kp-table tbody,
-    .kp-table tr,
-    .kp-table td,
-    #summary table tbody,
-    #summary table tfoot,
-    #summary table tr,
-    #summary table td { display: block; width: 100% !important; }
-    .kp-table tr,
-    #summary table tbody tr,
-    #summary table tfoot tr {
-      margin-bottom: 0.85rem;
-      overflow: hidden;
-      border: 1px solid #d6e2f6;
-      border-radius: 0.75rem;
-      background: #fff;
-      box-shadow: 0 2px 8px rgba(25, 117, 255, 0.06);
+    .mobile-table-scroll { margin-bottom: 0.25rem; padding-bottom: 0.15rem; }
+    .mobile-table-scroll .kp-table,
+    #summary .mobile-table-scroll table {
+      width: 100%;
+      min-width: 58rem;
+      max-width: none;
+      table-layout: auto;
+      border-radius: 0 !important;
+      overflow: visible !important;
     }
-    .kp-table td,
-    #summary table td { border: 0 !important; border-bottom: 1px solid #edf7f3 !important; padding: 0.55rem 0.75rem !important; text-align: left !important; }
-    .kp-table td:last-child,
-    #summary table td:last-child { border-bottom: 0 !important; }
-    .plan-check-cell { display: flex !important; align-items: center; justify-content: flex-start; width: 100% !important; background: #f0fdfa; }
-    .plan-check-cell::after { content: "完成"; margin-left: 0.45rem; color: #1975FF; font-size: 0.78rem; font-weight: 700; }
+    #summary .mobile-table-scroll table { min-width: 56rem; }
+    .mobile-table-scroll th,
+    .mobile-table-scroll td {
+      white-space: normal;
+      overflow-wrap: break-word;
+      word-break: normal;
+      vertical-align: top;
+    }
+    .mobile-table-scroll th { padding: 0.58rem 0.7rem !important; }
+    .mobile-table-scroll td { padding: 0.55rem 0.7rem !important; }
+    .plan-check-cell {
+      display: table-cell !important;
+      width: 3.5rem !important;
+      min-width: 3.5rem;
+      text-align: center !important;
+      vertical-align: middle !important;
+      background: transparent;
+    }
+    .plan-check-cell::after { content: none; }
     .plan-block-check { width: calc(100% - 2rem); justify-content: center; margin: 0.75rem 1rem 1rem; }
   }
   @media (max-width: 380px) {
@@ -232,8 +241,8 @@
     header .decorative-line { width: 8rem !important; }
     .card-hover > div,
     .day-section > div:first-child { padding: 0.85rem !important; }
-    .kp-table td,
-    #summary table td { padding: 0.5rem 0.65rem !important; }
+    .mobile-table-scroll th,
+    .mobile-table-scroll td { padding: 0.5rem 0.65rem !important; }
   }
   @media (prefers-reduced-motion: reduce) {
     *,
@@ -867,6 +876,18 @@
     sync();
   }
 
+  function getPlanBlockTaskInputs(card) {
+    return Array.from(card.querySelectorAll('.plan-check, .check-animate input[type="checkbox"]'));
+  }
+
+  function syncPlanBlockFromTasks(card, input, key, label) {
+    const taskInputs = getPlanBlockTaskInputs(card);
+    const isComplete = taskInputs.length > 0 && taskInputs.every(task => task.checked);
+    input.checked = isComplete;
+    localStorage.setItem(key, isComplete.toString());
+    label.classList.toggle('is-checked', isComplete);
+  }
+
   function addPlanRowChecks() {
     document.querySelectorAll('.kp-table').forEach((table, tableIndex) => {
       const headRow = table.querySelector('thead tr');
@@ -897,6 +918,8 @@
   function addPlanBlockChecks() {
     document.querySelectorAll('.card-hover').forEach((card, index) => {
       if (card.querySelector('.plan-block-check')) return;
+      const taskInputs = getPlanBlockTaskInputs(card);
+      if (!taskInputs.length) return;
       const labelText = card.querySelector('.font-serif-cn')?.textContent || card.textContent || 'block';
       const label = document.createElement('label');
       label.className = 'plan-block-check no-print';
@@ -907,7 +930,44 @@
       label.appendChild(input);
       label.appendChild(document.createTextNode('完成'));
       card.appendChild(label);
-      wireCheckbox(input, planStorageKey('block', index, labelText), label);
+      const key = planStorageKey('block', index, labelText);
+      const savedBlockChecked = localStorage.getItem(key) === 'true';
+
+      if (savedBlockChecked && !taskInputs.every(task => task.checked)) {
+        taskInputs.forEach(task => {
+          if (!task.checked) {
+            task.checked = true;
+            task.dispatchEvent(new Event('change', { bubbles: true }));
+          }
+        });
+      }
+
+      taskInputs.forEach(task => {
+        task.addEventListener('change', () => syncPlanBlockFromTasks(card, input, key, label));
+      });
+
+      input.addEventListener('change', () => {
+        const shouldComplete = input.checked;
+        taskInputs.forEach(task => {
+          if (task.checked !== shouldComplete) {
+            task.checked = shouldComplete;
+            task.dispatchEvent(new Event('change', { bubbles: true }));
+          }
+        });
+        syncPlanBlockFromTasks(card, input, key, label);
+      });
+
+      syncPlanBlockFromTasks(card, input, key, label);
+    });
+  }
+
+  function setupResponsiveTables() {
+    document.querySelectorAll('.kp-table, #summary table').forEach(table => {
+      if (table.closest('.mobile-table-scroll') || !table.parentNode) return;
+      const wrapper = document.createElement('div');
+      wrapper.className = 'mobile-table-scroll';
+      table.parentNode.insertBefore(wrapper, table);
+      wrapper.appendChild(table);
     });
   }
 
@@ -922,6 +982,13 @@
     window.addEventListener('DOMContentLoaded', renderLucideIcons, { once: true });
   }
   const nav = document.getElementById('mainNav');
+  function isEmbeddedWindow() {
+    try {
+      return window.self !== window.top;
+    } catch {
+      return true;
+    }
+  }
   function setupAutoHideNav(navEl) {
     if (!navEl) return;
     let lastY = Math.max(window.scrollY || 0, 0);
@@ -955,7 +1022,9 @@
     }, { passive: true });
     updateNav();
   }
-  setupAutoHideNav(nav);
+  if (!isEmbeddedWindow()) {
+    setupAutoHideNav(nav);
+  }
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -980,10 +1049,11 @@
   }, { threshold: 0.2 });
   document.querySelectorAll('.day-section').forEach(el => progressObserver.observe(el));
   addPlanRowChecks();
-  addPlanBlockChecks();
+  setupResponsiveTables();
   document.querySelectorAll('.check-animate input[type="checkbox"]').forEach((cb, i) => {
     wireCheckbox(cb, 'tcm_check_' + i, cb.closest('.check-animate'));
   });
+  addPlanBlockChecks();
   document.querySelectorAll('nav a[href^="#"]').forEach(link => {
     link.addEventListener('click', (e) => {
       e.preventDefault();

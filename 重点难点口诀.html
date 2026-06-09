@@ -26,11 +26,34 @@ body {
 .sticky-nav { background: rgba(255,255,255,.94) !important; border-bottom: 1px solid rgba(214,226,246,.86) !important; box-shadow: 0 1px 10px rgba(25,117,255,.06) !important; transition: transform 240ms cubic-bezier(0.22, 1, 0.36, 1), opacity 240ms ease, box-shadow 240ms ease; will-change: transform; }
 .sticky-nav.nav-hidden { transform: translateY(calc(-100% - 0.5rem)); opacity: .96; pointer-events: none; }
 .sticky-nav a { border-color: rgba(214,226,246,.9) !important; border-radius: .5rem !important; transition: background-color .18s ease, border-color .18s ease, transform .18s cubic-bezier(.22,1,.36,1); }
+.sticky-nav .flex.gap-1 a { display: inline-flex; min-height: 2rem; align-items: center; justify-content: center; line-height: 1; }
 .sticky-nav a:hover { background: rgba(226,239,255,.78) !important; border-color: rgba(25,117,255,.35) !important; transform: translateY(-1px); }
 header { background: linear-gradient(135deg, rgba(251,253,255,.96), rgba(226,239,255,.9), rgba(241,237,255,.82)) !important; }
 main > section { border: 1px solid rgba(214,226,246,.88); box-shadow: 0 4px 14px rgba(25,117,255,.06) !important; }
 .toggle-btn { background: linear-gradient(135deg, rgba(226,239,255,.96), rgba(241,237,255,.88)) !important; transition: background-color .18s ease, opacity .18s ease; }
 .toggle-btn:hover { opacity: 1 !important; background: linear-gradient(135deg, rgba(213,232,249,.98), rgba(232,228,255,.92)) !important; }
+.toggle-btn > div { min-width: 0; display: flex; align-items: center; flex-wrap: wrap; row-gap: .35rem; }
+.module-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: max-content;
+  min-height: 1.5rem;
+  border: 1px solid rgba(25,117,255,.16);
+  border-radius: 999px;
+  padding: 0 .65rem;
+  background: rgba(226,239,255,.86);
+  color: var(--ink);
+  font-size: .75rem;
+  font-weight: 800;
+  line-height: 1;
+  vertical-align: middle;
+}
+.module-badge-mix { border-color: rgba(243,179,169,.44); background: rgba(255,244,241,.9); color: #9a3a2f; }
+.module-badge-focus { border-color: rgba(121,84,241,.22); background: rgba(241,237,255,.92); color: #4f3bb1; }
+.module-badge-info { border-color: rgba(25,117,255,.22); background: rgba(226,239,255,.92); color: #1557b8; }
+.module-badge-danger { border-color: rgba(220,38,38,.2); background: rgba(254,226,226,.88); color: #b91c1c; }
+.module-badge-warn { border-color: rgba(217,119,6,.22); background: rgba(254,243,199,.9); color: #92400e; }
 table th { background: linear-gradient(135deg, #e2efff, #f1edff) !important; color: var(--ink); }
 html, body { overflow-x: clip; }
 table { max-width: 100%; }
@@ -39,8 +62,9 @@ section { max-width: 100%; }
   body { min-width: 0; }
   .sticky-nav > div { align-items: flex-start; gap: 0.55rem; }
   .sticky-nav h1 { width: 100%; font-size: 1rem; line-height: 1.25; }
-  .sticky-nav .flex.gap-1 { width: 100%; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0.25rem; }
-  .sticky-nav a { min-width: 0; text-align: center; padding-left: 0.25rem !important; padding-right: 0.25rem !important; }
+  .sticky-nav .flex.gap-1 { width: 100%; display: grid; grid-template-columns: repeat(8, minmax(0, 1fr)); gap: 0.22rem; }
+  .sticky-nav a { min-width: 0; min-height: 1.8rem; text-align: center; padding-left: 0.1rem !important; padding-right: 0.1rem !important; font-size: 0.72rem; }
+  .sticky-nav .nav-dot { width: auto !important; height: auto !important; border-radius: .5rem !important; }
   header { padding: 2rem 1rem !important; }
   header h1 { font-size: 2rem !important; line-height: 1.15; }
   header p { font-size: 1rem !important; }
@@ -48,43 +72,47 @@ section { max-width: 100%; }
   main { padding: 1.25rem 1rem !important; }
   section { border-radius: 0.85rem !important; }
   .toggle-btn { align-items: flex-start; gap: 0.6rem; padding: 0.9rem 1rem !important; }
-  .toggle-btn > div { min-width: 0; display: flex; flex-wrap: wrap; gap: 0.35rem; }
+  .toggle-btn > div { gap: 0.35rem; }
   .toggle-btn .text-xl { font-size: 1.08rem !important; }
   .toggle-btn .text-lg { margin-left: 0 !important; font-size: 0.95rem !important; }
+  .module-badge { margin-left: 0 !important; }
   .collapsible-content { padding: 1rem !important; }
   .mnemonic-box { padding: 1rem; font-size: 1.02rem; line-height: 1.7; }
   .exam-tip ul { list-style-position: outside; padding-left: 1rem; }
   p.flex { flex-wrap: wrap; gap: 0.45rem !important; font-size: 0.95rem !important; }
-  .overflow-x-auto { overflow-x: visible; }
-  table { display: block; border: 0 !important; }
-  thead { display: none; }
-  tbody,
-  tr,
-  td { display: block; width: 100% !important; }
-  tr {
-    margin-bottom: 0.85rem;
-    overflow: hidden;
-    border: 1px solid #d8efe7;
-    border-radius: 0.75rem;
-    background: #fff;
-    box-shadow: 0 2px 8px rgba(25,117,255,0.06);
+  .overflow-x-auto {
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-inline: contain;
   }
-  td {
-    border: 0 !important;
-    border-bottom: 1px solid #edf7f3 !important;
-    padding: 0.6rem 0.75rem !important;
-    text-align: left !important;
-    overflow-wrap: anywhere;
+  .overflow-x-auto > table {
+    width: 100%;
+    min-width: 34rem;
+    max-width: none;
+    table-layout: auto;
   }
-  td:last-child { border-bottom: 0 !important; }
+  .overflow-x-auto > table:has(th:nth-child(5)) { min-width: 48rem; }
+  .overflow-x-auto > table:has(th:nth-child(8)) { min-width: 64rem; }
+  .overflow-x-auto > table:has(th:nth-child(10)) { min-width: 68rem; }
+  .overflow-x-auto th,
+  .overflow-x-auto td {
+    white-space: normal;
+    overflow-wrap: break-word;
+    word-break: normal;
+    vertical-align: top;
+  }
+  .overflow-x-auto th { padding: 0.58rem 0.7rem !important; }
+  .overflow-x-auto td { padding: 0.55rem 0.7rem !important; }
 }
 @media (max-width: 380px) {
   .sticky-nav > div,
   main { padding-left: 0.75rem !important; padding-right: 0.75rem !important; }
   .sticky-nav > div { display: block !important; }
   .sticky-nav h1 { margin-bottom: 0.5rem; font-size: 1.05rem; }
-  .sticky-nav .flex.gap-1 { grid-template-columns: repeat(7, minmax(0, 1fr)); }
-  .sticky-nav a { min-height: 2rem; display: inline-flex; align-items: center; justify-content: center; }
+  .sticky-nav .flex.gap-1 { grid-template-columns: repeat(8, minmax(0, 1fr)); }
+  .sticky-nav a { min-height: 1.75rem; }
   header { padding-left: 0.75rem !important; padding-right: 0.75rem !important; }
   .collapsible-content { padding: 0.85rem !important; }
   .mnemonic-box { font-size: 0.96rem; overflow-wrap: anywhere; }
@@ -137,7 +165,7 @@ function toggleSection(id) {
 
 <section id="m01" class="bg-white rounded-xl shadow-md overflow-hidden">
   <button onclick="toggleSection('m01-content')" class="toggle-btn w-full bg-gradient-to-r from-[#e2efff] to-[#f1edff] text-tcm-dark text-left px-6 py-4 flex items-center justify-between hover:opacity-90 transition">
-    <div><span class="font-bold text-xl">模块01</span><span class="ml-2 text-lg">五脏功能对应表</span><span class="ml-2 text-xs bg-[#f1edff] text-tcm-dark rounded px-2 py-0.5">最易混</span></div>
+    <div><span class="font-bold text-xl">模块01</span><span class="ml-2 text-lg">五脏功能对应表</span><span class="module-badge module-badge-mix ml-2">最易混</span></div>
     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
   </button>
   <div id="m01-content" class="collapsible-content px-6 py-5 space-y-4">
@@ -334,7 +362,7 @@ function toggleSection(id) {
 
 <section id="m06" class="bg-white rounded-xl shadow-md overflow-hidden">
   <button onclick="toggleSection('m06-content')" class="toggle-btn w-full bg-gradient-to-r from-[#e2efff] to-[#f1edff] text-tcm-dark text-left px-6 py-4 flex items-center justify-between hover:opacity-90 transition">
-    <div><span class="font-bold text-xl">模块06</span><span class="ml-2 text-lg">脏腑10组关系</span><span class="ml-2 text-xs bg-[#f1edff] text-tcm-dark rounded px-2 py-0.5">论述重点</span></div>
+    <div><span class="font-bold text-xl">模块06</span><span class="ml-2 text-lg">脏腑10组关系</span><span class="module-badge module-badge-focus ml-2">论述重点</span></div>
     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
   </button>
   <div id="m06-content" class="collapsible-content px-6 py-5 space-y-4">
@@ -501,7 +529,7 @@ function toggleSection(id) {
 
 <section id="m10" class="bg-white rounded-xl shadow-md overflow-hidden">
   <button onclick="toggleSection('m10-content')" class="toggle-btn w-full bg-gradient-to-r from-[#e2efff] to-[#f1edff] text-tcm-dark text-left px-6 py-4 flex items-center justify-between hover:opacity-90 transition">
-    <div><span class="font-bold text-xl">模块10</span><span class="ml-2 text-lg">诊法全套</span><span class="ml-2 text-xs bg-[#e2efff] text-tcm-dark rounded px-2 py-0.5">内容最多</span></div>
+    <div><span class="font-bold text-xl">模块10</span><span class="ml-2 text-lg">诊法全套</span><span class="module-badge module-badge-info ml-2">内容最多</span></div>
     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
   </button>
   <div id="m10-content" class="collapsible-content px-6 py-5 space-y-4">
@@ -805,11 +833,11 @@ function toggleSection(id) {
 
 <!-- 论述题速记 -->
 <section id="m14" class="bg-white rounded-xl shadow-md overflow-hidden">
-<button onclick="toggleSection('m14-content')" class="w-full flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition">
+<button onclick="toggleSection('m14-content')" class="toggle-btn w-full bg-gradient-to-r from-[#e2efff] to-[#f1edff] text-tcm-dark text-left px-6 py-4 flex items-center justify-between hover:opacity-90 transition">
 <div>
 <span class="font-bold text-xl">模块14</span>
 <span class="ml-2 text-lg">论述题速记口诀</span>
-<span class="ml-2 text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded-full">20分必背</span>
+<span class="module-badge module-badge-danger ml-2">20分必背</span>
 </div>
 <svg class="w-5 h-5 text-gray-400 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
 </button>
@@ -893,11 +921,11 @@ function toggleSection(id) {
 
 <!-- 课本vs标答差异表 -->
 <section id="m15" class="bg-white rounded-xl shadow-md overflow-hidden">
-<button onclick="toggleSection('m15-content')" class="w-full flex items-center justify-between px-6 py-4 hover:bg-gray-50 transition">
+<button onclick="toggleSection('m15-content')" class="toggle-btn w-full bg-gradient-to-r from-[#e2efff] to-[#f1edff] text-tcm-dark text-left px-6 py-4 flex items-center justify-between hover:opacity-90 transition">
 <div>
 <span class="font-bold text-xl">附录</span>
 <span class="ml-2 text-lg">课本 vs B卷标答差异表</span>
-<span class="ml-2 text-xs bg-yellow-100 text-yellow-700 px-2 py-0.5 rounded-full">5处差异</span>
+<span class="module-badge module-badge-warn ml-2">5处差异</span>
 </div>
 <svg class="w-5 h-5 text-gray-400 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
 </button>
@@ -964,8 +992,16 @@ function toggleSection(id) {
 
 <script>
 (function () {
+  function isEmbeddedWindow() {
+    try {
+      return window.self !== window.top;
+    } catch {
+      return true;
+    }
+  }
+
   const nav = document.querySelector('.sticky-nav');
-  if (!nav) return;
+  if (!nav || isEmbeddedWindow()) return;
   let lastY = Math.max(window.scrollY || 0, 0);
   let ticking = false;
   const delta = 8;

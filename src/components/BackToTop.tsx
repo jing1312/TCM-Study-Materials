@@ -1,21 +1,45 @@
 import { useEffect, useState } from 'react';
 import { ArrowUp } from 'lucide-react';
 
-export function BackToTop({ threshold = 300 }: { threshold?: number }) {
+export function BackToTop({
+  threshold = 300,
+  scrollWindow
+}: {
+  threshold?: number;
+  scrollWindow?: Window | null;
+}) {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    function onScroll() {
-      setVisible(window.scrollY > threshold);
+    const targetWindow = scrollWindow ?? window;
+    let ticking = false;
+    let animationFrameId = 0;
+
+    function updateVisibility() {
+      setVisible(targetWindow.scrollY > threshold);
+      ticking = false;
+      animationFrameId = 0;
     }
 
-    window.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
-    return () => window.removeEventListener('scroll', onScroll);
-  }, [threshold]);
+    function onScroll() {
+      if (!ticking) {
+        animationFrameId = targetWindow.requestAnimationFrame(updateVisibility);
+        ticking = true;
+      }
+    }
+
+    targetWindow.addEventListener('scroll', onScroll, { passive: true });
+    updateVisibility();
+    return () => {
+      targetWindow.removeEventListener('scroll', onScroll);
+      if (animationFrameId) targetWindow.cancelAnimationFrame(animationFrameId);
+      ticking = false;
+      animationFrameId = 0;
+    };
+  }, [scrollWindow, threshold]);
 
   function handleClick() {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    (scrollWindow ?? window).scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   if (!visible) return null;
@@ -24,11 +48,6 @@ export function BackToTop({ threshold = 300 }: { threshold?: number }) {
     <button
       className="back-to-top"
       type="button"
-      style={{
-        position: 'fixed',
-        background: 'linear-gradient(135deg, rgb(105 125 215 / 0.9), rgb(160 175 240 / 0.85))',
-        color: 'white',
-      }}
       onClick={handleClick}
       aria-label="回到顶部"
       title="回到顶部"

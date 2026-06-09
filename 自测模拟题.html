@@ -1250,17 +1250,28 @@ function toggleAnswer(id) {
   if (el) { el.classList.toggle('open'); saveState(); }
 }
 
+function parseMCQOption(option) {
+  const match = option?.getAttribute('onclick')?.match(/checkMCQ\(this,'([^']+)','([A-D])','([A-D])'\)/);
+  return match ? { qId: match[1], choice: match[2], correct: match[3] } : null;
+}
+
+function applyMCQState(card, choice, correct) {
+  if (!card || !choice || !correct) return;
+  card.classList.add('answered');
+  card.querySelectorAll('.mcq-option').forEach(o => {
+    const data = parseMCQOption(o);
+    if (!data) return;
+    if (data.choice === correct) o.classList.add('correct');
+    else if (data.choice === choice && choice !== correct) o.classList.add('wrong');
+  });
+  const explain = document.getElementById(card.getAttribute('data-q') + '_explain');
+  if (explain) explain.classList.add('open');
+}
+
 function checkMCQ(optEl, qId, choice, correct) {
   const card = optEl.closest('.question-card');
   if (card.classList.contains('answered')) return;
-  card.classList.add('answered');
-  card.querySelectorAll('.mcq-option').forEach(o => {
-    const c = o.getAttribute('onclick').match(/'([A-D])'/);
-    if (c && c[1] === correct) o.classList.add('correct');
-    else if (o === optEl && choice !== correct) o.classList.add('wrong');
-  });
-  const explain = document.getElementById(qId + '_explain');
-  if (explain) explain.classList.add('open');
+  applyMCQState(card, choice, correct);
   saveState();
 }
 
@@ -1279,7 +1290,10 @@ function collectState() {
     if (el.classList.contains('open')) state['reveal_' + el.id] = true;
   });
   document.querySelectorAll('.question-card.answered').forEach(el => {
-    state['mcq_' + el.getAttribute('data-q')] = true;
+    const qId = el.getAttribute('data-q');
+    const correct = parseMCQOption(el.querySelector('.mcq-option.correct'))?.choice;
+    const selected = parseMCQOption(el.querySelector('.mcq-option.wrong'))?.choice || correct;
+    if (qId && selected && correct) state['mcq_' + qId] = { choice: selected, correct };
   });
   return state;
 }
@@ -1294,7 +1308,8 @@ function loadState() {
         const el = document.getElementById(k.slice(7));
         if (el) el.classList.add('open');
       } else if (k.startsWith('mcq_')) {
-        // MCQ state restoration is complex, skip for now
+        const card = document.querySelector('.question-card[data-q="' + k.slice(4) + '"]');
+        if (card && v && typeof v === 'object') applyMCQState(card, v.choice, v.correct);
       } else {
         const el = document.getElementById(k);
         if (el) el.value = v;
@@ -1369,9 +1384,17 @@ function checkAll() {
 }
 
 // --- Nav ---
+function isEmbeddedWindow() {
+  try {
+    return window.self !== window.top;
+  } catch {
+    return true;
+  }
+}
 const sections = ['fill-blank','mcq','term-def','short-answer','essay'];
 const navLinks = document.querySelectorAll('.nav-link');
 const navbar = document.getElementById('navbar');
+const shouldAutoHideNav = !isEmbeddedWindow();
 let lastNavY = Math.max(window.scrollY || 0, 0);
 let navTicking = false;
 function updateNavState() {
@@ -1386,7 +1409,7 @@ function updateNavState() {
     link.classList.remove('active');
     if (link.getAttribute('href') === '#' + current) link.classList.add('active');
   });
-  if (navbar) {
+  if (navbar && shouldAutoHideNav) {
     if (currentY <= 24) navbar.classList.remove('nav-hidden');
     else if (diff > 8 && currentY > 96) navbar.classList.add('nav-hidden');
     else if (diff < -8) navbar.classList.remove('nav-hidden');
@@ -1398,7 +1421,16 @@ window.addEventListener('scroll', () => {
   if (!navTicking) { window.requestAnimationFrame(updateNavState); navTicking = true; }
 }, {passive: true});
 
-window.addEventListener('DOMContentLoaded', loadState);
+function setupAutosave() {
+  document.querySelectorAll('input[type="text"]').forEach(el => {
+    el.addEventListener('input', saveState);
+  });
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  loadState();
+  setupAutosave();
+});
 </script>
 
 </body>

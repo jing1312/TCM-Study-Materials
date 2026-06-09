@@ -91,7 +91,9 @@ export function FlashcardsPage() {
   const [editor, setEditor] = useState<CardEditorState | null>(null);
   const [editorError, setEditorError] = useState('');
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
-  const navHidden = useAutoHideOnScroll(48);
+  const isEmbedded = isEmbeddedWindow();
+  const navHidden = useAutoHideOnScroll(48, !isEmbedded);
+  const showBackToTop = !isEmbedded;
 
   const normalizedQuery = query.trim().toLocaleLowerCase();
   const allCards = useMemo(() => {
@@ -141,20 +143,49 @@ export function FlashcardsPage() {
     return () => observer.disconnect();
   }, [filteredCards.length, visibleCount]);
 
-  const masteredCount = filteredCards.filter((card) => mastery[card.id] === 'mastered').length;
-  const unmasteredCount = filteredCards.filter((card) => mastery[card.id] === 'unmastered').length;
-  const progress = filteredCards.length ? Math.round((masteredCount / filteredCards.length) * 100) : 0;
+  const filteredStats = useMemo(() => {
+    let mastered = 0;
+    let unmastered = 0;
 
-  const totalMastered = allCards.filter((card) => mastery[card.id] === 'mastered').length;
-  const totalUnmastered = allCards.filter((card) => mastery[card.id] === 'unmastered').length;
-  const totalProgress = allCards.length ? Math.round((totalMastered / allCards.length) * 100) : 0;
+    for (const card of filteredCards) {
+      if (mastery[card.id] === 'mastered') mastered += 1;
+      if (mastery[card.id] === 'unmastered') unmastered += 1;
+    }
+
+    return {
+      mastered,
+      unmastered,
+      progress: filteredCards.length ? Math.round((mastered / filteredCards.length) * 100) : 0
+    };
+  }, [filteredCards, mastery]);
+
+  const totalStats = useMemo(() => {
+    let mastered = 0;
+    let unmastered = 0;
+
+    for (const card of allCards) {
+      if (mastery[card.id] === 'mastered') mastered += 1;
+      if (mastery[card.id] === 'unmastered') unmastered += 1;
+    }
+
+    return {
+      mastered,
+      unmastered,
+      progress: allCards.length ? Math.round((mastered / allCards.length) * 100) : 0
+    };
+  }, [allCards, mastery]);
+
+  const masteredCount = filteredStats.mastered;
+  const unmasteredCount = filteredStats.unmastered;
+  const progress = filteredStats.progress;
+  const totalMastered = totalStats.mastered;
+  const totalUnmastered = totalStats.unmastered;
+  const totalProgress = totalStats.progress;
   const visibleCards = filteredCards.slice(0, Math.min(visibleCount, filteredCards.length));
   const hasMoreCards = visibleCards.length < filteredCards.length;
   const level = Math.max(1, Math.floor(totalMastered / 8) + 1);
   const levelStart = Math.floor(totalMastered / 8) * 8;
   const nextLevelAt = Math.min(allCards.length, levelStart + 8);
-  const levelSpan = Math.max(nextLevelAt - levelStart, 1);
-  const levelProgress = totalMastered >= allCards.length ? 100 : Math.round(((totalMastered - levelStart) / levelSpan) * 100);
   const cardsToNextLevel = Math.max(nextLevelAt - totalMastered, 0);
   const nextLevelGoal = totalMastered >= allCards.length ? '全图通关' : `距 Lv.${level + 1} 还差 ${cardsToNextLevel} 张`;
 
@@ -286,10 +317,6 @@ export function FlashcardsPage() {
   return (
     <main className="flashcards-game min-h-screen text-slate-800">
       <div className={navHidden ? 'flashcard-nav auto-hide-nav nav-hidden' : 'flashcard-nav auto-hide-nav'}>
-        <div className="flashcard-nav-progress">
-          <div style={{ width: `${progress}%` }} />
-        </div>
-
         <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-3">
           <div className="flashcard-toolbar flex flex-wrap items-center gap-3">
             <a className="secondary-button flashcard-home-button" href="./" title="返回全套首页">
@@ -377,8 +404,14 @@ export function FlashcardsPage() {
             <span className="game-label">已通关</span>
             <span className="game-value">{totalMastered}</span>
           </div>
-          <div className="game-meter" aria-label={`总进度 ${totalProgress}%`}>
-            <div style={{ width: `${totalProgress}%` }} />
+          <div className="game-progress" aria-label={`总进度 ${totalProgress}%`}>
+            <div className="game-progress-head">
+              <span>总进度</span>
+              <strong>{totalMastered} / {allCards.length}</strong>
+            </div>
+            <div className="game-meter">
+              <div style={{ width: `${totalProgress}%` }} />
+            </div>
           </div>
         </div>
 
@@ -386,9 +419,6 @@ export function FlashcardsPage() {
           <div className="flex min-w-0 items-center gap-2">
             <Sparkles size={17} className="text-[#ff9f84]" aria-hidden="true" />
             <span className="font-semibold text-[#2f8f7c]">下一等级</span>
-          </div>
-          <div className="game-quest-meter" aria-label={`等级进度 ${levelProgress}%`}>
-            <div style={{ width: `${levelProgress}%` }} />
           </div>
           <span className="text-sm font-semibold text-[#a85640]">{nextLevelGoal}</span>
         </div>
@@ -501,9 +531,18 @@ export function FlashcardsPage() {
         </div>
       ) : null}
 
-      <BackToTop />
+      {showBackToTop ? <BackToTop /> : null}
     </main>
   );
+}
+
+function isEmbeddedWindow() {
+  if (typeof window === 'undefined') return false;
+  try {
+    return window.self !== window.top;
+  } catch {
+    return true;
+  }
 }
 
 function cardBackToEditableText(back: string) {
