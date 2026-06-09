@@ -54,16 +54,74 @@ section>.flex.items-center.gap-3 span.text-tcm-blue{width:100%;font-size:.85rem}
 .question-card .flex.flex-wrap{display:grid!important;grid-template-columns:1fr!important;gap:.55rem!important}
 .question-card input[type="text"]{width:100%!important;min-width:0}
 .mcq-option{align-items:flex-start!important;gap:.55rem!important}
-.answer-reveal{overflow-wrap:anywhere}
+.answer-reveal{overflow-wrap:anywhere;white-space:pre-line}
 #score-details>div{align-items:flex-start!important;flex-direction:column;gap:.45rem}
 #score-details .w-32{width:100%!important}
 button{min-width:0}
 .question-card:hover,.mcq-option:hover:not(.answered),.nav-link:hover{transform:none}
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
+
+/* === Left Sidebar === */
+.quiz-sidebar{position:fixed;left:0;top:50%;transform:translateY(-50%);z-index:100;display:flex;flex-direction:column;gap:6px;padding:8px;background:rgba(255,255,255,.96);border-right:1px solid rgba(214,226,246,.86);border-radius:0 12px 12px 0;box-shadow:2px 4px 16px rgba(25,117,255,.08);backdrop-filter:blur(8px)}
+.quiz-sidebar .sb-btn{display:flex;align-items:center;gap:6px;padding:7px 12px;border:1px solid rgba(214,226,246,.7);border-radius:8px;background:rgba(255,255,255,.9);color:#192337;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s ease;white-space:nowrap;font-family:inherit}
+.quiz-sidebar .sb-btn:hover{background:rgba(226,239,255,.8);border-color:rgba(25,117,255,.3);transform:translateX(2px)}
+.quiz-sidebar .sb-btn.active{background:rgba(25,117,255,.12);border-color:#1975FF;color:#1975FF}
+.quiz-sidebar .sb-divider{height:1px;background:rgba(214,226,246,.6);margin:4px 8px}
+.quiz-sidebar .sb-toggle{position:relative}
+.quiz-sidebar .sb-toggle.sb-on{background:linear-gradient(135deg,rgba(95,207,181,.2),rgba(25,117,255,.1));border-color:#5FCFB5;color:#2a7a64}
+.sb-icon{width:18px;height:18px;flex-shrink:0}
+/* Edit mode */
+.answer-reveal.editable{outline:2px dashed rgba(25,117,255,.4);outline-offset:2px;cursor:text}
+.answer-reveal.editable:focus{outline-color:#1975FF;background:rgba(226,239,255,.3)}
+.edit-indicator{position:fixed;right:12px;bottom:80px;z-index:100;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.96);border:1px solid rgba(214,226,246,.86);box-shadow:0 2px 12px rgba(25,117,255,.1);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;transition:all .2s ease}
+.edit-indicator:hover{transform:scale(1.1);box-shadow:0 4px 16px rgba(25,117,255,.15)}
+.edit-indicator.active{background:rgba(25,117,255,.12);border-color:#1975FF}
+/* Per-section score inline */
+.section-score{display:inline-flex;align-items:center;gap:6px;padding:4px 12px;border-radius:8px;font-size:13px;font-weight:600;margin-left:12px}
+.section-score.good{background:rgba(95,207,181,.15);color:#2a7a64}
+.section-score.mid{background:rgba(255,183,77,.15);color:#a85640}
+.section-score.low{background:rgba(196,30,58,.12);color:#c41e3a}
+/* Memorize mode styling */
+body.memorize-mode input[type="text"]{background:rgba(95,207,181,.08)!important;border-color:rgba(95,207,181,.4)!important;color:#192337!important;font-weight:600}
+body.memorize-mode .question-card{border-color:rgba(95,207,181,.3)!important}
+@media(max-width:768px){.quiz-sidebar{top:auto;bottom:0;left:0;right:0;transform:none;flex-direction:row;flex-wrap:wrap;border-radius:12px 12px 0 0;padding:6px;gap:4px}.quiz-sidebar .sb-btn{font-size:11px;padding:5px 8px}.edit-indicator{bottom:60px;right:8px}}
+
 </style>
 </head>
 <body class="bg-tcm-cream min-h-screen font-serif">
+
+<!-- Left Sidebar -->
+<div class="quiz-sidebar" id="quiz-sidebar">
+  <button class="sb-btn" onclick="testSection('fb')" title="测试填空题">
+    <svg class="sb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+    填空
+  </button>
+  <button class="sb-btn" onclick="testSection('mcq')" title="测试选择题">
+    <svg class="sb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/></svg>
+    选择
+  </button>
+  <button class="sb-btn" onclick="testSection('td')" title="测试名词解释">
+    <svg class="sb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+    名词
+  </button>
+  <button class="sb-btn" onclick="testSection('sa')" title="测试简答题">
+    <svg class="sb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14,2 14,8 20,8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+    简答
+  </button>
+  <button class="sb-btn" onclick="testSection('es')" title="测试论述题">
+    <svg class="sb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/><line x1="8" y1="8" x2="16" y2="8"/><line x1="8" y1="12" x2="14" y2="12"/></svg>
+    论述
+  </button>
+  <div class="sb-divider"></div>
+  <button class="sb-btn sb-toggle" id="memorize-btn" onclick="toggleMemorize()" title="背题模式：答案直接显示">
+    <svg class="sb-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
+    背题
+  </button>
+</div>
+<!-- Edit indicator -->
+<button class="edit-indicator" id="edit-indicator" onclick="toggleEditMode()" title="编辑答案模式">✏️</button>
+
 
 <nav id="navbar" class="sticky top-0 z-50 bg-white/90 shadow-sm border-b border-teal-100">
 <div class="max-w-5xl mx-auto px-4">
@@ -95,6 +153,7 @@ button{min-width:0}
 <span class="bg-tcm-red text-white text-sm font-bold px-3 py-1 rounded">一</span>
 <h3 class="text-tcm-dark text-xl font-bold">填空题（47题）</h3>
 <span class="text-tcm-blue text-sm">A卷13题 + B卷14题 + 自拟20题 | 红色加粗为答案要点</span>
+<button onclick="testSection('fb')" class="ml-auto px-4 py-1.5 bg-tcm-red/10 text-tcm-red text-sm font-bold rounded-lg hover:bg-tcm-red/20 transition border border-tcm-red/30">测试填空</button>
 </div>
 <div id="fill-blank-container" class="space-y-4">
 
@@ -529,6 +588,7 @@ button{min-width:0}
 <span class="bg-tcm-blue text-white text-sm font-bold px-3 py-1 rounded">二</span>
 <h3 class="text-tcm-dark text-xl font-bold">选择题（35题）</h3>
 <span class="text-tcm-blue text-sm">A卷10题 + B卷10题 + 易混点自拟15题</span>
+<button onclick="testSection('mcq')" class="ml-auto px-4 py-1.5 bg-tcm-blue/10 text-tcm-blue text-sm font-bold rounded-lg hover:bg-tcm-blue/20 transition border border-tcm-blue/30">测试选择</button>
 </div>
 <div id="mcq-container" class="space-y-4">
 
@@ -855,6 +915,7 @@ button{min-width:0}
 <span class="bg-tcm-accent text-white text-sm font-bold px-3 py-1 rounded">三</span>
 <h3 class="text-tcm-dark text-xl font-bold">名词解释（17题）</h3>
 <span class="text-tcm-blue text-sm">A卷5题 + B卷5题 + 自拟7题 | 点击展开答案</span>
+<button onclick="testSection('td')" class="ml-auto px-4 py-1.5 bg-tcm-accent/10 text-tcm-accent text-sm font-bold rounded-lg hover:bg-tcm-accent/20 transition border border-tcm-accent/30">测试名词</button>
 </div>
 <div id="term-container" class="space-y-4">
 
@@ -985,6 +1046,7 @@ button{min-width:0}
 <span class="bg-green-600 text-white text-sm font-bold px-3 py-1 rounded">四</span>
 <h3 class="text-tcm-dark text-xl font-bold">简答题（13题）</h3>
 <span class="text-tcm-blue text-sm">A卷4题 + B卷4题 + 自拟5题 | 每题5分</span>
+<button onclick="testSection('sa')" class="ml-auto px-4 py-1.5 bg-green-600/10 text-green-700 text-sm font-bold rounded-lg hover:bg-green-600/20 transition border border-green-600/30">测试简答</button>
 </div>
 <div id="short-container" class="space-y-4">
 
@@ -1151,6 +1213,7 @@ button{min-width:0}
 <span class="bg-purple-600 text-white text-sm font-bold px-3 py-1 rounded">五</span>
 <h3 class="text-tcm-dark text-xl font-bold">论述题（2题）</h3>
 <span class="text-tcm-blue text-sm">A/B卷各1题，每题20分，占总分1/5，务必背熟</span>
+<button onclick="testSection('es')" class="ml-auto px-4 py-1.5 bg-purple-600/10 text-purple-700 text-sm font-bold rounded-lg hover:bg-purple-600/20 transition border border-purple-600/30">测试论述</button>
 </div>
 <div id="essay-container" class="space-y-4">
 
@@ -1192,9 +1255,7 @@ button{min-width:0}
 </div>
 </div>
 
-<script>
-// === Answer Data ===
-const fbAnswers = {
+<script>const fbAnswers = {
   fb1: ["后天", "先天", "皮", "筋"],
   fb2: ["任脉", "冲脉", "督脉"],
   fb3: ["思", "口"],
@@ -1244,35 +1305,164 @@ const fbAnswers = {
   fb47: ["督脉", "任脉", "冲脉", "带脉", "阴跷脉", "阳跷脉", "阴维脉", "阳维脉", "督脉", "任脉", "冲脉"]
 };
 
+// === State ===
+let memorizeMode = false;
+let editMode = false;
+
 // === Core Functions ===
 function toggleAnswer(id) {
   const el = document.getElementById(id);
   if (el) { el.classList.toggle('open'); saveState(); }
 }
 
-function parseMCQOption(option) {
-  const match = option?.getAttribute('onclick')?.match(/checkMCQ\(this,'([^']+)','([A-D])','([A-D])'\)/);
-  return match ? { qId: match[1], choice: match[2], correct: match[3] } : null;
-}
-
-function applyMCQState(card, choice, correct) {
-  if (!card || !choice || !correct) return;
-  card.classList.add('answered');
-  card.querySelectorAll('.mcq-option').forEach(o => {
-    const data = parseMCQOption(o);
-    if (!data) return;
-    if (data.choice === correct) o.classList.add('correct');
-    else if (data.choice === choice && choice !== correct) o.classList.add('wrong');
-  });
-  const explain = document.getElementById(card.getAttribute('data-q') + '_explain');
-  if (explain) explain.classList.add('open');
-}
-
 function checkMCQ(optEl, qId, choice, correct) {
   const card = optEl.closest('.question-card');
   if (card.classList.contains('answered')) return;
-  applyMCQState(card, choice, correct);
+  card.classList.add('answered');
+  card.querySelectorAll('.mcq-option').forEach(o => {
+    const c = o.getAttribute('onclick').match(/'([A-D])'/);
+    if (c && c[1] === correct) o.classList.add('correct');
+    else if (o === optEl && choice !== correct) o.classList.add('wrong');
+  });
+  const explain = document.getElementById(qId + '_explain');
+  if (explain) explain.classList.add('open');
   saveState();
+}
+
+// === Per-section Testing ===
+function testSection(type) {
+  const details = document.getElementById('score-details');
+  let resultHtml = '';
+  
+  if (type === 'fb') {
+    let correct = 0, total = 47;
+    for (let i = 1; i <= 47; i++) {
+      const qid = 'fb' + i;
+      const answers = fbAnswers[qid];
+      if (!answers) continue;
+      let qOk = true;
+      answers.forEach((ans, idx) => {
+        const inp = document.getElementById(qid + '_' + idx);
+        if (!inp || !inp.value.trim() || inp.value.trim() !== ans) qOk = false;
+      });
+      if (qOk) correct++;
+    }
+    const pct = Math.round(correct / total * 100);
+    showSectionResult('填空题', correct, total, pct);
+    // Show all fill-blank answers
+    document.querySelectorAll('#fill-blank .answer-reveal').forEach(el => el.classList.add('open'));
+  }
+  else if (type === 'mcq') {
+    let correct = 0, total = 35;
+    document.querySelectorAll('#mcq-container .question-card').forEach(card => {
+      const c = card.querySelector('.mcq-option.correct');
+      const w = card.querySelector('.mcq-option.wrong');
+      if (c && !w) correct++;
+    });
+    const pct = Math.round(correct / total * 100);
+    showSectionResult('选择题', correct, total, pct);
+    document.querySelectorAll('#mcq .answer-reveal').forEach(el => el.classList.add('open'));
+  }
+  else if (type === 'td') {
+    let opened = 0, total = 17;
+    document.querySelectorAll('#term-container .answer-reveal').forEach(el => {
+      el.classList.add('open');
+      opened++;
+    });
+    showSectionResult('名词解释', opened, total, Math.round(opened/total*100), true);
+  }
+  else if (type === 'sa') {
+    let opened = 0, total = 13;
+    document.querySelectorAll('#short-container .answer-reveal').forEach(el => {
+      el.classList.add('open');
+      opened++;
+    });
+    showSectionResult('简答题', opened, total, Math.round(opened/total*100), true);
+  }
+  else if (type === 'es') {
+    let opened = 0, total = 2;
+    document.querySelectorAll('#essay-container .answer-reveal').forEach(el => {
+      el.classList.add('open');
+      opened++;
+    });
+    showSectionResult('论述题', opened, total, Math.round(opened/total*100), true);
+  }
+  saveStateNow();
+  // Scroll to the section
+  const sectionMap = {fb:'fill-blank', mcq:'mcq', td:'term-def', sa:'short-answer', es:'essay'};
+  const target = document.getElementById(sectionMap[type]);
+  if (target) target.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function showSectionResult(name, correct, total, pct, isViewed) {
+  const cls = pct >= 80 ? 'good' : pct >= 50 ? 'mid' : 'low';
+  const label = isViewed ? '已查看' : '正确';
+  // Find section header and add score badge
+  const sectionMap = {'填空题':'fill-blank','选择题':'mcq','名词解释':'term-def','简答题':'short-answer','论述题':'essay'};
+  const secEl = document.getElementById(sectionMap[name]);
+  if (secEl) {
+    // Remove existing score
+    const existing = secEl.querySelector('.section-score');
+    if (existing) existing.remove();
+    const badge = document.createElement('span');
+    badge.className = 'section-score ' + cls;
+    badge.textContent = label + ' ' + correct + '/' + total + ' (' + pct + '%)';
+    secEl.querySelector('.flex.items-center.gap-3.mb-6').appendChild(badge);
+  }
+}
+
+// === Memorization Mode ===
+function toggleMemorize() {
+  memorizeMode = !memorizeMode;
+  const btn = document.getElementById('memorize-btn');
+  document.body.classList.toggle('memorize-mode', memorizeMode);
+  btn.classList.toggle('sb-on', memorizeMode);
+  
+  if (memorizeMode) {
+    // Pre-fill all fill-blank answers
+    for (let i = 1; i <= 47; i++) {
+      const qid = 'fb' + i;
+      const answers = fbAnswers[qid];
+      if (!answers) continue;
+      answers.forEach((ans, idx) => {
+        const inp = document.getElementById(qid + '_' + idx);
+        if (inp) inp.value = ans;
+      });
+    }
+    // Expand all answer reveals
+    document.querySelectorAll('.answer-reveal').forEach(el => el.classList.add('open'));
+  } else {
+    // Clear fill-blank inputs (only auto-filled ones)
+    for (let i = 1; i <= 47; i++) {
+      const qid = 'fb' + i;
+      const answers = fbAnswers[qid];
+      if (!answers) continue;
+      answers.forEach((ans, idx) => {
+        const inp = document.getElementById(qid + '_' + idx);
+        if (inp && inp.value === ans) inp.value = '';
+      });
+    }
+    // Collapse all answer reveals
+    document.querySelectorAll('.answer-reveal').forEach(el => el.classList.remove('open'));
+  }
+  saveStateNow();
+}
+
+// === Edit Answer Mode ===
+function toggleEditMode() {
+  editMode = !editMode;
+  const indicator = document.getElementById('edit-indicator');
+  indicator.classList.toggle('active', editMode);
+  
+  document.querySelectorAll('.answer-reveal').forEach(el => {
+    if (editMode) {
+      el.setAttribute('contenteditable', 'true');
+      el.classList.add('editable');
+    } else {
+      el.removeAttribute('contenteditable');
+      el.classList.remove('editable');
+    }
+  });
 }
 
 // === State Management ===
@@ -1290,10 +1480,7 @@ function collectState() {
     if (el.classList.contains('open')) state['reveal_' + el.id] = true;
   });
   document.querySelectorAll('.question-card.answered').forEach(el => {
-    const qId = el.getAttribute('data-q');
-    const correct = parseMCQOption(el.querySelector('.mcq-option.correct'))?.choice;
-    const selected = parseMCQOption(el.querySelector('.mcq-option.wrong'))?.choice || correct;
-    if (qId && selected && correct) state['mcq_' + qId] = { choice: selected, correct };
+    state['mcq_' + el.getAttribute('data-q')] = true;
   });
   return state;
 }
@@ -1308,8 +1495,7 @@ function loadState() {
         const el = document.getElementById(k.slice(7));
         if (el) el.classList.add('open');
       } else if (k.startsWith('mcq_')) {
-        const card = document.querySelector('.question-card[data-q="' + k.slice(4) + '"]');
-        if (card && v && typeof v === 'object') applyMCQState(card, v.choice, v.correct);
+        // MCQ state restoration is complex, skip for now
       } else {
         const el = document.getElementById(k);
         if (el) el.value = v;
@@ -1326,12 +1512,15 @@ function resetAll() {
     el.classList.remove('answered');
     el.querySelectorAll('.mcq-option').forEach(o => o.classList.remove('correct','wrong'));
   });
+  document.querySelectorAll('.section-score').forEach(el => el.remove());
   document.getElementById('total-score').textContent = '—';
   document.getElementById('total-bar').style.width = '0%';
   document.getElementById('score-details').innerHTML = '';
+  // Exit memorize mode if active
+  if (memorizeMode) toggleMemorize();
 }
 
-// === Scoring ===
+// === Global Scoring ===
 function checkAll() {
   const details = document.getElementById('score-details');
   details.innerHTML = '';
@@ -1384,17 +1573,9 @@ function checkAll() {
 }
 
 // --- Nav ---
-function isEmbeddedWindow() {
-  try {
-    return window.self !== window.top;
-  } catch {
-    return true;
-  }
-}
 const sections = ['fill-blank','mcq','term-def','short-answer','essay'];
 const navLinks = document.querySelectorAll('.nav-link');
 const navbar = document.getElementById('navbar');
-const shouldAutoHideNav = !isEmbeddedWindow();
 let lastNavY = Math.max(window.scrollY || 0, 0);
 let navTicking = false;
 function updateNavState() {
@@ -1409,7 +1590,7 @@ function updateNavState() {
     link.classList.remove('active');
     if (link.getAttribute('href') === '#' + current) link.classList.add('active');
   });
-  if (navbar && shouldAutoHideNav) {
+  if (navbar) {
     if (currentY <= 24) navbar.classList.remove('nav-hidden');
     else if (diff > 8 && currentY > 96) navbar.classList.add('nav-hidden');
     else if (diff < -8) navbar.classList.remove('nav-hidden');
@@ -1421,16 +1602,7 @@ window.addEventListener('scroll', () => {
   if (!navTicking) { window.requestAnimationFrame(updateNavState); navTicking = true; }
 }, {passive: true});
 
-function setupAutosave() {
-  document.querySelectorAll('input[type="text"]').forEach(el => {
-    el.addEventListener('input', saveState);
-  });
-}
-
-window.addEventListener('DOMContentLoaded', () => {
-  loadState();
-  setupAutosave();
-});
+window.addEventListener('DOMContentLoaded', loadState);
 </script>
 
 </body>
