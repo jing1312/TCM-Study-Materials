@@ -78,7 +78,7 @@ button{min-width:0}
 .edit-indicator:hover{transform:scale(1.1);box-shadow:0 4px 16px rgba(25,117,255,.15)}
 .edit-indicator.active{background:rgba(25,117,255,.12);border-color:#1975FF}
 /* Format toolbar for edit mode */
-.quiz-format-toolbar{position:absolute;z-index:120;display:none;background:rgba(255,255,255,.98);border:1px solid rgba(214,226,246,.9);border-radius:10px;box-shadow:0 4px 20px rgba(25,117,255,.14),0 1px 4px rgba(0,0,0,.06);padding:4px;gap:2px;align-items:center;backdrop-filter:blur(8px)}
+.quiz-format-toolbar{position:fixed;z-index:120;display:none;background:rgba(255,255,255,.98);border:1px solid rgba(214,226,246,.9);border-radius:10px;box-shadow:0 4px 20px rgba(25,117,255,.14),0 1px 4px rgba(0,0,0,.06);padding:4px;gap:2px;align-items:center;backdrop-filter:blur(8px)}
 .quiz-format-toolbar.visible{display:flex}
 .quiz-format-toolbar .fmt-btn{width:32px;height:32px;border:none;border-radius:7px;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;color:#192337;transition:all .12s ease;font-family:inherit}
 .quiz-format-toolbar .fmt-btn:hover{background:rgba(226,239,255,.8)}
@@ -1326,6 +1326,15 @@ function toggleEditMode() {
   
   if (editMode) {
     _initEditToolbarListeners();
+    // 自动滚动到第一个可编辑答案区域，让用户立刻看到编辑框
+    const firstEditable = document.querySelector('.answer-reveal.editable');
+    if (firstEditable) {
+      firstEditable.scrollIntoView({behavior: 'smooth', block: 'center'});
+      // 短暂高亮闪烁提示
+      firstEditable.style.transition = 'background-color .3s ease';
+      firstEditable.style.backgroundColor = 'rgba(25,117,255,.12)';
+      setTimeout(() => { firstEditable.style.backgroundColor = ''; }, 1200);
+    }
   } else {
     _destroyEditToolbarListeners();
     _hideFormatToolbar();
@@ -1371,12 +1380,12 @@ function _editMouseUpHandler() {
       _editSavedRange = sel.getRangeAt(0).cloneRange();
       const rect = _editSavedRange.getBoundingClientRect();
       const tb = document.getElementById('quiz-format-toolbar');
-      // Position toolbar above selection
+      // Position toolbar above selection (viewport-relative for position:fixed)
       const tbHeight = 40;
-      let top = rect.top + window.scrollY - tbHeight - 6;
-      let left = rect.left + window.scrollX + (rect.width / 2) - (tb.offsetWidth || 140) / 2;
-      // Clamp to viewport
-      if (top < window.scrollY + 4) top = rect.bottom + window.scrollY + 6;
+      let top = rect.top - tbHeight - 6;
+      let left = rect.left + (rect.width / 2) - (tb.offsetWidth || 140) / 2;
+      // Clamp: if toolbar would go above viewport, show below selection
+      if (top < 4) top = rect.bottom + 6;
       if (left < 4) left = 4;
       if (left + 160 > window.innerWidth) left = window.innerWidth - 164;
       _showFormatToolbar(left, top);
