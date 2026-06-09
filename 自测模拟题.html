@@ -1259,6 +1259,12 @@ function toggleMemorize() {
     }
     // Expand all answer reveals
     document.querySelectorAll('.answer-reveal').forEach(el => el.classList.add('open'));
+    // Mark all MCQ correct options green
+    document.querySelectorAll('#mcq-container .mcq-option').forEach(opt => {
+      const oc = opt.getAttribute('onclick') || '';
+      const parts = oc.match(/'([A-D])','([A-D])'/);
+      if (parts && parts[1] === parts[2]) opt.classList.add('correct');
+    });
   } else {
     // Clear fill-blank inputs (only auto-filled ones)
     for (let i = 1; i <= 47; i++) {
@@ -1272,6 +1278,13 @@ function toggleMemorize() {
     }
     // Collapse all answer reveals
     document.querySelectorAll('.answer-reveal').forEach(el => el.classList.remove('open'));
+    // Remove all MCQ marks (both correct and wrong)
+    document.querySelectorAll('#mcq-container .mcq-option').forEach(opt => {
+      opt.classList.remove('correct', 'wrong');
+    });
+    document.querySelectorAll('#mcq-container .question-card').forEach(c => {
+      c.classList.remove('answered');
+    });
   }
   saveStateNow();
 }
@@ -1433,7 +1446,7 @@ window.addEventListener('scroll', () => {
 }, {passive: true});
 
 function initAnswers() {
-  // 填空题：将答案预填入输入框
+  // 填空题：将答案预填入空白的输入框（不覆盖已有值）
   for (const [qid, answers] of Object.entries(fbAnswers)) {
     answers.forEach((ans, idx) => {
       const inp = document.getElementById(qid + '_' + idx);
@@ -1444,23 +1457,11 @@ function initAnswers() {
       }
     });
   }
-  // 选择题：标记所有正确选项为绿色
-  document.querySelectorAll('#mcq-container .question-card').forEach(card => {
-    card.querySelectorAll('.mcq-option').forEach(opt => {
-      const m = opt.getAttribute('onclick') && opt.getAttribute('onclick').match(/,'([A-D])'\)/);
-      if (m) {
-        const parts = opt.getAttribute('onclick').match(/'([A-D])','([A-D])'/);
-        if (parts && parts[1] === parts[2]) {
-          opt.classList.add('correct');
-        }
-      }
-    });
-  });
 }
 
 window.addEventListener('DOMContentLoaded', () => {
-  initAnswers();
-  loadState();
+  loadState();    // 先恢复用户保存的作答
+  initAnswers(); // 再预填剩余空白的输入框（不会覆盖已有值）
 });
 </script>
 
