@@ -20,8 +20,13 @@
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         /* 滚动模式布局 */
         .scroll-layout { display: flex; min-height: calc(100vh - 64px); }
-        .scroll-sidebar { position: fixed; top: 64px; left: 0; width: 220px; height: calc(100vh - 64px); background: #fff; border-right: 1px solid #e5e7eb; overflow-y: auto; z-index: 40; padding: 12px; }
-        .scroll-main { margin-left: 220px; flex: 1; padding: 20px; max-width: 900px; }
+        .scroll-sidebar { position: fixed; top: 64px; left: 0; width: 220px; height: calc(100vh - 64px); background: #fff; border-right: 1px solid #e5e7eb; overflow-y: auto; z-index: 40; padding: 12px; transition: transform .25s ease, width .25s ease; }
+        .scroll-sidebar.collapsed { transform: translateX(-220px); width: 220px; }
+        .scroll-main { margin-left: 220px; flex: 1; padding: 20px; max-width: 900px; transition: margin-left .25s ease; }
+        .scroll-main.full { margin-left: 0; }
+        .sidebar-toggle { position: fixed; top: 72px; left: 220px; z-index: 45; width: 28px; height: 28px; border-radius: 0 8px 8px 0; background: #fff; border: 1px solid #e5e7eb; border-left: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; color: #64748b; transition: left .25s ease, background .15s; box-shadow: 2px 0 6px rgba(0,0,0,.05); }
+        .sidebar-toggle:hover { background: #f0fdfa; color: #0d9488; }
+        .sidebar-toggle.collapsed { left: 0; }
         .scroll-q-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px 20px; margin-bottom: 16px; transition: border-color .2s; scroll-margin-top: 80px; }
         .scroll-q-card:hover { border-color: #14b8a6; }
         .scroll-q-card.editing { border-color: #14b8a6; box-shadow: 0 0 0 2px rgba(20,184,166,.15); }
@@ -47,7 +52,10 @@
         .sidebar-q-link.wrong { color: #ef4444; }
         @media (max-width: 768px) {
             .scroll-sidebar { width: 100%; position: relative; top: 0; height: auto; max-height: 300px; border-right: none; border-bottom: 1px solid #e5e7eb; }
+            .scroll-sidebar.collapsed { transform: none; max-height: 0; padding: 0; overflow: hidden; border: none; }
             .scroll-main { margin-left: 0; }
+            .scroll-main.full { margin-left: 0; }
+            .sidebar-toggle { display: none; }
         }
     </style>
 </head>
@@ -186,6 +194,7 @@
             const [currentCourse, setCurrentCourse] = useState(null);
             const [currentChapter, setCurrentChapter] = useState(null);
             const [studyMode, setStudyMode] = useState('quiz'); // 'quiz' | 'recite' | 'scroll'
+            const [scrollReciteMode, setScrollReciteMode] = useState(false);
             
             // 加载状态锁
             const [isLoaded, setIsLoaded] = useState(false);
@@ -395,7 +404,7 @@
             };
 
             // 滚动模式入口
-            const startScrollStudy = (course, chapter, typeFilter = '全部') => {
+            const startScrollStudy = (course, chapter, typeFilter = '全部', mode = 'quiz') => {
                 let queue;
                 if (chapter === '所有题目') queue = questions.filter(q => q.course === course);
                 else queue = questions.filter(q => q.course === course && q.chapter === chapter);
@@ -405,6 +414,7 @@
                 setCurrentCourse(course);
                 setCurrentChapter(chapter);
                 setStudyMode('scroll');
+                setScrollReciteMode(mode === 'recite');
                 setView('study');
             };
 
@@ -648,6 +658,7 @@
                             onUpdateQuestion={updateQuestion}
                             onBack={() => { setStudyMode('quiz'); setView('home'); }}
                             onSwitchToCard={() => { setStudyMode('quiz'); setCurrentIndex(0); setShowAnswer(false); setSelectedOption(null); setSelectedMultiOptions(new Set()); }}
+                            isRecite={scrollReciteMode}
                         />
                         )}
 
@@ -769,8 +780,11 @@
                             <button onClick={() => onStart(courseName, '所有题目', 'quiz', undefined, selectedType)} className="text-xs px-3 py-1.5 bg-teal-600 text-white rounded-md hover:bg-teal-700 shadow-sm transition flex items-center">
                                 <Icons.PenLine className="w-3 h-3 mr-1"/> {selectedType === '全部' ? '刷题' : `刷题(${selectedType})`}
                             </button>
-                            <button onClick={() => onScrollStart(courseName, '所有题目', selectedType)} className="text-xs px-3 py-1.5 bg-amber-500 text-white rounded-md hover:bg-amber-600 shadow-sm transition flex items-center">
-                                <Icons.ListOrdered className="w-3 h-3 mr-1"/> 滚动
+                            <button onClick={() => onScrollStart(courseName, '所有题目', selectedType, 'quiz')} className="text-xs px-3 py-1.5 bg-amber-500 text-white rounded-md hover:bg-amber-600 shadow-sm transition flex items-center">
+                                <Icons.ListOrdered className="w-3 h-3 mr-1"/> 滚动刷题
+                            </button>
+                            <button onClick={() => onScrollStart(courseName, '所有题目', selectedType, 'recite')} className="text-xs px-3 py-1.5 bg-orange-500 text-white rounded-md hover:bg-orange-600 shadow-sm transition flex items-center">
+                                <Icons.BookOpen className="w-3 h-3 mr-1"/> 滚动背题
                             </button>
                         </div>
                     </div>
@@ -796,8 +810,11 @@
                                     <button onClick={() => onStart(courseName, chapter, 'quiz', undefined, selectedType)} className="text-xs px-3 py-1.5 bg-white text-teal-600 border border-teal-200 rounded-md hover:bg-teal-600 hover:text-white transition flex items-center">
                                         <Icons.PenLine className="w-3 h-3 mr-1"/> {selectedType === '全部' ? '刷题' : selectedType}
                                     </button>
-                                    <button onClick={() => onScrollStart(courseName, chapter, selectedType)} className="text-xs px-2 py-1.5 bg-white text-amber-600 border border-amber-200 rounded-md hover:bg-amber-500 hover:text-white hover:border-amber-500 transition flex items-center" title="滚动模式">
+                                    <button onClick={() => onScrollStart(courseName, chapter, selectedType, 'quiz')} className="text-xs px-2 py-1.5 bg-white text-amber-600 border border-amber-200 rounded-md hover:bg-amber-500 hover:text-white hover:border-amber-500 transition flex items-center" title="滚动刷题">
                                         <Icons.ListOrdered className="w-3 h-3"/>
+                                    </button>
+                                    <button onClick={() => onScrollStart(courseName, chapter, selectedType, 'recite')} className="text-xs px-2 py-1.5 bg-white text-orange-500 border border-orange-200 rounded-md hover:bg-orange-500 hover:text-white hover:border-orange-500 transition flex items-center" title="滚动背题">
+                                        <Icons.BookOpen className="w-3 h-3"/>
                                     </button>
                                 </div>
                             </div>
@@ -1129,14 +1146,14 @@
         }
 
         // --- 5b. 滚动模式组件 ---
-        function ScrollStudy({ questions, course, chapter, wrongIds, toggleWrong, onUpdateQuestion, onBack, onSwitchToCard }) {
+        function ScrollStudy({ questions, course, chapter, wrongIds, toggleWrong, onUpdateQuestion, onBack, onSwitchToCard, isRecite }) {
             const [filterType, setFilterType] = useState('全部');
             const [filterProb, setFilterProb] = useState('全部');
-            const [expandedIds, setExpandedIds] = useState(new Set());
+            const [expandedIds, setExpandedIds] = useState(() => isRecite ? new Set(questions.map(q => q.id)) : new Set());
             const [editingId, setEditingId] = useState(null);
             const [editData, setEditData] = useState(null);
-            const [jumpNum, setJumpNum] = useState('');
-            const [showAllAnswers, setShowAllAnswers] = useState(false);
+            const [showAllAnswers, setShowAllAnswers] = useState(isRecite);
+            const [sidebarOpen, setSidebarOpen] = useState(true);
 
             // 浮出工具栏状态
             const tbRef = useRef(null);
@@ -1165,15 +1182,6 @@
             const toggleAll = () => {
                 if (showAllAnswers) { setExpandedIds(new Set()); setShowAllAnswers(false); }
                 else { setExpandedIds(new Set(filtered.map(q => q.id))); setShowAllAnswers(true); }
-            };
-
-            // 跳转到指定题号
-            const jumpTo = (num) => {
-                const idx = parseInt(num) - 1;
-                if (idx >= 0 && idx < filtered.length) {
-                    const el = document.getElementById('sq-' + filtered[idx].id);
-                    if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); el.style.transition = 'background .3s'; el.style.background = 'rgba(20,184,166,.08)'; setTimeout(() => el.style.background = '', 1200); }
-                }
             };
 
             // === 行内编辑 ===
@@ -1253,8 +1261,6 @@
             useEffect(() => {
                 const handleKey = (e) => {
                     if (editingId || ['INPUT', 'TEXTAREA'].includes(e.target?.tagName)) return;
-                    // G + 数字 → 跳题
-                    if (e.key === 'g') { setJumpNum(''); setTimeout(() => document.getElementById('jump-input')?.focus(), 50); e.preventDefault(); return; }
                     // J/K 上下题
                     if (e.key === 'j' || e.key === 'ArrowDown') {
                         const cards = document.querySelectorAll('.scroll-q-card');
@@ -1305,7 +1311,7 @@
                     </div>
 
                     {/* 左侧固定筛选栏 */}
-                    <div className="scroll-sidebar no-scrollbar">
+                    <div className={`scroll-sidebar no-scrollbar ${sidebarOpen ? '' : 'collapsed'}`}>
                         <div className="mb-3">
                             <div className="text-xs font-bold text-gray-400 mb-2 uppercase flex items-center"><Icons.Filter className="w-3 h-3 mr-1"/>题型</div>
                             {types.map(t => (
@@ -1317,11 +1323,6 @@
                             {['全部', '仅必考', '必考+常考'].map(p => (
                                 <button key={p} onClick={() => setFilterProb(p)} className={`sidebar-filter-btn ${filterProb === p ? 'active' : ''}`}>{p}</button>
                             ))}
-                        </div>
-                        <div className="mb-3">
-                            <div className="flex items-center gap-2 mb-2">
-                                <input id="jump-input" type="text" value={jumpNum} onChange={e => setJumpNum(e.target.value)} onKeyDown={e => { if (e.key === 'Enter') { jumpTo(jumpNum); setJumpNum(''); e.target.blur(); } }} className="w-full border border-gray-200 rounded-lg px-3 py-1.5 text-sm focus:ring-2 focus:ring-teal-500 outline-none" placeholder="跳题号 (按G聚焦)" />
-                            </div>
                         </div>
                         <div className="border-t border-gray-100 pt-2 max-h-[40vh] overflow-y-auto no-scrollbar">
                             {filtered.map((q, i) => (
@@ -1335,12 +1336,16 @@
                             <p><kbd className="bg-gray-100 px-1 rounded">J</kbd>/<kbd className="bg-gray-100 px-1 rounded">K</kbd> 上下题</p>
                             <p><kbd className="bg-gray-100 px-1 rounded">E</kbd> 展开答案</p>
                             <p><kbd className="bg-gray-100 px-1 rounded">A</kbd> 全部展开</p>
-                            <p><kbd className="bg-gray-100 px-1 rounded">G</kbd> 跳题号</p>
                         </div>
                     </div>
 
+                    {/* 侧边栏收起/展开按钮 */}
+                    <button className={`sidebar-toggle ${sidebarOpen ? '' : 'collapsed'}`} onClick={() => setSidebarOpen(o => !o)} title={sidebarOpen ? '收起侧边栏' : '展开侧边栏'}>
+                        {sidebarOpen ? '◀' : '▶'}
+                    </button>
+
                     {/* 主内容区 */}
-                    <div className="scroll-main">
+                    <div className={`scroll-main ${sidebarOpen ? '' : 'full'}`}>
                         <div className="flex items-center justify-between mb-4 sticky top-16 bg-gray-50 z-30 py-3 -mx-5 px-5 border-b border-gray-100">
                             <div className="flex items-center gap-3">
                                 <button onClick={onBack} className="flex items-center text-sm text-teal-600 hover:text-teal-800 bg-teal-50 px-3 py-1.5 rounded-full"><Icons.ArrowLeft className="w-4 h-4 mr-1"/>返回</button>
