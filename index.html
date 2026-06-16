@@ -195,6 +195,8 @@
             const [currentChapter, setCurrentChapter] = useState(null);
             const [studyMode, setStudyMode] = useState('quiz'); // 'quiz' | 'recite' | 'scroll'
             const [scrollReciteMode, setScrollReciteMode] = useState(false);
+            const [currentTypeFilter, setCurrentTypeFilter] = useState('全部');
+            const [currentProbFilter, setCurrentProbFilter] = useState('全部');
             
             // 加载状态锁
             const [isLoaded, setIsLoaded] = useState(false);
@@ -348,8 +350,8 @@
                 setRenamingCourseName(null);
             };
 
-            // 核心启动函数：增加 typeFilter 参数
-            const startStudy = (course, chapter, mode = 'quiz', forceShuffleQuestions = isShuffleQuestions, typeFilter = '全部') => {
+            // 核心启动函数：增加 typeFilter、probFilter 参数
+            const startStudy = (course, chapter, mode = 'quiz', forceShuffleQuestions = isShuffleQuestions, typeFilter = '全部', probFilter = '全部') => {
                 let queue;
                 if (chapter === '所有题目') queue = questions.filter(q => q.course === course);
                 else queue = questions.filter(q => q.course === course && q.chapter === chapter);
@@ -358,9 +360,17 @@
                 if (typeFilter && typeFilter !== '全部') {
                     queue = queue.filter(q => q.type === typeFilter);
                 }
+                // 增加考概率筛选逻辑
+                if (probFilter && probFilter !== '全部') {
+                    if (probFilter === '仅必考') queue = queue.filter(q => q.examProb === '必考');
+                    else if (probFilter === '必考+常考') queue = queue.filter(q => q.examProb === '必考' || q.examProb === '常考');
+                }
                 
                 if (queue.length === 0) { 
-                    const msg = typeFilter !== '全部' ? `该章节下没有【${typeFilter}】类型的题目` : "该章节没有题目";
+                    const parts = [];
+                    if (typeFilter !== '全部') parts.push(typeFilter);
+                    if (probFilter !== '全部') parts.push(probFilter);
+                    const msg = parts.length > 0 ? `该章节下没有【${parts.join('/')}】的题目` : "该章节没有题目";
                     showAlert("提示", msg); 
                     return; 
                 }
@@ -369,8 +379,17 @@
 
                 setStudyQueue(queue);
                 setCurrentCourse(course);
-                // 如果有题型筛选，标题带上题型
-                setCurrentChapter(typeFilter !== '全部' ? `${chapter} (${typeFilter})` : chapter);
+                setCurrentTypeFilter(typeFilter);
+                setCurrentProbFilter(probFilter);
+                // 标题带上筛选信息
+                let chapterLabel = chapter;
+                if (typeFilter !== '全部' || probFilter !== '全部') {
+                    const parts = [];
+                    if (typeFilter !== '全部') parts.push(typeFilter);
+                    if (probFilter !== '全部') parts.push(probFilter);
+                    chapterLabel = `${chapter} (${parts.join('/')})`;
+                }
+                setCurrentChapter(chapterLabel);
                 setStudyMode(mode);
                 setCurrentIndex(0);
                 
@@ -404,15 +423,21 @@
             };
 
             // 滚动模式入口
-            const startScrollStudy = (course, chapter, typeFilter = '全部', mode = 'quiz') => {
+            const startScrollStudy = (course, chapter, typeFilter = '全部', mode = 'quiz', probFilter = '全部') => {
                 let queue;
                 if (chapter === '所有题目') queue = questions.filter(q => q.course === course);
                 else queue = questions.filter(q => q.course === course && q.chapter === chapter);
                 if (typeFilter && typeFilter !== '全部') queue = queue.filter(q => q.type === typeFilter);
+                if (probFilter && probFilter !== '全部') {
+                    if (probFilter === '仅必考') queue = queue.filter(q => q.examProb === '必考');
+                    else if (probFilter === '必考+常考') queue = queue.filter(q => q.examProb === '必考' || q.examProb === '常考');
+                }
                 if (queue.length === 0) { showAlert("提示", "该筛选条件下没有题目"); return; }
                 setStudyQueue(queue);
                 setCurrentCourse(course);
                 setCurrentChapter(chapter);
+                setCurrentTypeFilter(typeFilter);
+                setCurrentProbFilter(probFilter);
                 setStudyMode('scroll');
                 setScrollReciteMode(mode === 'recite');
                 setView('study');
@@ -499,13 +524,7 @@
                     setIsShuffleQuestions(newValue);
                     // 简单重启当前章节
                     const simpleChapterName = currentChapter.includes(' (') ? currentChapter.split(' (')[0] : currentChapter;
-                    // 尝试从当前标题推断类型
-                    let currentType = '全部';
-                    if (currentChapter.includes('(')) {
-                        const match = currentChapter.match(/\((.*?)\)/);
-                        if (match) currentType = match[1];
-                    }
-                    startStudy(currentCourse, simpleChapterName, studyMode, newValue, currentType);
+                    startStudy(currentCourse, simpleChapterName, studyMode, newValue, currentTypeFilter, currentProbFilter);
                 });
             };
 
@@ -781,16 +800,16 @@
                             <span>所有题目 ({filteredQuestions.length}题)</span>
                         </div>
                         <div className="flex space-x-2">
-                            <button onClick={() => onStart(courseName, '所有题目', 'recite', undefined, selectedType)} className="text-xs px-3 py-1.5 bg-white text-teal-600 border border-teal-200 rounded-md hover:bg-teal-600 hover:text-white transition flex items-center">
-                                <Icons.BookOpen className="w-3 h-3 mr-1"/> {selectedType === '全部' ? '背题' : `背题(${selectedType})`}
+                            <button onClick={() => onStart(courseName, '所有题目', 'recite', undefined, selectedType, selectedProb)} className="text-xs px-3 py-1.5 bg-white text-teal-600 border border-teal-200 rounded-md hover:bg-teal-600 hover:text-white transition flex items-center">
+                                <Icons.BookOpen className="w-3 h-3 mr-1"/> {selectedType === '全部' && selectedProb === '全部' ? '背题' : `背题${selectedType !== '全部' ? `(${selectedType})` : ''}${selectedProb !== '全部' ? `(${selectedProb})` : ''}`}
                             </button>
-                            <button onClick={() => onStart(courseName, '所有题目', 'quiz', undefined, selectedType)} className="text-xs px-3 py-1.5 bg-teal-600 text-white rounded-md hover:bg-teal-700 shadow-sm transition flex items-center">
-                                <Icons.PenLine className="w-3 h-3 mr-1"/> {selectedType === '全部' ? '刷题' : `刷题(${selectedType})`}
+                            <button onClick={() => onStart(courseName, '所有题目', 'quiz', undefined, selectedType, selectedProb)} className="text-xs px-3 py-1.5 bg-teal-600 text-white rounded-md hover:bg-teal-700 shadow-sm transition flex items-center">
+                                <Icons.PenLine className="w-3 h-3 mr-1"/> {selectedType === '全部' && selectedProb === '全部' ? '刷题' : `刷题${selectedType !== '全部' ? `(${selectedType})` : ''}${selectedProb !== '全部' ? `(${selectedProb})` : ''}`}
                             </button>
-                            <button onClick={() => onScrollStart(courseName, '所有题目', selectedType, 'quiz')} className="text-xs px-3 py-1.5 bg-amber-500 text-white rounded-md hover:bg-amber-600 shadow-sm transition flex items-center">
+                            <button onClick={() => onScrollStart(courseName, '所有题目', selectedType, 'quiz', selectedProb)} className="text-xs px-3 py-1.5 bg-amber-500 text-white rounded-md hover:bg-amber-600 shadow-sm transition flex items-center">
                                 <Icons.ListOrdered className="w-3 h-3 mr-1"/> 滚动刷题
                             </button>
-                            <button onClick={() => onScrollStart(courseName, '所有题目', selectedType, 'recite')} className="text-xs px-3 py-1.5 bg-orange-500 text-white rounded-md hover:bg-orange-600 shadow-sm transition flex items-center">
+                            <button onClick={() => onScrollStart(courseName, '所有题目', selectedType, 'recite', selectedProb)} className="text-xs px-3 py-1.5 bg-orange-500 text-white rounded-md hover:bg-orange-600 shadow-sm transition flex items-center">
                                 <Icons.BookOpen className="w-3 h-3 mr-1"/> 滚动背题
                             </button>
                         </div>
@@ -811,16 +830,16 @@
                                     <span className="ml-2 text-xs text-gray-400 flex-shrink-0">({count})</span>
                                 </div>
                                 <div className="flex space-x-2 flex-shrink-0">
-                                    <button onClick={() => onStart(courseName, chapter, 'recite', undefined, selectedType)} className="text-xs px-2 py-1.5 bg-gray-50 text-gray-600 border border-gray-200 rounded-md hover:bg-teal-50 hover:text-teal-600 hover:border-teal-200 transition flex items-center">
+                                    <button onClick={() => onStart(courseName, chapter, 'recite', undefined, selectedType, selectedProb)} className="text-xs px-2 py-1.5 bg-gray-50 text-gray-600 border border-gray-200 rounded-md hover:bg-teal-50 hover:text-teal-600 hover:border-teal-200 transition flex items-center">
                                         <Icons.BookOpen className="w-3 h-3"/>
                                     </button>
-                                    <button onClick={() => onStart(courseName, chapter, 'quiz', undefined, selectedType)} className="text-xs px-3 py-1.5 bg-white text-teal-600 border border-teal-200 rounded-md hover:bg-teal-600 hover:text-white transition flex items-center">
+                                    <button onClick={() => onStart(courseName, chapter, 'quiz', undefined, selectedType, selectedProb)} className="text-xs px-3 py-1.5 bg-white text-teal-600 border border-teal-200 rounded-md hover:bg-teal-600 hover:text-white transition flex items-center">
                                         <Icons.PenLine className="w-3 h-3 mr-1"/> {selectedType === '全部' ? '刷题' : selectedType}
                                     </button>
-                                    <button onClick={() => onScrollStart(courseName, chapter, selectedType, 'quiz')} className="text-xs px-2 py-1.5 bg-white text-amber-600 border border-amber-200 rounded-md hover:bg-amber-500 hover:text-white hover:border-amber-500 transition flex items-center" title="滚动刷题">
+                                    <button onClick={() => onScrollStart(courseName, chapter, selectedType, 'quiz', selectedProb)} className="text-xs px-2 py-1.5 bg-white text-amber-600 border border-amber-200 rounded-md hover:bg-amber-500 hover:text-white hover:border-amber-500 transition flex items-center" title="滚动刷题">
                                         <Icons.ListOrdered className="w-3 h-3"/>
                                     </button>
-                                    <button onClick={() => onScrollStart(courseName, chapter, selectedType, 'recite')} className="text-xs px-2 py-1.5 bg-white text-orange-500 border border-orange-200 rounded-md hover:bg-orange-500 hover:text-white hover:border-orange-500 transition flex items-center" title="滚动背题">
+                                    <button onClick={() => onScrollStart(courseName, chapter, selectedType, 'recite', selectedProb)} className="text-xs px-2 py-1.5 bg-white text-orange-500 border border-orange-200 rounded-md hover:bg-orange-500 hover:text-white hover:border-orange-500 transition flex items-center" title="滚动背题">
                                         <Icons.BookOpen className="w-3 h-3"/>
                                     </button>
                                 </div>
