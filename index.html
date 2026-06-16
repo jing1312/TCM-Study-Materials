@@ -18,6 +18,37 @@
         /* 隐藏滚动条但允许滚动 */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        /* 滚动模式布局 */
+        .scroll-layout { display: flex; min-height: calc(100vh - 64px); }
+        .scroll-sidebar { position: fixed; top: 64px; left: 0; width: 220px; height: calc(100vh - 64px); background: #fff; border-right: 1px solid #e5e7eb; overflow-y: auto; z-index: 40; padding: 12px; }
+        .scroll-main { margin-left: 220px; flex: 1; padding: 20px; max-width: 900px; }
+        .scroll-q-card { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 16px 20px; margin-bottom: 16px; transition: border-color .2s; scroll-margin-top: 80px; }
+        .scroll-q-card:hover { border-color: #14b8a6; }
+        .scroll-q-card.editing { border-color: #14b8a6; box-shadow: 0 0 0 2px rgba(20,184,166,.15); }
+        .scroll-q-card .q-answer-area { max-height: 0; overflow: hidden; transition: max-height .35s ease; }
+        .scroll-q-card .q-answer-area.open { max-height: 2000px; padding-top: 12px; }
+        .scroll-q-card .q-answer-area[contenteditable="true"] { outline: 2px dashed rgba(20,184,166,.4); outline-offset: 2px; cursor: text; max-height: 8000px; overflow: visible; padding: 10px; border-radius: 6px; margin-top: 8px; }
+        /* 浮出格式工具栏 */
+        .fmt-toolbar { position: fixed; z-index: 200; display: none; background: rgba(255,255,255,.98); border: 1px solid #e2e8f0; border-radius: 10px; box-shadow: 0 4px 20px rgba(0,0,0,.12), 0 1px 4px rgba(0,0,0,.06); padding: 4px; gap: 2px; align-items: center; backdrop-filter: blur(8px); }
+        .fmt-toolbar.visible { display: flex; }
+        .fmt-toolbar .fmt-btn { width: 32px; height: 32px; border: none; border-radius: 7px; background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; color: #1e293b; transition: all .12s; font-family: inherit; }
+        .fmt-toolbar .fmt-btn:hover { background: #e2efff; }
+        .fmt-toolbar .fmt-btn:active { background: rgba(20,184,166,.15); transform: scale(.94); }
+        .fmt-toolbar .fmt-blue { color: #2563eb; font-weight: 600; }
+        .fmt-toolbar .fmt-red { color: #dc2626; font-weight: 600; }
+        .fmt-toolbar .fmt-hl .hl-t { background: #fde047; padding: 0 3px; border-radius: 2px; font-size: 13px; }
+        /* 侧栏筛选项 */
+        .sidebar-filter-btn { display: block; width: 100%; text-align: left; padding: 6px 10px; border-radius: 8px; font-size: 13px; cursor: pointer; border: 1px solid transparent; transition: all .15s; margin-bottom: 4px; }
+        .sidebar-filter-btn:hover { background: #f0fdfa; }
+        .sidebar-filter-btn.active { background: #ccfbf1; border-color: #14b8a6; color: #0f766e; font-weight: 600; }
+        .sidebar-q-link { display: flex; align-items: center; gap: 6px; padding: 4px 8px; border-radius: 6px; font-size: 12px; cursor: pointer; transition: all .15s; color: #64748b; }
+        .sidebar-q-link:hover { background: #f1f5f9; }
+        .sidebar-q-link.current { background: #ccfbf1; color: #0f766e; font-weight: 600; }
+        .sidebar-q-link.wrong { color: #ef4444; }
+        @media (max-width: 768px) {
+            .scroll-sidebar { width: 100%; position: relative; top: 0; height: auto; max-height: 300px; border-right: none; border-bottom: 1px solid #e5e7eb; }
+            .scroll-main { margin-left: 0; }
+        }
     </style>
 </head>
 <body class="bg-gray-50 text-gray-800">
@@ -154,7 +185,7 @@
             const [view, setView] = useState('home'); 
             const [currentCourse, setCurrentCourse] = useState(null);
             const [currentChapter, setCurrentChapter] = useState(null);
-            const [studyMode, setStudyMode] = useState('quiz'); // 'quiz' | 'recite'
+            const [studyMode, setStudyMode] = useState('quiz'); // 'quiz' | 'recite' | 'scroll'
             
             // 加载状态锁
             const [isLoaded, setIsLoaded] = useState(false);
@@ -363,6 +394,25 @@
                 setView('study');
             };
 
+            // 滚动模式入口
+            const startScrollStudy = (course, chapter, typeFilter = '全部') => {
+                let queue;
+                if (chapter === '所有题目') queue = questions.filter(q => q.course === course);
+                else queue = questions.filter(q => q.course === course && q.chapter === chapter);
+                if (typeFilter && typeFilter !== '全部') queue = queue.filter(q => q.type === typeFilter);
+                if (queue.length === 0) { showAlert("提示", "该筛选条件下没有题目"); return; }
+                setStudyQueue(queue);
+                setCurrentCourse(course);
+                setCurrentChapter(chapter);
+                setStudyMode('scroll');
+                setView('study');
+            };
+
+            // 更新单道题目（自动保存）
+            const updateQuestion = (updatedQ) => {
+                setQuestions(prev => prev.map(q => q.id === updatedQ.id ? updatedQ : q));
+            };
+
             const resetCardState = useCallback((targetMode) => {
                 setShowAnswer(targetMode === 'recite');
                 setSelectedOption(null);
@@ -532,6 +582,7 @@
                                         courseName={course} 
                                         questions={questions.filter(q => q.course === course)}
                                         onStart={startStudy}
+                                        onScrollStart={startScrollStudy}
                                         onDelete={() => deleteCourse(course)}
                                         onManage={() => { setCurrentCourse(course); setView('manage'); }}
                                         onRename={() => setRenamingCourseName(course)} 
@@ -565,7 +616,7 @@
                         </div>
                         )}
 
-                        {view === 'study' && studyQueue.length > 0 && (
+                        {view === 'study' && studyQueue.length > 0 && studyMode !== 'scroll' && (
                         <StudySession 
                             question={studyQueue[currentIndex]}
                             total={studyQueue.length}
@@ -584,6 +635,19 @@
                             onToggleOptionShuffle={(val) => setIsShuffleOptions(val)}
                             onToggleQuestionShuffle={handleQuestionShuffleChange}
                             studyMode={studyMode}
+                        />
+                        )}
+
+                        {view === 'study' && studyMode === 'scroll' && (
+                        <ScrollStudy
+                            questions={studyQueue}
+                            course={currentCourse}
+                            chapter={currentChapter}
+                            wrongIds={wrongQuestionIds}
+                            toggleWrong={(id) => setWrongQuestionIds(prev => { const n = new Set(prev); if (n.has(id)) n.delete(id); else n.add(id); return n; })}
+                            onUpdateQuestion={updateQuestion}
+                            onBack={() => { setStudyMode('quiz'); setView('home'); }}
+                            onSwitchToCard={() => { setStudyMode('quiz'); setCurrentIndex(0); setShowAnswer(false); setSelectedOption(null); setSelectedMultiOptions(new Set()); }}
                         />
                         )}
 
@@ -610,7 +674,7 @@
 
         // --- 5. 子组件 ---
 
-        function CourseCard({ courseName, questions, onStart, onDelete, onManage, onRename }) {
+        function CourseCard({ courseName, questions, onStart, onScrollStart, onDelete, onManage, onRename }) {
             const [expanded, setExpanded] = useState(false);
             // 新增：题型筛选状态
             const [selectedType, setSelectedType] = useState('全部');
@@ -705,6 +769,9 @@
                             <button onClick={() => onStart(courseName, '所有题目', 'quiz', undefined, selectedType)} className="text-xs px-3 py-1.5 bg-teal-600 text-white rounded-md hover:bg-teal-700 shadow-sm transition flex items-center">
                                 <Icons.PenLine className="w-3 h-3 mr-1"/> {selectedType === '全部' ? '刷题' : `刷题(${selectedType})`}
                             </button>
+                            <button onClick={() => onScrollStart(courseName, '所有题目', selectedType)} className="text-xs px-3 py-1.5 bg-amber-500 text-white rounded-md hover:bg-amber-600 shadow-sm transition flex items-center">
+                                <Icons.ListOrdered className="w-3 h-3 mr-1"/> 滚动
+                            </button>
                         </div>
                     </div>
                     
@@ -728,6 +795,9 @@
                                     </button>
                                     <button onClick={() => onStart(courseName, chapter, 'quiz', undefined, selectedType)} className="text-xs px-3 py-1.5 bg-white text-teal-600 border border-teal-200 rounded-md hover:bg-teal-600 hover:text-white transition flex items-center">
                                         <Icons.PenLine className="w-3 h-3 mr-1"/> {selectedType === '全部' ? '刷题' : selectedType}
+                                    </button>
+                                    <button onClick={() => onScrollStart(courseName, chapter, selectedType)} className="text-xs px-2 py-1.5 bg-white text-amber-600 border border-amber-200 rounded-md hover:bg-amber-500 hover:text-white hover:border-amber-500 transition flex items-center" title="滚动模式">
+                                        <Icons.ListOrdered className="w-3 h-3"/>
                                     </button>
                                 </div>
                             </div>
@@ -1054,6 +1124,309 @@
                         ))}
                     </div>
                     {editingQuestion && <EditForm q={editingQuestion} />}
+                </div>
+            );
+        }
+
+        // --- 5b. 滚动模式组件 ---
+        function ScrollStudy({ questions, course, chapter, wrongIds, toggleWrong, onUpdateQuestion, onBack, onSwitchToCard }) {
+            const [filterType, setFilterType] = useState('全部');
+            const [filterProb, setFilterProb] = useState('全部');
+            const [expandedIds, setExpandedIds] = useState(new Set());
+            const [editingId, setEditingId] = useState(null);
+            const [editData, setEditData] = useState(null);
+            const [jumpNum, setJumpNum] = useState('');
+            const [showAllAnswers, setShowAllAnswers] = useState(false);
+
+            // 浮出工具栏状态
+            const tbRef = useRef(null);
+            const [tbVisible, setTbVisible] = useState(false);
+            const savedRangeRef = useRef(null);
+            const selTimerRef = useRef(null);
+
+            // 过滤题目
+            const filtered = useMemo(() => {
+                let qs = questions;
+                if (filterType !== '全部') qs = qs.filter(q => q.type === filterType);
+                if (filterProb !== '全部') {
+                    if (filterProb === '仅必考') qs = qs.filter(q => q.examProb === '必考');
+                    else if (filterProb === '必考+常考') qs = qs.filter(q => q.examProb === '必考' || q.examProb === '常考');
+                }
+                return qs;
+            }, [questions, filterType, filterProb]);
+
+            const types = useMemo(() => ['全部', ...new Set(questions.map(q => q.type).filter(Boolean))], [questions]);
+
+            // 展开/收起答案
+            const toggleExpand = (id) => {
+                setExpandedIds(prev => { const n = new Set(prev); if (n.has(id)) n.delete(id); else n.add(id); return n; });
+            };
+
+            const toggleAll = () => {
+                if (showAllAnswers) { setExpandedIds(new Set()); setShowAllAnswers(false); }
+                else { setExpandedIds(new Set(filtered.map(q => q.id))); setShowAllAnswers(true); }
+            };
+
+            // 跳转到指定题号
+            const jumpTo = (num) => {
+                const idx = parseInt(num) - 1;
+                if (idx >= 0 && idx < filtered.length) {
+                    const el = document.getElementById('sq-' + filtered[idx].id);
+                    if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); el.style.transition = 'background .3s'; el.style.background = 'rgba(20,184,166,.08)'; setTimeout(() => el.style.background = '', 1200); }
+                }
+            };
+
+            // === 行内编辑 ===
+            const startEdit = (q) => {
+                setEditingId(q.id);
+                setEditData({ ...q, options: { ...q.options } });
+            };
+
+            const saveEdit = () => {
+                if (editData) { onUpdateQuestion(editData); setEditingId(null); setEditData(null); }
+            };
+
+            const cancelEdit = () => { setEditingId(null); setEditData(null); };
+
+            // === 浮出格式工具栏 ===
+            const showToolbar = (x, y) => {
+                if (!tbRef.current) return;
+                const tbH = 40;
+                let top = y - tbH - 6;
+                let left = x - 70;
+                if (top < 4) top = y + 20;
+                if (left < 4) left = 4;
+                if (left + 160 > window.innerWidth) left = window.innerWidth - 164;
+                tbRef.current.style.left = left + 'px';
+                tbRef.current.style.top = top + 'px';
+                tbRef.current.classList.add('visible');
+                setTbVisible(true);
+            };
+
+            const hideToolbar = () => {
+                if (tbRef.current) tbRef.current.classList.remove('visible');
+                setTbVisible(false);
+            };
+
+            const saveRange = () => {
+                const sel = window.getSelection();
+                if (sel && sel.rangeCount > 0 && !sel.isCollapsed) savedRangeRef.current = sel.getRangeAt(0).cloneRange();
+            };
+
+            const restoreRange = () => {
+                if (savedRangeRef.current) { const sel = window.getSelection(); if (sel) { sel.removeAllRanges(); sel.addRange(savedRangeRef.current); } }
+            };
+
+            const applyFmt = (cmd, val) => {
+                restoreRange();
+                document.execCommand(cmd, false, val || null);
+                const sel = window.getSelection();
+                if (sel && sel.rangeCount > 0 && !sel.isCollapsed) savedRangeRef.current = sel.getRangeAt(0).cloneRange();
+            };
+
+            const fmtBtnMouseDown = (e) => { e.preventDefault(); e.stopPropagation(); saveRange(); };
+
+            // selectionchange 检测
+            useEffect(() => {
+                let timer = null;
+                const handler = () => {
+                    clearTimeout(timer);
+                    timer = setTimeout(() => {
+                        const sel = window.getSelection();
+                        if (sel && sel.rangeCount > 0 && !sel.isCollapsed) {
+                            const anchor = sel.anchorNode && sel.anchorNode.parentElement;
+                            const editable = anchor && anchor.closest('[contenteditable="true"]');
+                            if (!editable) { if (tbVisible) hideToolbar(); return; }
+                            savedRangeRef.current = sel.getRangeAt(0).cloneRange();
+                            const rect = savedRangeRef.current.getBoundingClientRect();
+                            if (rect.width === 0 && rect.height === 0) { if (tbVisible) hideToolbar(); return; }
+                            showToolbar(rect.left + rect.width / 2, rect.top);
+                        } else { if (tbVisible) hideToolbar(); }
+                    }, 150);
+                };
+                document.addEventListener('selectionchange', handler);
+                document.addEventListener('mouseup', handler);
+                return () => { document.removeEventListener('selectionchange', handler); document.removeEventListener('mouseup', handler); };
+            }, [tbVisible]);
+
+            // === 快捷键 ===
+            useEffect(() => {
+                const handleKey = (e) => {
+                    if (editingId || ['INPUT', 'TEXTAREA'].includes(e.target?.tagName)) return;
+                    // G + 数字 → 跳题
+                    if (e.key === 'g') { setJumpNum(''); setTimeout(() => document.getElementById('jump-input')?.focus(), 50); e.preventDefault(); return; }
+                    // J/K 上下题
+                    if (e.key === 'j' || e.key === 'ArrowDown') {
+                        const cards = document.querySelectorAll('.scroll-q-card');
+                        for (let i = 0; i < cards.length - 1; i++) {
+                            const r = cards[i].getBoundingClientRect();
+                            if (r.bottom > 80) { cards[i + 1].scrollIntoView({ behavior: 'smooth', block: 'center' }); break; }
+                        }
+                        e.preventDefault();
+                    }
+                    if (e.key === 'k' || e.key === 'ArrowUp') {
+                        const cards = document.querySelectorAll('.scroll-q-card');
+                        for (let i = cards.length - 1; i > 0; i--) {
+                            const r = cards[i].getBoundingClientRect();
+                            if (r.top < window.innerHeight - 80) { cards[i - 1].scrollIntoView({ behavior: 'smooth', block: 'center' }); break; }
+                        }
+                        e.preventDefault();
+                    }
+                    // E 展开/收起当前可见题
+                    if (e.key === 'e') {
+                        const cards = document.querySelectorAll('.scroll-q-card');
+                        for (const c of cards) {
+                            const r = c.getBoundingClientRect();
+                            if (r.top >= 0 && r.top < window.innerHeight / 2) {
+                                const id = c.dataset.qid;
+                                toggleExpand(id);
+                                break;
+                            }
+                        }
+                        e.preventDefault();
+                    }
+                    // A 全部展开/收起
+                    if (e.key === 'a') { toggleAll(); e.preventDefault(); }
+                    // Escape 退出编辑
+                    if (e.key === 'Escape') { if (editingId) cancelEdit(); }
+                };
+                window.addEventListener('keydown', handleKey);
+                return () => window.removeEventListener('keydown', handleKey);
+            }, [editingId, expandedIds]);
+
+            return (
+                <div className="scroll-layout">
+                    {/* 浮出格式工具栏 */}
+                    <div className="fmt-toolbar" ref={tbRef}>
+                        <button type="button" className="fmt-btn" onMouseDown={fmtBtnMouseDown} onClick={() => applyFmt('bold')} title="加粗"><strong>B</strong></button>
+                        <button type="button" className="fmt-btn fmt-blue" onMouseDown={fmtBtnMouseDown} onClick={() => applyFmt('foreColor', '#2563eb')} title="蓝色">A</button>
+                        <button type="button" className="fmt-btn fmt-red" onMouseDown={fmtBtnMouseDown} onClick={() => applyFmt('foreColor', '#dc2626')} title="红色">A</button>
+                        <button type="button" className="fmt-btn fmt-hl" onMouseDown={fmtBtnMouseDown} onClick={() => applyFmt('hiliteColor', '#fde047')} title="高亮"><span className="hl-t">A</span></button>
+                    </div>
+
+                    {/* 左侧固定筛选栏 */}
+                    <div className="scroll-sidebar no-scrollbar">
+                        <div className="mb-3">
+                            <div className="text-xs font-bold text-gray-400 mb-2 uppercase flex items-center"><Icons.Filter className="w-3 h-3 mr-1"/>题型</div>
+                            {types.map(t => (
+                                <button key={t} onClick={() => setFilterType(t)} className={`sidebar-filter-btn ${filterType === t ? 'active' : ''}`}>{t}{t !== '全部' && <span className="text-xs text-gray-400 ml-1">({questions.filter(q => q.type === t).length})</span>}</button>
+                            ))}
+                        </div>
+                        <div className="mb-3">
+                            <div className="text-xs font-bold text-gray-400 mb-2 uppercase flex items-center"><Icons.Filter className="w-3 h-3 mr-1"/>考概率</div>
+                            {['全部', '仅必考', '必考+常考'].map(p => (
+                                <button key={p} onClick={() => setFilterProb(p)} className={`sidebar-filter-btn ${filterProb === p ? 'active' : ''}`}>{p}</button>
+                            ))}
+                        </div>
+                        <div className="mb-3">
+                            <div className="flex items-center gap-2 mb-2">
+                                <input id="jump-input" type="text" value={jumpNum} onChange={e => setJumpNum(e.target.value)} onKeyDown={e => { if (e.key === 'Enter') { jumpTo(jumpNum); setJumpNum(''); e.target.blur(); } }} className="w-full border border-gray-200 rounded-lg px-3 py-1.5 text-sm focus:ring-2 focus:ring-teal-500 outline-none" placeholder="跳题号 (按G聚焦)" />
+                            </div>
+                        </div>
+                        <div className="border-t border-gray-100 pt-2 max-h-[40vh] overflow-y-auto no-scrollbar">
+                            {filtered.map((q, i) => (
+                                <div key={q.id} className={`sidebar-q-link ${wrongIds.has(q.id) ? 'wrong' : ''}`} onClick={() => { const el = document.getElementById('sq-' + q.id); if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' }); }}>
+                                    <span className="w-6 text-center font-mono text-xs bg-gray-100 rounded">{i + 1}</span>
+                                    <span className="truncate flex-1">{q.title.substring(0, 20)}{q.title.length > 20 ? '...' : ''}</span>
+                                </div>
+                            ))}
+                        </div>
+                        <div className="mt-3 pt-3 border-t border-gray-100 text-xs text-gray-400 space-y-1">
+                            <p><kbd className="bg-gray-100 px-1 rounded">J</kbd>/<kbd className="bg-gray-100 px-1 rounded">K</kbd> 上下题</p>
+                            <p><kbd className="bg-gray-100 px-1 rounded">E</kbd> 展开答案</p>
+                            <p><kbd className="bg-gray-100 px-1 rounded">A</kbd> 全部展开</p>
+                            <p><kbd className="bg-gray-100 px-1 rounded">G</kbd> 跳题号</p>
+                        </div>
+                    </div>
+
+                    {/* 主内容区 */}
+                    <div className="scroll-main">
+                        <div className="flex items-center justify-between mb-4 sticky top-16 bg-gray-50 z-30 py-3 -mx-5 px-5 border-b border-gray-100">
+                            <div className="flex items-center gap-3">
+                                <button onClick={onBack} className="flex items-center text-sm text-teal-600 hover:text-teal-800 bg-teal-50 px-3 py-1.5 rounded-full"><Icons.ArrowLeft className="w-4 h-4 mr-1"/>返回</button>
+                                <button onClick={onSwitchToCard} className="text-sm text-gray-500 hover:text-gray-700 bg-gray-100 px-3 py-1.5 rounded-full flex items-center"><Icons.BookOpen className="w-3 h-3 mr-1"/>卡片模式</button>
+                                <span className="text-sm text-gray-500">{course} · {chapter} · <strong>{filtered.length}</strong>题</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <button onClick={toggleAll} className={`text-xs px-3 py-1.5 rounded-full border transition ${showAllAnswers ? 'bg-teal-50 border-teal-300 text-teal-700' : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50'}`}>{showAllAnswers ? '收起全部' : '展开全部'}</button>
+                            </div>
+                        </div>
+
+                        {filtered.map((q, idx) => {
+                            const isExpanded = expandedIds.has(q.id) || showAllAnswers;
+                            const isEditing = editingId === q.id;
+                            const isMulti = q.type && (q.type.includes('多') || q.type.includes('Multi'));
+                            const isRecall = !!q.isRecall;
+
+                            if (isEditing && editData) {
+                                return (
+                                    <div key={q.id} id={'sq-' + q.id} data-qid={q.id} className="scroll-q-card editing">
+                                        <div className="flex items-center justify-between mb-3">
+                                            <span className="text-xs bg-teal-100 text-teal-700 px-2 py-0.5 rounded font-bold">编辑模式</span>
+                                            <div className="flex gap-2">
+                                                <button onClick={cancelEdit} className="text-xs px-3 py-1 border border-gray-200 rounded-lg text-gray-500 hover:bg-gray-50">取消</button>
+                                                <button onClick={saveEdit} className="text-xs px-3 py-1 bg-teal-600 text-white rounded-lg hover:bg-teal-700 font-bold">保存</button>
+                                            </div>
+                                        </div>
+                                        <textarea className="w-full border border-teal-200 rounded-lg p-2 text-sm mb-2 focus:ring-2 focus:ring-teal-500 outline-none" rows={2} value={editData.title} onChange={e => setEditData({...editData, title: e.target.value})} />
+                                        <div className="grid grid-cols-2 gap-2 mb-2">
+                                            {Object.entries(editData.options).filter(([k,v]) => v || k <= 'D').map(([k, v]) => (
+                                                <div key={k} className="flex items-center gap-1">
+                                                    <span className="w-6 text-center font-bold text-xs bg-gray-100 rounded">{k}</span>
+                                                    <input className="flex-1 border border-gray-200 rounded px-2 py-1 text-xs focus:ring-1 focus:ring-teal-500 outline-none" value={v || ''} onChange={e => setEditData({...editData, options: {...editData.options, [k]: e.target.value}})} />
+                                                </div>
+                                            ))}
+                                        </div>
+                                        <div className="flex gap-3">
+                                            <div className="flex-1"><label className="text-xs text-gray-500">正确答案</label><input className="w-full border border-gray-200 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-teal-500 outline-none" value={editData.answer} onChange={e => setEditData({...editData, answer: e.target.value.toUpperCase()})} /></div>
+                                            <div className="flex-1"><label className="text-xs text-gray-500">章节</label><input className="w-full border border-gray-200 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-teal-500 outline-none" value={editData.chapter} onChange={e => setEditData({...editData, chapter: e.target.value})} /></div>
+                                            <div className="flex-1"><label className="text-xs text-gray-500">速记</label><input className="w-full border border-gray-200 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-teal-500 outline-none" value={editData.mnemonic || ''} onChange={e => setEditData({...editData, mnemonic: e.target.value})} /></div>
+                                        </div>
+                                    </div>
+                                );
+                            }
+
+                            return (
+                                <div key={q.id} id={'sq-' + q.id} data-qid={q.id} className="scroll-q-card">
+                                    <div className="flex items-start justify-between">
+                                        <div className="flex items-center gap-2 mb-2">
+                                            <span className="font-mono text-xs bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded">{idx + 1}</span>
+                                            <span className={`text-xs px-2 py-0.5 rounded font-bold ${isMulti ? 'bg-purple-100 text-purple-700' : q.type === '判断' ? 'bg-amber-100 text-amber-700' : 'bg-teal-100 text-teal-700'}`}>{q.type}</span>
+                                            {q.examProb && <span className={`text-xs px-1.5 py-0.5 rounded ${q.examProb==='必考'?'bg-rose-50 text-rose-600':q.examProb==='常考'?'bg-amber-50 text-amber-600':'text-gray-400'}`}>{q.examProb==='必考'?'必考':q.examProb==='常考'?'常考':'了解'}</span>}
+                                            <span className="text-xs text-gray-400">{q.chapter}</span>
+                                        </div>
+                                        <div className="flex gap-1">
+                                            <button onClick={() => toggleWrong(q.id)} className={`p-1 rounded transition ${wrongIds.has(q.id) ? 'text-red-500' : 'text-gray-300 hover:text-gray-400'}`}><Icons.AlertCircle className="w-4 h-4" /></button>
+                                            <button onClick={() => startEdit(q)} className="p-1 text-gray-300 hover:text-teal-600 rounded transition" title="编辑"><Icons.Edit className="w-4 h-4" /></button>
+                                        </div>
+                                    </div>
+                                    <h3 className="text-base font-medium text-gray-800 mb-3 leading-relaxed">{q.title}</h3>
+                                    {/* 选项 */}
+                                    {!isRecall && Object.entries(q.options).filter(([k,v]) => v).map(([k, v]) => {
+                                        const isCorrect = q.answer.includes(k);
+                                        return (
+                                            <div key={k} className={`flex items-center gap-2 py-1.5 px-2 rounded text-sm mb-1 ${isExpanded && isCorrect ? 'bg-green-50 text-green-800 font-medium' : 'text-gray-600'}`}>
+                                                <span className={`w-5 h-5 rounded-full border flex items-center justify-center text-xs font-bold ${isExpanded && isCorrect ? 'border-green-500 text-green-600' : 'border-gray-300 text-gray-400'}`}>{k}</span>
+                                                <span>{v}</span>
+                                            </div>
+                                        );
+                                    })}
+                                    {/* 答案区域 */}
+                                    <div className={`q-answer-area ${isExpanded ? 'open' : ''}`}>
+                                        <div className="p-3 bg-teal-50 rounded-lg border border-teal-100 text-sm">
+                                            <div className="flex items-center mb-1 font-bold text-teal-800 text-xs"><Icons.BrainCircuit className="w-3 h-3 mr-1"/>正确答案: {q.answer}</div>
+                                            {q.answerText && <p className="text-gray-700 whitespace-pre-wrap mt-1" dangerouslySetInnerHTML={{__html: q.answerText}} /> }
+                                            {q.mnemonic && <div className="mt-2 pt-2 border-t border-teal-200/50"><span className="text-orange-600 font-bold text-xs flex items-center"><Icons.Zap className="w-3 h-3 mr-1"/>速记: </span><span className="text-gray-700 text-xs">{q.mnemonic}</span></div>}
+                                        </div>
+                                    </div>
+                                    {/* 展开/收起按钮 */}
+                                    <button onClick={() => toggleExpand(q.id)} className="mt-2 text-xs text-teal-600 hover:text-teal-800 flex items-center gap-1">
+                                        {isExpanded ? '▲ 收起答案' : '▼ 显示答案'}
+                                    </button>
+                                </div>
+                            );
+                        })}
+                    </div>
                 </div>
             );
         }
