@@ -198,6 +198,10 @@
             const [currentTypeFilter, setCurrentTypeFilter] = useState('全部');
             const [currentProbFilter, setCurrentProbFilter] = useState('全部');
             
+            // 自定义板块
+            const [customSets, setCustomSets] = useState([]);
+            const [showCreateSetModal, setShowCreateSetModal] = useState(false);
+            
             // 加载状态锁
             const [isLoaded, setIsLoaded] = useState(false);
             
@@ -255,6 +259,9 @@
                         setIsShuffleQuestions(settings.shuffleQuestions || false);
                         setIsShuffleOptions(settings.shuffleOptions || false);
                     }
+
+                    const savedSets = localStorage.getItem('med_quiz_custom_sets');
+                    if (savedSets) setCustomSets(JSON.parse(savedSets));
                     
                     setIsLoaded(true);
                 } catch (e) {
@@ -283,6 +290,12 @@
                     localStorage.setItem('med_quiz_settings', JSON.stringify({ shuffleQuestions: isShuffleQuestions, shuffleOptions: isShuffleOptions }));
                 }
             }, [isShuffleQuestions, isShuffleOptions, isLoaded]);
+
+            useEffect(() => {
+                if (isLoaded) {
+                    localStorage.setItem('med_quiz_custom_sets', JSON.stringify(customSets));
+                }
+            }, [customSets, isLoaded]);
 
             // --- 核心逻辑 ---
 
@@ -443,6 +456,55 @@
                 setView('study');
             };
 
+            // === 自定义板块 ===
+            const parseIndexRange = (str) => {
+                const nums = new Set();
+                str.split(/[,，]/).forEach(part => {
+                    part = part.trim();
+                    if (!part) return;
+                    const m = part.match(/^(\d+)\s*[-~]\s*(\d+)$/);
+                    if (m) { for (let i = +m[1]; i <= +m[2]; i++) nums.add(i); }
+                    else if (/^\d+$/.test(part)) nums.add(+part);
+                });
+                return [...nums].sort((a, b) => a - b);
+            };
+
+            const createCustomSet = (name, course, rangeStr) => {
+                const indices = parseIndexRange(rangeStr);
+                const courseQs = questions.filter(q => q.course === course);
+                const selected = indices.filter(i => i >= 1 && i <= courseQs.length).map(i => courseQs[i - 1].id);
+                if (selected.length === 0) { showAlert('提示', '未匹配到任何题目，请检查序号'); return false; }
+                const newSet = { id: generateId(), name: name || `板块 ${customSets.length + 1}`, course, indices, rangeStr };
+                setCustomSets(prev => [...prev, newSet]);
+                return true;
+            };
+
+            const deleteCustomSet = (id) => {
+                setCustomSets(prev => prev.filter(s => s.id !== id));
+            };
+
+            const startCustomSetStudy = (cs, mode, scrollMode) => {
+                const courseQs = questions.filter(q => q.course === cs.course);
+                const queue = cs.indices.filter(i => i >= 1 && i <= courseQs.length).map(i => courseQs[i - 1]);
+                if (queue.length === 0) { showAlert('提示', '该板块下没有匹配的题目'); return; }
+                setStudyQueue(queue);
+                setCurrentCourse(cs.course);
+                setCurrentChapter(cs.name);
+                setCurrentTypeFilter('全部');
+                setCurrentProbFilter('全部');
+                if (scrollMode) {
+                    setStudyMode('scroll');
+                    setScrollReciteMode(mode === 'recite');
+                } else {
+                    setStudyMode(mode);
+                    setCurrentIndex(0);
+                    setShowAnswer(mode === 'recite');
+                    setSelectedOption(null);
+                    setSelectedMultiOptions(new Set());
+                }
+                setView('study');
+            };
+
             // 更新单道题目（自动保存）
             const updateQuestion = (updatedQ) => {
                 setQuestions(prev => prev.map(q => q.id === updatedQ.id ? updatedQ : q));
@@ -541,6 +603,41 @@
                     <CustomModal {...modalConfig} />
                     <RenameModal isOpen={!!renamingCourseName} currentName={renamingCourseName || ''} onConfirm={handleRenameCourse} onCancel={() => setRenamingCourseName(null)} />
 
+                    {/* 创建自定义板块弹窗 */}
+                    {showCreateSetModal && (() => {
+                        const CreateSetModal = () => {
+                            const [name, setName] = useState('');
+                            const [selCourse, setSelCourse] = useState(courses[0] || '');
+                            const [rangeStr, setRangeStr] = useState('');
+                            const courseQs = questions.filter(q => q.course === selCourse);
+                            const preview = parseIndexRange(rangeStr).filter(i => i >= 1 && i <= courseQs.length);
+                            return (
+                                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black bg-opacity-50 animate-fade-in">
+                                    <div className="bg-white rounded-xl shadow-2xl max-w-md w-full p-6">
+                                        <h3 className="font-bold text-lg mb-4 text-gray-800 flex items-center"><Icons.Layers className="w-5 h-5 mr-2 text-indigo-600"/>新建自定义板块</h3>
+                                        <div className="space-y-3">
+                                            <div><label className="text-xs font-bold text-gray-500">板块名称</label><input className="w-full border border-gray-200 rounded-lg p-2.5 text-sm mt-1 focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="例：第一章重点题" value={name} onChange={e => setName(e.target.value)} /></div>
+                                            <div><label className="text-xs font-bold text-gray-500">选择课程</label>
+                                                <select className="w-full border border-gray-200 rounded-lg p-2.5 text-sm mt-1 focus:ring-2 focus:ring-indigo-500 outline-none" value={selCourse} onChange={e => setSelCourse(e.target.value)}>
+                                                    {courses.map(c => <option key={c} value={c}>{c} ({questions.filter(q => q.course === c).length}题)</option>)}
+                                                </select>
+                                            </div>
+                                            <div><label className="text-xs font-bold text-gray-500">题目序号 <span className="text-gray-400 font-normal">（该课程下的第几题，共{courseQs.length}题）</span></label>
+                                                <input className="w-full border border-gray-200 rounded-lg p-2.5 text-sm mt-1 focus:ring-2 focus:ring-indigo-500 outline-none font-mono" placeholder="例：1-10, 15, 20-30" value={rangeStr} onChange={e => setRangeStr(e.target.value)} />
+                                                {preview.length > 0 && <p className="text-xs text-indigo-500 mt-1">匹配到 <strong>{preview.length}</strong> 题：{preview.slice(0, 10).join(', ')}{preview.length > 10 ? '...' : ''}</p>}
+                                            </div>
+                                        </div>
+                                        <div className="flex justify-end space-x-3 mt-6">
+                                            <button onClick={() => setShowCreateSetModal(false)} className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg transition text-sm">取消</button>
+                                            <button onClick={() => { if (createCustomSet(name, selCourse, rangeStr)) setShowCreateSetModal(false); }} disabled={!rangeStr.trim() || !selCourse} className="px-5 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 font-bold shadow-md text-sm disabled:opacity-40 disabled:cursor-not-allowed">创建</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            );
+                        };
+                        return <CreateSetModal />;
+                    })()}
+
                     <div className="bg-teal-600 text-white p-4 shadow-md sticky top-0 z-50 flex justify-between items-center h-16">
                         <div className="flex items-center space-x-2 cursor-pointer" onClick={() => setView('home')}>
                             <Icons.BookOpen className="h-6 w-6" />
@@ -625,6 +722,41 @@
                                     ))}
                                 </div>
                                 )}
+
+                                {/* 自定义板块 */}
+                                <h2 className="text-lg font-bold mt-8 mb-4 text-gray-700 flex items-center justify-between">
+                                    <span>自定义板块</span>
+                                    <button onClick={() => setShowCreateSetModal(true)} className="text-sm font-normal bg-indigo-50 text-indigo-600 px-3 py-1.5 rounded-full hover:bg-indigo-100 flex items-center">
+                                        <Icons.Plus className="w-3 h-3 mr-1"/>新建板块
+                                    </button>
+                                </h2>
+                                {customSets.length === 0 ? (
+                                <div className="text-center py-8 bg-white rounded-xl border border-dashed border-gray-300">
+                                    <p className="text-gray-400 text-sm">还没有自定义板块</p>
+                                    <p className="text-xs text-gray-400 mt-1">选择某门课的题目序号，组成专属练习板块</p>
+                                </div>
+                                ) : (
+                                <div className="grid gap-3">
+                                    {customSets.map(cs => {
+                                        const courseQs = questions.filter(q => q.course === cs.course);
+                                        const count = cs.indices.filter(i => i >= 1 && i <= courseQs.length).length;
+                                        return (
+                                            <div key={cs.id} className="bg-white rounded-xl border border-gray-200 p-4 flex items-center justify-between hover:shadow-sm transition">
+                                                <div className="flex-1 min-w-0">
+                                                    <h3 className="font-bold text-gray-800 truncate">{cs.name}</h3>
+                                                    <p className="text-xs text-gray-400 mt-1">{cs.course} · {count} 题 · 序号: {cs.rangeStr}</p>
+                                                </div>
+                                                <div className="flex items-center gap-1.5 ml-3 flex-shrink-0">
+                                                    <button onClick={() => startCustomSetStudy(cs, 'quiz', false)} className="text-xs px-3 py-1.5 bg-teal-600 text-white rounded-md hover:bg-teal-700 transition">刷题</button>
+                                                    <button onClick={() => startCustomSetStudy(cs, 'recite', false)} className="text-xs px-3 py-1.5 bg-white text-teal-600 border border-teal-200 rounded-md hover:bg-teal-50 transition">背题</button>
+                                                    <button onClick={() => startCustomSetStudy(cs, 'quiz', true)} className="text-xs px-3 py-1.5 bg-amber-500 text-white rounded-md hover:bg-amber-600 transition">滚动</button>
+                                                    <button onClick={() => { showConfirm('删除板块', `确定删除「${cs.name}」吗？`, () => deleteCustomSet(cs.id)); }} className="p-1.5 text-gray-300 hover:text-red-500 rounded transition"><Icons.Trash2 className="w-4 h-4"/></button>
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                                )}
                             </>
                             )}
                         </div>
@@ -698,6 +830,7 @@
                         chapter={currentChapter}
                         wrongIds={wrongQuestionIds}
                         toggleWrong={(id) => setWrongQuestionIds(prev => { const n = new Set(prev); if (n.has(id)) n.delete(id); else n.add(id); return n; })}
+                        addWrong={(id) => setWrongQuestionIds(prev => new Set(prev).add(id))}
                         onUpdateQuestion={updateQuestion}
                         onBack={() => { setStudyMode('quiz'); setView('home'); }}
                         onSwitchToCard={() => { setStudyMode('quiz'); setCurrentIndex(0); setShowAnswer(false); setSelectedOption(null); setSelectedMultiOptions(new Set()); }}
@@ -1172,7 +1305,7 @@
         }
 
         // --- 5b. 滚动模式组件 ---
-        function ScrollStudy({ questions, course, chapter, wrongIds, toggleWrong, onUpdateQuestion, onBack, onSwitchToCard, isRecite }) {
+        function ScrollStudy({ questions, course, chapter, wrongIds, toggleWrong, addWrong, onUpdateQuestion, onBack, onSwitchToCard, isRecite }) {
             const [filterType, setFilterType] = useState('全部');
             const [filterProb, setFilterProb] = useState('全部');
             const [expandedIds, setExpandedIds] = useState(() => isRecite ? new Set(questions.map(q => q.id)) : new Set());
@@ -1180,6 +1313,8 @@
             const [editData, setEditData] = useState(null);
             const [showAllAnswers, setShowAllAnswers] = useState(isRecite);
             const [sidebarOpen, setSidebarOpen] = useState(true);
+            // 答题状态：{ qid: { selected: Set|string, answered: bool } }
+            const [userAnswers, setUserAnswers] = useState({});
 
             // 浮出工具栏状态
             const tbRef = useRef(null);
@@ -1208,6 +1343,34 @@
             const toggleAll = () => {
                 if (showAllAnswers) { setExpandedIds(new Set()); setShowAllAnswers(false); }
                 else { setExpandedIds(new Set(filtered.map(q => q.id))); setShowAllAnswers(true); }
+            };
+
+            // === 答题交互 ===
+            const handleScrollAnswer = (q, optionKey) => {
+                const qid = q.id;
+                const prev = userAnswers[qid];
+                if (prev && prev.answered) return; // 已答过
+                const isMulti = q.type && (q.type.includes('多') || q.type.includes('Multi'));
+                if (isMulti) {
+                    const sel = new Set(prev?.selected || []);
+                    if (sel.has(optionKey)) sel.delete(optionKey); else sel.add(optionKey);
+                    setUserAnswers(p => ({ ...p, [qid]: { selected: sel, answered: false } }));
+                } else {
+                    const isCorrect = optionKey === q.answer;
+                    setUserAnswers(p => ({ ...p, [qid]: { selected: optionKey, answered: true } }));
+                    setExpandedIds(p => { const n = new Set(p); n.add(qid); return n; });
+                    if (!isCorrect && addWrong) addWrong(qid);
+                }
+            };
+            const submitScrollMulti = (q) => {
+                const qid = q.id;
+                const prev = userAnswers[qid];
+                if (!prev || prev.answered) return;
+                const userAns = Array.from(prev.selected || []).sort().join('');
+                const correctAns = q.answer.split('').sort().join('');
+                setUserAnswers(p => ({ ...p, [qid]: { ...prev, answered: true } }));
+                setExpandedIds(p => { const n = new Set(p); n.add(qid); return n; });
+                if (userAns !== correctAns && addWrong) addWrong(qid);
             };
 
             // === 行内编辑 ===
@@ -1432,16 +1595,47 @@
                                         </div>
                                     </div>
                                     <h3 className="text-base font-medium text-gray-800 mb-3 leading-relaxed">{q.title}</h3>
-                                    {/* 选项 */}
-                                    {!isRecall && Object.entries(q.options).filter(([k,v]) => v).map(([k, v]) => {
-                                        const isCorrect = q.answer.includes(k);
-                                        return (
-                                            <div key={k} className={`flex items-center gap-2 py-1.5 px-2 rounded text-sm mb-1 ${isExpanded && isCorrect ? 'bg-green-50 text-green-800 font-medium' : 'text-gray-600'}`}>
-                                                <span className={`w-5 h-5 rounded-full border flex items-center justify-center text-xs font-bold ${isExpanded && isCorrect ? 'border-green-500 text-green-600' : 'border-gray-300 text-gray-400'}`}>{k}</span>
-                                                <span>{v}</span>
-                                            </div>
-                                        );
-                                    })}
+                                    {/* 选项（可交互） */}
+                                    {!isRecall && (() => {
+                                        const ua = userAnswers[q.id];
+                                        const answered = ua?.answered || false;
+                                        const selected = ua?.selected;
+                                        return (<>
+                                            {Object.entries(q.options).filter(([k,v]) => v).map(([k, v]) => {
+                                                let cls = 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50 cursor-pointer';
+                                                let iconCls = 'border-gray-300 text-gray-400';
+                                                if (isMulti && !answered && selected && selected.has(k)) {
+                                                    cls = 'bg-purple-50 border-purple-500 text-purple-800 shadow-sm cursor-pointer';
+                                                    iconCls = 'bg-purple-600 text-white border-purple-600';
+                                                }
+                                                if (answered || (showAllAnswers && !ua)) {
+                                                    const isCorr = q.answer.includes(k);
+                                                    const isSel = isMulti ? (selected && selected.has(k)) : selected === k;
+                                                    if (isCorr) { cls = 'bg-green-50 border-green-500 text-green-800'; iconCls = 'border-green-500 text-green-600'; }
+                                                    else if (isSel) { cls = 'bg-red-50 border-red-500 text-red-800'; iconCls = 'border-red-500 text-red-600'; }
+                                                    else { cls = 'bg-gray-50 border-gray-100 text-gray-400 opacity-60'; }
+                                                }
+                                                return (
+                                                    <button key={k} onClick={() => handleScrollAnswer(q, k)} disabled={answered && !isMulti}
+                                                        className={`w-full text-left p-2.5 rounded-lg border-2 transition-all flex items-center gap-2 mb-1.5 text-sm ${cls}`}>
+                                                        <span className={`w-5 h-5 rounded-full border flex items-center justify-center text-xs font-bold flex-shrink-0 ${iconCls}`}>{k}</span>
+                                                        <span className="flex-1">{v}</span>
+                                                    </button>
+                                                );
+                                            })}
+                                            {isMulti && !answered && (
+                                                <button onClick={() => submitScrollMulti(q)} disabled={!selected || selected.size === 0}
+                                                    className={`w-full mt-1 py-2 rounded-lg text-sm font-bold transition ${selected && selected.size > 0 ? 'bg-purple-600 text-white hover:bg-purple-700' : 'bg-gray-200 text-gray-400 cursor-not-allowed'}`}>
+                                                    确认答案
+                                                </button>
+                                            )}
+                                        </>);
+                                    })()}
+                                    {isRecall && !isExpanded && (
+                                        <button onClick={() => toggleExpand(q.id)} className="w-full py-3 rounded-lg font-bold flex items-center justify-center transition bg-teal-600 text-white hover:bg-teal-700 text-sm mb-2">
+                                            <Icons.Eye className="w-4 h-4 mr-1"/>显示答案
+                                        </button>
+                                    )}
                                     {/* 答案区域 */}
                                     <div className={`q-answer-area ${isExpanded ? 'open' : ''}`}>
                                         <div className="p-3 bg-teal-50 rounded-lg border border-teal-100 text-sm">
@@ -1451,9 +1645,11 @@
                                         </div>
                                     </div>
                                     {/* 展开/收起按钮 */}
-                                    <button onClick={() => toggleExpand(q.id)} className="mt-2 text-xs text-teal-600 hover:text-teal-800 flex items-center gap-1">
-                                        {isExpanded ? '▲ 收起答案' : '▼ 显示答案'}
-                                    </button>
+                                    {(!isRecall || isExpanded) && (
+                                        <button onClick={() => toggleExpand(q.id)} className="mt-2 text-xs text-teal-600 hover:text-teal-800 flex items-center gap-1">
+                                            {isExpanded ? '▲ 收起答案' : '▼ 显示答案'}
+                                        </button>
+                                    )}
                                 </div>
                             );
                         })}
