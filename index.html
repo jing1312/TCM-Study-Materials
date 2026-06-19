@@ -117,7 +117,7 @@
         };
 
         const DEFAULT_COURSE_NAME = '天然药物化学';
-        const DEFAULT_QUESTION_SEED_VERSION = 'allinone-20260619-v5';
+        const DEFAULT_QUESTION_SEED_VERSION = 'allinone-20260619-v6';
 
         // 章节名归一化映射（将碎片化的章节名合并到标准名称）
         const CHAPTER_NORMALIZE_MAP = {
@@ -280,9 +280,9 @@
                     }
 
                     const defaultIds = new Set(DEFAULT_QUESTIONS.map(q => q.id));
-                    // 自动补全ID，并移除已考完的药剂学题库和已内置的默认题。
+                    // 自动补全ID，并移除已考完的药剂学题库。
                     parsedQuestions = parsedQuestions
-                        .filter(q => q.course !== '药剂学' && !defaultIds.has(q.id))
+                        .filter(q => q.course !== '药剂学')
                         .map(q => {
                             const normalized = q.id ? q : { ...q, id: generateId() };
                             // 章节名归一化
@@ -291,7 +291,11 @@
                             }
                             return normalized;
                         });
-                    const seededQuestions = [...DEFAULT_QUESTIONS, ...parsedQuestions];
+                    // 合并策略：localStorage 中的版本优先（用户可能编辑过默认题），
+                    // 再补充 localStorage 中没有的新默认题
+                    const localStorageIds = new Set(parsedQuestions.map(q => q.id));
+                    const newDefaults = DEFAULT_QUESTIONS.filter(q => !localStorageIds.has(q.id));
+                    const seededQuestions = [...parsedQuestions, ...newDefaults];
                     const validIds = new Set(seededQuestions.map(q => q.id));
                     setQuestions(seededQuestions);
 
