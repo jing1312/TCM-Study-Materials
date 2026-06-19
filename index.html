@@ -662,6 +662,31 @@
                 setQuestions(prev => prev.map(q => q.id === updatedQ.id ? updatedQ : q));
             };
 
+            // 卡片模式中更新题目（同步更新 questions 和 studyQueue）
+            const handleStudyUpdate = (updatedQ) => {
+                setQuestions(prev => prev.map(q => q.id === updatedQ.id ? updatedQ : q));
+                setStudyQueue(prev => prev.map(q => q.id === updatedQ.id ? updatedQ : q));
+            };
+
+            // 卡片模式中删除题目（同步删除并调整 currentIndex）
+            const handleStudyDelete = (id) => {
+                const idxInQueue = studyQueue.findIndex(q => q.id === id);
+                setQuestions(prev => prev.filter(q => q.id !== id));
+                setStudyQueue(prev => {
+                    const newQueue = prev.filter(q => q.id !== id);
+                    if (newQueue.length === 0) return newQueue;
+                    return newQueue;
+                });
+                if (idxInQueue >= 0) {
+                    if (studyQueue.length <= 1) {
+                        showAlert("提示", "该章节题目已全部删除");
+                        setView('home');
+                    } else if (currentIndex >= studyQueue.length - 1) {
+                        setCurrentIndex(prev => Math.max(0, prev - 1));
+                    }
+                }
+            };
+
             const resetCardState = useCallback((targetMode) => {
                 setShowAnswer(targetMode === 'recite');
                 setSelectedOption(null);
@@ -963,6 +988,8 @@
                             onToggleOptionShuffle={(val) => setIsShuffleOptions(val)}
                             onToggleQuestionShuffle={handleQuestionShuffleChange}
                             studyMode={studyMode}
+                            onUpdateQuestion={handleStudyUpdate}
+                            onDeleteQuestion={handleStudyDelete}
                         />
                         )}
 
@@ -1150,12 +1177,14 @@
             question, total, current, onNext, onPrev, onAnswer, onSubmitMulti, showAnswer, 
             selectedOption, selectedMultiOptions, isWrong, toggleWrong,
             globalShuffleOptions, globalShuffleQuestions, onToggleOptionShuffle, onToggleQuestionShuffle,
-            studyMode
+            studyMode, onUpdateQuestion, onDeleteQuestion
         }) {
             const touchStartX = useRef(null);
             const touchEndX = useRef(null);
             const minSwipeDistance = 50;
             const [showSettings, setShowSettings] = useState(false);
+            const [showEditModal, setShowEditModal] = useState(false);
+            const [editFormData, setEditFormData] = useState(null);
 
             const isMulti = question.type && (question.type.includes('多') || question.type.includes('Multi'));
             const isRecall = !!question.isRecall;
@@ -1347,7 +1376,13 @@
                 </div>
 
                 <div className="bg-white rounded-2xl shadow-lg p-6 mb-6 min-h-[160px] flex flex-col justify-center relative overflow-hidden select-none">
-                    <div className="absolute top-0 right-0 p-2">
+                    <div className="absolute top-0 right-0 p-2 flex items-center gap-1">
+                        <button onClick={() => { setEditFormData({...question, options: {...question.options}}); setShowEditModal(true); }} className="p-2 rounded-full transition text-gray-300 hover:text-teal-600 hover:bg-teal-50" title="编辑">
+                            <Icons.Edit className="h-4 w-4" />
+                        </button>
+                        <button onClick={() => { if (confirm('确定要删除这道题吗？')) onDeleteQuestion && onDeleteQuestion(question.id); }} className="p-2 rounded-full transition text-gray-300 hover:text-red-500 hover:bg-red-50" title="删除">
+                            <Icons.Trash2 className="h-4 w-4" />
+                        </button>
                         <button onClick={() => toggleWrong(question.id)} className={`p-2 rounded-full transition ${isWrong ? 'text-red-500 bg-red-50' : 'text-gray-300 hover:text-gray-400'}`}>
                         {isWrong ? <Icons.AlertCircle className="fill-current" /> : <Icons.AlertCircle />}
                         </button>
@@ -1426,6 +1461,31 @@
                     <span className="text-xs text-gray-400 font-mono lg:hidden">左右滑动切换</span>
                     <button onClick={onNext} className="flex items-center px-6 py-2 bg-teal-600 text-white rounded-lg font-bold shadow-md hover:bg-teal-700 active:scale-95 transition">{current === total ? '完成' : '下一题'} <Icons.ChevronRight className="ml-1" /></button>
                 </div>
+                {showEditModal && editFormData && (
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" onClick={(e) => { if (e.target === e.currentTarget) setShowEditModal(false); }}>
+                        <div className="bg-white rounded-xl w-full max-w-lg max-h-[90vh] overflow-y-auto p-6 shadow-2xl">
+                            <h3 className="text-lg font-bold mb-4 flex items-center text-teal-700"><Icons.Edit className="h-5 w-5 mr-2" />编辑题目</h3>
+                            <div className="space-y-4">
+                                <div><label className="text-xs font-bold text-gray-500 uppercase">题干</label><textarea className="w-full border rounded-lg p-3 text-sm focus:ring-2 focus:ring-teal-500 outline-none" rows={3} value={editFormData.title} onChange={e => setEditFormData({...editFormData, title: e.target.value})} /></div>
+                                <div><label className="text-xs font-bold text-gray-500 uppercase flex items-center"><Icons.Zap className="w-3 h-3 mr-1" /> 速记/解析 (可选)</label><input className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-teal-500 outline-none" placeholder="输入助记口诀..." value={editFormData.mnemonic || ''} onChange={e => setEditFormData({...editFormData, mnemonic: e.target.value})} /></div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div><label className="text-xs font-bold text-gray-500 uppercase">章节</label><input className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-teal-500 outline-none" value={editFormData.chapter} onChange={e => setEditFormData({...editFormData, chapter: e.target.value})} /></div>
+                                    <div><label className="text-xs font-bold text-gray-500 uppercase">正确答案</label><input className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-teal-500 outline-none" value={editFormData.answer} onChange={e => setEditFormData({...editFormData, answer: e.target.value.toUpperCase()})} /></div>
+                                </div>
+                                <div className="bg-gray-50 p-3 rounded-lg space-y-2">
+                                    <label className="text-xs font-bold text-gray-500 uppercase">选项内容</label>
+                                    {Object.keys(editFormData.options).map(key => (
+                                        <div key={key} className="flex items-center space-x-2"><span className="font-bold w-6 text-center bg-white border rounded shadow-sm">{key}</span><input className="flex-1 border rounded p-2 text-sm focus:ring-1 focus:ring-teal-500 outline-none" value={editFormData.options[key]} onChange={e => setEditFormData({...editFormData, options: {...editFormData.options, [key]: e.target.value}})} /></div>
+                                    ))}
+                                </div>
+                            </div>
+                            <div className="flex justify-end space-x-3 mt-6 border-t pt-4">
+                                <button onClick={() => setShowEditModal(false)} className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg">取消</button>
+                                <button onClick={() => { onUpdateQuestion(editFormData); setShowEditModal(false); }} className="px-4 py-2 bg-teal-600 text-white rounded-lg hover:bg-teal-700 shadow font-bold">保存修改</button>
+                            </div>
+                        </div>
+                    </div>
+                )}
                 </div>
             );
         }
