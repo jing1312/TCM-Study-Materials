@@ -117,7 +117,7 @@
         };
 
         const DEFAULT_COURSE_NAME = '天然药物化学';
-        const DEFAULT_QUESTION_SEED_VERSION = 'allinone-20260619-v4';
+        const DEFAULT_QUESTION_SEED_VERSION = 'allinone-20260619-v5';
 
         // 章节名归一化映射（将碎片化的章节名合并到标准名称）
         const CHAPTER_NORMALIZE_MAP = {
@@ -227,6 +227,8 @@
 
             const [importText, setImportText] = useState('');
             const [importCourseName, setImportCourseName] = useState(DEFAULT_COURSE_NAME);
+            const [isDragging, setIsDragging] = useState(false);
+            const fileInputRef = useRef(null);
             
             const [renamingCourseName, setRenamingCourseName] = useState(null);
             
@@ -430,27 +432,76 @@
                 return newQuestions;
             };
 
+            const processImport = (parsedQs) => {
+                if (parsedQs.length === 0) { showAlert("导入失败", "未识别到有效题目，请检查格式"); return; }
+                const existingMap = new Map();
+                questions.forEach((q, idx) => {
+                    const sig = `${q.course}-${q.chapter}-${q.title.trim()}`;
+                    existingMap.set(sig, idx);
+                });
+                let updatedCount = 0;
+                let addedCount = 0;
+                const newQuestions = [...questions];
+                parsedQs.forEach(q => {
+                    const sig = `${q.course}-${q.chapter}-${q.title.trim()}`;
+                    if (existingMap.has(sig)) {
+                        newQuestions[existingMap.get(sig)] = q;
+                        updatedCount++;
+                    } else {
+                        newQuestions.push(q);
+                        addedCount++;
+                    }
+                });
+                setQuestions(newQuestions);
+                setImportText('');
+                showAlert("导入成功", `📝 覆盖更新：${updatedCount} 道\n✅ 新增题目：${addedCount} 道`);
+                setView('home');
+            };
+
             const handleImport = () => {
                 if (!importText || !importCourseName) { showAlert("提示", "请输入课程名称和题目数据"); return; }
                 const parsedQs = parseCSV(importText, importCourseName);
-                if (parsedQs.length === 0) { showAlert("导入失败", "未识别到有效题目，请检查格式"); return; }
+                processImport(parsedQs);
+            };
 
-                const existingSignatures = new Set(questions.map(q => `${q.course}-${q.chapter}-${q.title.trim()}`));
-                const uniqueNewQs = parsedQs.filter(q => {
-                    const signature = `${q.course}-${q.chapter}-${q.title.trim()}`;
-                    if (existingSignatures.has(signature)) return false;
-                    existingSignatures.add(signature);
-                    return true;
-                });
-
-                if (uniqueNewQs.length > 0) {
-                    setQuestions(prev => [...prev, ...uniqueNewQs]);
-                    setImportText('');
-                    showAlert("导入成功", `✅ 新增题目：${uniqueNewQs.length} 道\n🚫 跳过重复：${parsedQs.length - uniqueNewQs.length} 道`);
-                    setView('home');
+            const handleFileDrop = (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                setIsDragging(false);
+                const file = e.dataTransfer.files[0];
+                if (file && (file.name.endsWith('.csv') || file.type === 'text/csv')) {
+                    const reader = new FileReader();
+                    reader.onload = (ev) => {
+                        const text = ev.target.result;
+                        setImportText(text);
+                        if (!importCourseName) {
+                            const name = file.name.replace(/\.csv$/, '').replace(/_\d+$/, '');
+                            setImportCourseName(name);
+                        }
+                    };
+                    reader.readAsText(file, 'utf-8');
                 } else {
-                    showAlert("提示", "所有题目均已存在，未进行导入。");
+                    showAlert("格式错误", "请拖入 CSV 格式文件");
                 }
+            };
+
+            const handleFileSelect = (e) => {
+                const file = e.target.files[0];
+                if (file && (file.name.endsWith('.csv') || file.type === 'text/csv')) {
+                    const reader = new FileReader();
+                    reader.onload = (ev) => {
+                        const text = ev.target.result;
+                        setImportText(text);
+                        if (!importCourseName) {
+                            const name = file.name.replace(/\.csv$/, '').replace(/_\d+$/, '');
+                            setImportCourseName(name);
+                        }
+                    };
+                    reader.readAsText(file, 'utf-8');
+                } else {
+                    showAlert("格式错误", "请选择 CSV 格式文件");
+                }
+                e.target.value = '';
             };
 
             const handleRenameCourse = (newName) => {
@@ -860,11 +911,20 @@
                         )}
 
                         {view === 'import' && (
-                        <div className="bg-white p-6 rounded-xl shadow-sm space-y-4">
+                        <div className="bg-white p-6 rounded-xl shadow-sm space-y-4"
+                            onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); setIsDragging(true); }}
+                            onDragLeave={(e) => { e.preventDefault(); e.stopPropagation(); setIsDragging(false); }}
+                            onDrop={handleFileDrop}>
                             <h2 className="text-xl font-bold flex items-center"><Icons.Upload className="mr-2 text-teal-600" /> 批量导入题目</h2>
                             <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">所属课程/科目</label>
                             <input type="text" value={importCourseName} onChange={(e) => setImportCourseName(e.target.value)} className="w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-teal-500 outline-none" placeholder="例如：中医药学概论" />
+                            </div>
+                            <div className={`border-2 border-dashed rounded-xl p-6 text-center transition-colors ${isDragging ? 'border-teal-500 bg-teal-50' : 'border-gray-300 bg-gray-50'}`}>
+                                <Icons.Upload className={`mx-auto mb-2 ${isDragging ? 'text-teal-500' : 'text-gray-400'}`} />
+                                <p className="text-sm text-gray-600 mb-2">拖拽 CSV 文件到此处，或点击下方按钮选择文件</p>
+                                <input ref={fileInputRef} type="file" accept=".csv,text/csv" onChange={handleFileSelect} className="hidden" />
+                                <button onClick={() => fileInputRef.current?.click()} className="px-4 py-2 bg-teal-100 text-teal-700 rounded-lg text-sm font-medium hover:bg-teal-200 transition">选择 CSV 文件</button>
                             </div>
                             <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">CSV 数据 (支持第11列作为速记/解析)</label>
@@ -1117,11 +1177,14 @@
                     if (isRecall && !showAnswer && e.key === 'Enter') onAnswer('SHOW');
                     else if (e.key === 'ArrowRight') onNext();
                     else if (e.key === 'ArrowLeft') onPrev();
+                    const isJudgment = question.type === '判断';
+                    if (!isRecall && isJudgment && e.key === '1') onAnswer('对');
+                    else if (!isRecall && isJudgment && e.key === '2') onAnswer('错');
                     else if (!isRecall && ['A','B','C','D','E'].includes(e.key.toUpperCase())) onAnswer(e.key.toUpperCase());
                 };
                 window.addEventListener('keydown', handleKeyDown);
                 return () => window.removeEventListener('keydown', handleKeyDown);
-            }, [onNext, onPrev, onAnswer, isRecall, showAnswer]);
+            }, [onNext, onPrev, onAnswer, isRecall, showAnswer, question]);
 
             const handleTouchStart = (e) => { touchStartX.current = e.targetTouches[0].clientX; touchEndX.current = null; };
             const handleTouchMove = (e) => { touchEndX.current = e.targetTouches[0].clientX; };
@@ -1156,12 +1219,13 @@
                         </div>
                     );
                 }
-                const correctOptionText = question.options[question.answer] || '';
+                const isJudgment = question.type === '判断';
+                const correctOptionText = isJudgment ? '' : (question.options[question.answer] || '');
                 
                 let mnemonic = question.mnemonic;
 
                 // 简单的规则引擎
-                if (!mnemonic && !isMulti && correctOptionText) {
+                if (!mnemonic && !isMulti && !isJudgment && correctOptionText) {
                     const title = question.title;
                     if (/[A-Za-z]/.test(title) || /[A-Za-z]/.test(correctOptionText)) {
                         const enText = title.match(/[A-Za-z\s]+/)?.[0]?.trim() || correctOptionText.match(/[A-Za-z\s]+/)?.[0]?.trim();
@@ -1210,6 +1274,8 @@
 
                 const analysisText = isMulti 
                     ? `正确答案：${question.answer}。` 
+                    : isJudgment
+                    ? `该说法${question.answer === '对' ? '正确' : '错误'}。`
                     : `"${correctOptionText}" 是符合题干描述的正确选项。`;
 
                 return (
@@ -1296,6 +1362,24 @@
                             <Icons.Eye className="w-5 h-5 mr-2" />显示答案
                         </button>
                     )}
+                    {!isRecall && question.type === '判断' && (() => {
+                        const judgmentOpts = [{key: '对', text: '对'}, {key: '错', text: '错'}];
+                        return judgmentOpts.map(({key, text}) => {
+                            let stateClass = "bg-white border-gray-200 text-gray-700 hover:bg-gray-50 active:bg-gray-100";
+                            let iconClass = "text-gray-500 border-gray-300";
+                            if (showAnswer) {
+                                if (key === question.answer) { stateClass = "bg-green-50 border-green-500 text-green-800"; iconClass = "text-green-600 border-green-600"; }
+                                else if (key === selectedOption && key !== question.answer) { stateClass = "bg-red-50 border-red-500 text-red-800"; iconClass = "text-red-600 border-red-600"; }
+                                else { stateClass = "bg-gray-50 border-gray-100 text-gray-400 opacity-60"; }
+                            }
+                            return (
+                                <button key={key} onClick={() => onAnswer(key)} disabled={showAnswer} className={`w-full text-left p-4 rounded-xl border-2 transition-all flex items-center ${stateClass}`}>
+                                    <span className={`w-6 h-6 rounded-full border flex items-center justify-center text-xs mr-3 font-bold transition-colors ${iconClass}`}>{key}</span>
+                                    <span className="flex-1 font-medium">{text}</span>
+                                </button>
+                            );
+                        });
+                    })()}
                     {displayOptions.map((opt) => {
                         const { key, text } = opt;
                         let stateClass = "bg-white border-gray-200 text-gray-700 hover:bg-gray-50 active:bg-gray-100";
@@ -1697,8 +1781,10 @@
                                         const ua = userAnswers[q.id];
                                         const answered = ua?.answered || false;
                                         const selected = ua?.selected;
+                                        const isJudgment = q.type === '判断';
+                                        const optionEntries = isJudgment ? [['对', '对'], ['错', '错']] : Object.entries(q.options).filter(([k,v]) => v);
                                         return (<>
-                                            {Object.entries(q.options).filter(([k,v]) => v).map(([k, v]) => {
+                                            {optionEntries.map(([k, v]) => {
                                                 let cls = 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50 cursor-pointer';
                                                 let iconCls = 'border-gray-300 text-gray-400';
                                                 if (isMulti && !answered && selected && selected.has(k)) {
