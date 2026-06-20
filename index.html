@@ -417,6 +417,7 @@
                         id: generateId(),
                         course: (rowCourse || courseName || '').trim() || courseName,
                         type: type, // 确保去掉首尾空格
+                        isRecall: type.includes('记忆'),
                         chapter: cols[1],
                         number: cols[2],
                         title: cols[3],
@@ -711,7 +712,7 @@
                 if (showAnswer) return;
                 
                 const currentQ = studyQueue[currentIndex];
-                if (optionKey === 'SHOW' || currentQ.isRecall) {
+                if (optionKey === 'SHOW' || currentQ.isRecall || (currentQ.type && currentQ.type.includes('记忆'))) {
                     setShowAnswer(true);
                     return;
                 }
@@ -1200,7 +1201,7 @@
             const [editFormData, setEditFormData] = useState(null);
 
             const isMulti = question.type && (question.type.includes('多') || question.type.includes('Multi'));
-            const isRecall = !!question.isRecall;
+            const isRecall = !!question.isRecall || (question.type && question.type.includes('记忆'));
 
             const displayOptions = useMemo(() => {
                 let opts = Object.entries(question.options).filter(([key, text]) => text).map(([key, text]) => ({ key, text }));
@@ -1808,7 +1809,7 @@
                             const isExpanded = expandedIds.has(q.id) || showAllAnswers;
                             const isEditing = editingId === q.id;
                             const isMulti = q.type && (q.type.includes('多') || q.type.includes('Multi'));
-                            const isRecall = !!q.isRecall;
+                            const isRecall = !!q.isRecall || (q.type && q.type.includes('记忆'));
 
                             if (isEditing && editData) {
                                 return (
