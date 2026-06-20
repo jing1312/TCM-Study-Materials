@@ -264,22 +264,11 @@
                     let parsedQuestions = savedQuestions ? JSON.parse(savedQuestions) : [];
 
                     if (versionChanged) {
-                        // 题库版本更新：只保留用户自行导入的题目（不在新旧默认库中的）
-                        const oldDefaultIds = new Set(parsedQuestions.map(q => q.id).filter(id => id.startsWith('tr-')));
-                        const newDefaultIds = new Set(DEFAULT_QUESTIONS.map(q => q.id));
-                        // 用户导入的题目 ID 不以 tr- 开头，或虽以 tr- 开头但不在旧默认库中
-                        const userOnlyQuestions = parsedQuestions.filter(q => {
-                            if (!q.id) return true;
-                            if (!q.id.startsWith('tr-')) return true; // 用户导入
-                            // tr- 开头但在旧库中有但新库中没有的 → 是旧库删除的，也丢弃
-                            return false;
-                        });
-                        parsedQuestions = userOnlyQuestions;
-                        // 保存新版本号
+                        // 题库版本更新：清空重来——直接用新版默认题库整体替换。
+                        parsedQuestions = [...DEFAULT_QUESTIONS];
                         localStorage.setItem('med_quiz_seed_version', DEFAULT_QUESTION_SEED_VERSION);
                     }
 
-                    const defaultIds = new Set(DEFAULT_QUESTIONS.map(q => q.id));
                     // 自动补全ID，并移除已考完的药剂学题库。
                     parsedQuestions = parsedQuestions
                         .filter(q => q.course !== '药剂学')
@@ -291,11 +280,19 @@
                             }
                             return normalized;
                         });
-                    // 合并策略：localStorage 中的版本优先（用户可能编辑过默认题），
-                    // 再补充 localStorage 中没有的新默认题
-                    const localStorageIds = new Set(parsedQuestions.map(q => q.id));
-                    const newDefaults = DEFAULT_QUESTIONS.filter(q => !localStorageIds.has(q.id));
-                    const seededQuestions = [...parsedQuestions, ...newDefaults];
+                    // 仅在「首次使用（localStorage 中还没有题目记录）」或「版本升级」时，
+                    // 才用默认题库做种子；一旦用户已初始化（哪怕删除清空），刷新后完全以
+                    // localStorage 为准，绝不再把默认题库合并回来。
+                    let seededQuestions;
+                    if (savedQuestions === null || versionChanged) {
+                        // 首次使用 / 版本升级：补齐 localStorage 中缺失的默认题（首用时全部补入）
+                        const parsedIds = new Set(parsedQuestions.map(q => q.id));
+                        const missingDefaults = DEFAULT_QUESTIONS.filter(q => !parsedIds.has(q.id));
+                        seededQuestions = [...parsedQuestions, ...missingDefaults];
+                    } else {
+                        // 已初始化且版本未变：完全使用用户自己的题库，不追加任何默认题
+                        seededQuestions = parsedQuestions;
+                    }
                     const validIds = new Set(seededQuestions.map(q => q.id));
                     setQuestions(seededQuestions);
 
