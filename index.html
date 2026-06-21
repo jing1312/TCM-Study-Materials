@@ -12,6 +12,10 @@
     
     <script src="https://unpkg.com/@babel/standalone@7.27.0/babel.min.js"></script>
 
+    <!-- KaTeX for LaTeX math rendering -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+
     <style>
         .animate-fade-in { animation: fadeIn 0.3s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -117,6 +121,55 @@
                 [newArr[i], newArr[j]] = [newArr[j], newArr[i]];
             }
             return newArr;
+        };
+
+        // LaTeX 渲染：将文本中的 $...$ 和 $$...$$ 转为 KaTeX HTML
+        const renderLatex = (text) => {
+            if (!text || typeof katex === 'undefined') return text;
+            // 先处理 $$...$$（块级公式），再处理 $...$（行内公式）
+            const parts = [];
+            let remaining = text;
+            // 块级 $$...$$
+            const blockRegex = /\$\$([\s\S]*?)\$\$/g;
+            let lastIdx = 0;
+            let match;
+            while ((match = blockRegex.exec(remaining)) !== null) {
+                if (match.index > lastIdx) parts.push({ type: 'text', content: remaining.substring(lastIdx, match.index) });
+                parts.push({ type: 'block', content: match[1].trim() });
+                lastIdx = match.index + match[0].length;
+            }
+            if (parts.length > 0) {
+                if (lastIdx < remaining.length) parts.push({ type: 'text', content: remaining.substring(lastIdx) });
+            } else {
+                parts.push({ type: 'text', content: remaining });
+            }
+            // 行内 $...$ 在每个 text part 中处理
+            const finalParts = [];
+            parts.forEach(part => {
+                if (part.type !== 'text') { finalParts.push(part); return; }
+                const inlineRegex = /\$([^\$]+?)\$/g;
+                let inlineLast = 0;
+                let inlineMatch;
+                let found = false;
+                while ((inlineMatch = inlineRegex.exec(part.content)) !== null) {
+                    found = true;
+                    if (inlineMatch.index > inlineLast) finalParts.push({ type: 'text', content: part.content.substring(inlineLast, inlineMatch.index) });
+                    finalParts.push({ type: 'inline', content: inlineMatch[1].trim() });
+                    inlineLast = inlineMatch.index + inlineMatch[0].length;
+                }
+                if (found) {
+                    if (inlineLast < part.content.length) finalParts.push({ type: 'text', content: part.content.substring(inlineLast) });
+                } else {
+                    finalParts.push(part);
+                }
+            });
+            // 渲染
+            return finalParts.map(p => {
+                if (p.type === 'text') return p.content;
+                try {
+                    return katex.renderToString(p.content, { displayMode: p.type === 'block', throwOnError: false });
+                } catch (e) { return p.content; }
+            }).join('');
         };
 
         const DEFAULT_COURSE_NAME = '天然药物化学';
@@ -970,6 +1023,77 @@
                                 </div>
                                 )}
 
+                                {/* 跨设备同步 */}
+                                <div className="bg-blue-50 border border-blue-100 p-4 rounded-xl space-y-3">
+                                    <div className="flex items-center space-x-2">
+                                        <Icons.Upload className="text-blue-500 h-5 w-5" />
+                                        <h3 className="font-bold text-blue-700">数据同步</h3>
+                                    </div>
+                                    <p className="text-xs text-blue-600">导出错题、编辑记录到文件，在其他设备导入即可同步</p>
+                                    <div className="flex gap-2">
+                                        <button onClick={() => {
+                                            const syncData = {
+                                                version: 1,
+                                                exportedAt: new Date().toISOString(),
+                                                wrongIds: [...wrongQuestionIds],
+                                                deletedSigs: [...deletedSignatures],
+                                                userModifiedQuestions: questions.filter(q => q.userModified).map(q => ({ sig: `${q.course}-${q.chapter}-${q.title.trim()}`, data: q }))
+                                            };
+                                            const blob = new Blob([JSON.stringify(syncData, null, 2)], { type: 'application/json' });
+                                            const url = URL.createObjectURL(blob);
+                                            const a = document.createElement('a');
+                                            a.href = url;
+                                            a.download = `刷题同步数据_${new Date().toLocaleDateString('zh-CN').replace(/\//g, '-')}.json`;
+                                            a.click();
+                                            URL.revokeObjectURL(url);
+                                        }} className="flex-1 bg-blue-600 text-white py-2 rounded-lg text-sm font-bold hover:bg-blue-700 transition">导出数据</button>
+                                        <button onClick={() => {
+                                            const input = document.createElement('input');
+                                            input.type = 'file';
+                                            input.accept = '.json';
+                                            input.onchange = (e) => {
+                                                const file = e.target.files[0];
+                                                if (!file) return;
+                                                const reader = new FileReader();
+                                                reader.onload = (ev) => {
+                                                    try {
+                                                        const syncData = JSON.parse(ev.target.result);
+                                                        if (!syncData.version) { showAlert('导入失败', '无效的同步数据文件'); return; }
+                                                        // 合并错题（取并集）
+                                                        const mergedWrong = new Set([...wrongQuestionIds, ...syncData.wrongIds]);
+                                                        setWrongQuestionIds(mergedWrong);
+                                                        // 合并删除签名（取并集）
+                                                        const mergedDeleted = new Set([...deletedSignatures, ...(syncData.deletedSigs || [])]);
+                                                        setDeletedSignatures(mergedDeleted);
+                                                        // 合并用户编辑
+                                                        let updatedCount = 0;
+                                                        if (syncData.userModifiedQuestions && syncData.userModifiedQuestions.length > 0) {
+                                                            setQuestions(prev => {
+                                                                const sigMap = new Map(prev.map((q, i) => [`${q.course}-${q.chapter}-${q.title.trim()}`, i]));
+                                                                const newQs = [...prev];
+                                                                syncData.userModifiedQuestions.forEach(item => {
+                                                                    if (sigMap.has(item.sig)) {
+                                                                        const idx = sigMap.get(item.sig);
+                                                                        // 只在本地未编辑时采用导入的编辑，或强制覆盖（取较新的）
+                                                                        newQs[idx] = { ...newQs[idx], ...item.data, userModified: true };
+                                                                        updatedCount++;
+                                                                    }
+                                                                });
+                                                                return newQs;
+                                                            });
+                                                        }
+                                                        showAlert('同步成功', `🔴 错题：${syncData.wrongIds.length} 道\n🗑️ 已删：${(syncData.deletedSigs || []).length} 条\n✏️ 编辑：${updatedCount} 道\n\n已与本地数据合并（取并集）`);
+                                                    } catch (err) {
+                                                        showAlert('导入失败', '文件格式错误：' + err.message);
+                                                    }
+                                                };
+                                                reader.readAsText(file);
+                                            };
+                                            input.click();
+                                        }} className="flex-1 bg-white text-blue-600 border border-blue-300 py-2 rounded-lg text-sm font-bold hover:bg-blue-50 transition">导入数据</button>
+                                    </div>
+                                </div>
+
                                 <h2 className="text-lg font-bold mt-8 mb-4 text-gray-700">我的题库</h2>
                                 {courses.length === 0 ? (
                                 <div className="text-center py-10 bg-white rounded-xl border border-dashed border-gray-300">
@@ -1112,7 +1236,11 @@
                         wrongIds={wrongQuestionIds}
                         toggleWrong={(id) => setWrongQuestionIds(prev => { const n = new Set(prev); if (n.has(id)) n.delete(id); else n.add(id); return n; })}
                         addWrong={(id) => setWrongQuestionIds(prev => new Set(prev).add(id))}
-                        onUpdateQuestion={updateQuestion}
+                        onUpdateQuestion={(updatedQ) => {
+                            const markedQ = { ...updatedQ, userModified: true };
+                            setQuestions(prev => prev.map(q => q.id === updatedQ.id ? markedQ : q));
+                            setStudyQueue(prev => prev.map(q => q.id === updatedQ.id ? markedQ : q));
+                        }}
                         onDeleteQuestion={(id) => {
                             const qToDelete = studyQueue.find(q => q.id === id);
                             if (qToDelete) {
@@ -1339,15 +1467,14 @@
                                 <Icons.BrainCircuit className="h-4 w-4 mr-2" />
                                 参考答案
                             </div>
-                            <p className="text-gray-800 leading-relaxed whitespace-pre-wrap">{question.answerText}</p>
+                            <p className="text-gray-800 leading-relaxed whitespace-pre-wrap" dangerouslySetInnerHTML={{__html: renderLatex(question.answerText)}}></p>
                             {question.mnemonic && (
                                 <div className="mt-3 pt-3 border-t border-teal-200/50">
                                     <div className="flex items-start text-orange-700 font-bold mb-1">
                                         <Icons.Zap className="h-4 w-4 mr-1.5 mt-0.5 fill-current" />
                                         <span>速记点拨</span>
                                     </div>
-                                    <p className="text-gray-800 bg-orange-50 p-2 rounded text-sm border border-orange-100 leading-relaxed font-medium">
-                                        {question.mnemonic}
+                                    <p className="text-gray-800 bg-orange-50 p-2 rounded text-sm border border-orange-100 leading-relaxed font-medium" dangerouslySetInnerHTML={{__html: renderLatex(question.mnemonic)}}>
                                     </p>
                                 </div>
                             )}
@@ -1430,8 +1557,7 @@
                                     <Icons.Zap className="h-4 w-4 mr-1.5 mt-0.5 fill-current" />
                                     <span>速记点拨</span>
                                 </div>
-                                <p className="text-gray-800 bg-orange-50 p-2 rounded text-sm border border-orange-100 leading-relaxed font-medium">
-                                    {mnemonic}
+                                <p className="text-gray-800 bg-orange-50 p-2 rounded text-sm border border-orange-100 leading-relaxed font-medium" dangerouslySetInnerHTML={{__html: renderLatex(mnemonic)}}>
                                 </p>
                             </div>
                         )}
@@ -1494,7 +1620,7 @@
                         {question.isPatch && <span className="inline-block text-xs px-2 py-1 rounded w-fit font-bold mr-2 bg-amber-100 text-amber-800" title="据课堂录音整理补充，非真题原题">🆕课堂强调</span>}
                         {isMulti && <span className="text-xs text-gray-400">（请选择多个选项）</span>}
                     </div>
-                    <h2 className="text-xl font-medium leading-relaxed text-gray-800">{question.title}</h2>
+                    <h2 className="text-xl font-medium leading-relaxed text-gray-800" dangerouslySetInnerHTML={{__html: renderLatex(question.title)}}></h2>
                 </div>
 
                 <div className="space-y-3 flex-1 overflow-y-auto pb-20 select-none no-scrollbar">
@@ -1516,7 +1642,7 @@
                             return (
                                 <button key={key} onClick={() => onAnswer(key)} disabled={showAnswer} className={`w-full text-left p-4 rounded-xl border-2 transition-all flex items-center ${stateClass}`}>
                                     <span className={`w-6 h-6 rounded-full border flex items-center justify-center text-xs mr-3 font-bold transition-colors ${iconClass}`}>{key}</span>
-                                    <span className="flex-1 font-medium">{text}</span>
+                                    <span className="flex-1 font-medium" dangerouslySetInnerHTML={{__html: renderLatex(text)}}></span>
                                 </button>
                             );
                         });
@@ -1546,7 +1672,7 @@
                         return (
                             <button key={key} onClick={() => onAnswer(key)} disabled={showAnswer} className={`w-full text-left p-4 rounded-xl border-2 transition-all flex items-center ${stateClass}`}>
                                 <span className={`w-6 h-6 rounded-full border flex items-center justify-center text-xs mr-3 font-bold transition-colors ${iconClass}`}>{iconText}</span>
-                                <span className="flex-1 font-medium">{text}</span>
+                                <span className="flex-1 font-medium" dangerouslySetInnerHTML={{__html: renderLatex(text)}}></span>
                             </button>
                         );
                     })}
@@ -1643,7 +1769,7 @@
                             <div key={q.id || idx} className="flex items-start justify-between p-4 hover:bg-gray-50 transition group">
                                 <div className="flex-1 pr-4">
                                     <div className="flex items-center mb-1 flex-wrap gap-1"><span className="text-xs bg-gray-200 text-gray-600 px-1.5 py-0.5 rounded font-mono w-8 text-center">{idx + 1}</span><span className="text-xs bg-teal-50 text-teal-700 px-1.5 py-0.5 rounded border border-teal-100">{q.chapter}</span>{q.examProb && <span className={`text-xs px-1.5 py-0.5 rounded border ${q.examProb==='必考'?'bg-rose-50 text-rose-700 border-rose-200':q.examProb==='重要'?'bg-amber-50 text-amber-700 border-amber-200':'bg-gray-100 text-gray-500 border-gray-200'}`}>{q.examProb==='必考'?'🔴必考':q.examProb==='重要'?'🟡重要':'⚪了解'}</span>}</div>
-                                    <span className="text-sm text-gray-800 font-medium line-clamp-2 mt-1">{q.title}</span>
+                                    <span className="text-sm text-gray-800 font-medium line-clamp-2 mt-1" dangerouslySetInnerHTML={{__html: renderLatex(q.title)}}></span>
                                 </div>
                                 <div className="flex space-x-1 shrink-0 self-center">
                                     <button onClick={(e) => { e.stopPropagation(); setEditingQuestion(q); }} className="text-blue-500 hover:bg-blue-100 p-2 rounded-lg transition" title="编辑"><Icons.Edit className="h-5 w-5" /></button>
@@ -1953,7 +2079,7 @@
                                             <button onClick={() => { if (confirm('确定要删除这道题吗？')) onDeleteQuestion && onDeleteQuestion(q.id); }} className="p-1 text-gray-300 hover:text-red-500 rounded transition" title="删除"><Icons.Trash2 className="w-4 h-4" /></button>
                                         </div>
                                     </div>
-                                    <h3 className="text-base font-medium text-gray-800 mb-3 leading-relaxed">{q.title}</h3>
+                                    <h3 className="text-base font-medium text-gray-800 mb-3 leading-relaxed" dangerouslySetInnerHTML={{__html: renderLatex(q.title)}}></h3>
                                     {/* 选项（可交互） */}
                                     {!isRecall && (() => {
                                         const ua = userAnswers[q.id];
@@ -1980,7 +2106,7 @@
                                                     <button key={k} onClick={() => handleScrollAnswer(q, k)} disabled={answered && !isMulti}
                                                         className={`w-full text-left p-2.5 rounded-lg border-2 transition-all flex items-center gap-2 mb-1.5 text-sm ${cls}`}>
                                                         <span className={`w-5 h-5 rounded-full border flex items-center justify-center text-xs font-bold flex-shrink-0 ${iconCls}`}>{k}</span>
-                                                        <span className="flex-1">{v}</span>
+                                                        <span className="flex-1" dangerouslySetInnerHTML={{__html: renderLatex(v)}}></span>
                                                     </button>
                                                 );
                                             })}
@@ -2001,8 +2127,8 @@
                                     <div className={`q-answer-area ${isExpanded ? 'open' : ''}`}>
                                         <div className="p-3 bg-teal-50 rounded-lg border border-teal-100 text-sm">
                                             <div className="flex items-center mb-1 font-bold text-teal-800 text-xs"><Icons.BrainCircuit className="w-3 h-3 mr-1"/>正确答案: {q.answer}</div>
-                                            {q.answerText && <p className="text-gray-700 whitespace-pre-wrap mt-1" dangerouslySetInnerHTML={{__html: q.answerText}} /> }
-                                            {q.mnemonic && <div className="mt-2 pt-2 border-t border-teal-200/50"><span className="text-orange-600 font-bold text-xs flex items-center"><Icons.Zap className="w-3 h-3 mr-1"/>速记: </span><span className="text-gray-700 text-xs">{q.mnemonic}</span></div>}
+                                            {q.answerText && <p className="text-gray-700 whitespace-pre-wrap mt-1" dangerouslySetInnerHTML={{__html: renderLatex(q.answerText)}} /> }
+                                            {q.mnemonic && <div className="mt-2 pt-2 border-t border-teal-200/50"><span className="text-orange-600 font-bold text-xs flex items-center"><Icons.Zap className="w-3 h-3 mr-1"/>速记: </span><span className="text-gray-700 text-xs" dangerouslySetInnerHTML={{__html: renderLatex(q.mnemonic)}}></span></div>}
                                         </div>
                                     </div>
                                     {/* 展开/收起按钮 */}
