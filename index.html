@@ -123,12 +123,94 @@
             return newArr;
         };
 
+        // 自动识别纯文本数学公式并转为 LaTeX 标记
+        const autoLatex = (text) => {
+            if (!text) return text;
+            let s = text;
+            // 0. 保护已有 $...$ 和 $$...$$ 区域（不二次转换）
+            const protectedRegions = [];
+            s = s.replace(/\$\$[\s\S]*?\$\$/g, m => { protectedRegions.push(m); return `\x00P${protectedRegions.length - 1}\x00`; });
+            s = s.replace(/\$[^\$]+?\$/g, m => { protectedRegions.push(m); return `\x00P${protectedRegions.length - 1}\x00`; });
+
+            // 1. e^(-...) → $e^{-...}$
+            s = s.replace(/e\^[（(]([^）)]+)[）)]/g, (_, inner) => `$e^{${inner}}$`);
+            // e^数字 → $e^{数字}$
+            s = s.replace(/e\^(\d+)/g, (_, n) => `$e^{${n}}$`);
+
+            // 2. 上标 −1 / ^-1 (如 h−1, kg−1, ml−1)
+            s = s.replace(/([a-zA-Z]{1,3})−1\b/g, (_, base) => `$${base}^{-1}$`);
+            s = s.replace(/([a-zA-Z]{1,3})\^-1\b/g, (_, base) => `$${base}^{-1}$`);
+
+            // 3. t1/2 → $t_{1/2}$
+            s = s.replace(/\bt1\/2\b/g, '$t_{1/2}$');
+            s = s.replace(/\bt½\b/g, '$t_{1/2}$');
+
+            // 4. C0, Cmax, Cmin, Css 等药动学符号 → 下标
+            s = s.replace(/\bCss\b/g, '$C_{ss}$');
+            s = s.replace(/\bCmax\b/gi, '$C_{max}$');
+            s = s.replace(/\bCmin\b/gi, '$C_{min}$');
+            s = s.replace(/\bC0\b/g, '$C_0$');
+            s = s.replace(/\bC_ss,(max|min|av)\b/g, (m, sub) => `$C_{ss,${sub}}$`);
+
+            // 5. Vd, Vm, Km, ke, ka, k0, k12, k21 等药动学参数
+            s = s.replace(/\bVd\b/g, '$V_d$');
+            s = s.replace(/\bVm\b/g, '$V_m$');
+            s = s.replace(/\bKm\b/g, '$K_m$');
+            s = s.replace(/\bke\b/g, '$k_e$');
+            s = s.replace(/\bka\b/g, '$k_a$');
+            s = s.replace(/\bk0\b/g, '$k_0$');
+            s = s.replace(/\bk12\b/g, '$k_{12}$');
+            s = s.replace(/\bk21\b/g, '$k_{21}$');
+            s = s.replace(/\bk10\b/g, '$k_{10}$');
+
+            // 6. −dC/dt = ... 公式行（整行包裹）
+            s = s.replace(/(−?dC\/dt\s*=\s*[^,，。；\n]+)/g, (_, formula) => `$${formula}$`);
+
+            // 7. lgC → $\lg C$
+            s = s.replace(/\blgC\b/g, '$\\lg C$');
+
+            // 8. X0, D0 等带下标0
+            s = s.replace(/\bX0\b/g, '$X_0$');
+            s = s.replace(/\bD0\b/g, '$D_0$');
+
+            // 9. AUC/MIC, Cmax/MIC 等比值
+            s = s.replace(/\bAUC\/MIC\b/g, '$\\text{AUC}/\\text{MIC}$');
+            s = s.replace(/\bCmax\/MIC\b/gi, '$C_{max}/\\text{MIC}$');
+            s = s.replace(/\bAUC\b/g, '$\\text{AUC}$');
+
+            // 10. Tmax → $T_{max}$
+            s = s.replace(/\bTmax\b/gi, '$T_{max}$');
+
+            // 11. LD50, ED50 → $LD_{50}$, $ED_{50}$
+            s = s.replace(/\bLD50\b/g, '$LD_{50}$');
+            s = s.replace(/\bED50\b/g, '$ED_{50}$');
+
+            // 12. C=C0·e^(-ke·t) 模式 → 整体公式
+            s = s.replace(/C\s*=\s*C0·e\^[（(]([^）)]+)[）)]/g, (_, inner) => `$C = C_0 \\cdot e^{-${inner}}$`);
+
+            // 13. 10^(...) → $10^{...}$
+            s = s.replace(/10\^[（(]([^）)]+)[）)]/g, (_, inner) => `$10^{${inner}}$`);
+
+            // 14. 合并相邻的 $...$$...$ 为单个公式
+            s = s.replace(/\$\$([^$]*)\$\$/g, (_, content) => content.includes('$') ? `$${content.replace(/\$/g, '')}$` : `$$${content}$$`);
+            s = s.replace(/\$([^$]*)\$\$([^$]*)\$/g, (_, a, b) => `$${a}${b}$`);
+
+            // 恢复保护区域
+            protectedRegions.forEach((val, i) => {
+                s = s.replace(`\x00P${i}\x00`, val);
+            });
+
+            return s;
+        };
+
         // LaTeX 渲染：将文本中的 $...$ 和 $$...$$ 转为 KaTeX HTML
         const renderLatex = (text) => {
             if (!text || typeof katex === 'undefined') return text;
+            // 先自动识别纯文本公式，再解析 LaTeX 标记
+            const processed = autoLatex(text);
             // 先处理 $$...$$（块级公式），再处理 $...$（行内公式）
             const parts = [];
-            let remaining = text;
+            let remaining = processed;
             // 块级 $$...$$
             const blockRegex = /\$\$([\s\S]*?)\$\$/g;
             let lastIdx = 0;
