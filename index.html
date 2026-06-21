@@ -237,6 +237,7 @@
         const App = () => {
             const [questions, setQuestions] = useState([]);
             const [wrongQuestionIds, setWrongQuestionIds] = useState(new Set());
+            const [deletedSignatures, setDeletedSignatures] = useState(new Set()); // 已删除的题目签名，导入时跳过
             const [view, setView] = useState('home'); 
             const [currentCourse, setCurrentCourse] = useState(null);
             const [currentChapter, setCurrentChapter] = useState(null);
@@ -297,6 +298,7 @@
                         // 题库版本更新：清空重来——直接用新版默认题库整体替换。
                         parsedQuestions = [...DEFAULT_QUESTIONS];
                         localStorage.setItem('med_quiz_seed_version', DEFAULT_QUESTION_SEED_VERSION);
+                        localStorage.removeItem('med_quiz_deleted_sigs'); // 版本更新时清除删除记录
                     }
 
                     // 自动补全ID，并移除已考完的药剂学题库。
@@ -339,7 +341,10 @@
 
                     const savedSets = localStorage.getItem('med_quiz_custom_sets');
                     if (savedSets) setCustomSets(JSON.parse(savedSets));
-                    
+
+                    const savedDeletedSigs = localStorage.getItem('med_quiz_deleted_sigs');
+                    if (savedDeletedSigs) setDeletedSignatures(new Set(JSON.parse(savedDeletedSigs)));
+
                     setIsLoaded(true);
                 } catch (e) {
                     console.error("加载缓存失败", e);
@@ -373,6 +378,12 @@
                     localStorage.setItem('med_quiz_custom_sets', JSON.stringify(customSets));
                 }
             }, [customSets, isLoaded]);
+
+            useEffect(() => {
+                if (isLoaded) {
+                    localStorage.setItem('med_quiz_deleted_sigs', JSON.stringify([...deletedSignatures]));
+                }
+            }, [deletedSignatures, isLoaded]);
 
             // --- 核心逻辑 ---
 
@@ -473,12 +484,35 @@
                 });
                 let updatedCount = 0;
                 let addedCount = 0;
+                let preservedCount = 0;
+                let skippedDeletedCount = 0;
                 const newQuestions = [...questions];
                 parsedQs.forEach(q => {
                     const sig = `${q.course}-${q.chapter}-${q.title.trim()}`;
+                    // 跳过用户已删除的题目
+                    if (deletedSignatures.has(sig)) {
+                        skippedDeletedCount++;
+                        return;
+                    }
                     if (existingMap.has(sig)) {
-                        newQuestions[existingMap.get(sig)] = q;
-                        updatedCount++;
+                        const existingIdx = existingMap.get(sig);
+                        const existingQ = newQuestions[existingIdx];
+                        if (existingQ.userModified) {
+                            // 用户编辑过的题目：保留用户版本，仅补充新字段（如 examProb）
+                            const merged = { ...q, ...existingQ };
+                            // 如果导入版有新的 examProb 而用户版没有，则采用导入版的
+                            if (q.examProb && !existingQ.examProb) merged.examProb = q.examProb;
+                            // 如果导入版有新的 answerText 而用户版没有，则采用导入版的
+                            if (q.answerText && !existingQ.answerText) merged.answerText = q.answerText;
+                            // 保留 userModified 标记
+                            merged.userModified = true;
+                            newQuestions[existingIdx] = merged;
+                            preservedCount++;
+                        } else {
+                            // 未编辑过的题目：用导入版覆盖
+                            newQuestions[existingIdx] = q;
+                            updatedCount++;
+                        }
                     } else {
                         newQuestions.push(q);
                         addedCount++;
@@ -486,7 +520,10 @@
                 });
                 setQuestions(newQuestions);
                 setImportText('');
-                showAlert("导入成功", `📝 覆盖更新：${updatedCount} 道\n✅ 新增题目：${addedCount} 道`);
+                let msg = `📝 覆盖更新：${updatedCount} 道\n✅ 新增题目：${addedCount} 道`;
+                if (preservedCount > 0) msg += `\n🔒 保留编辑：${preservedCount} 道`;
+                if (skippedDeletedCount > 0) msg += `\n🗑️ 跳过已删：${skippedDeletedCount} 道`;
+                showAlert("导入成功", msg);
                 setView('home');
             };
 
@@ -702,18 +739,24 @@
 
             // 更新单道题目（自动保存）
             const updateQuestion = (updatedQ) => {
-                setQuestions(prev => prev.map(q => q.id === updatedQ.id ? updatedQ : q));
+                setQuestions(prev => prev.map(q => q.id === updatedQ.id ? { ...updatedQ, userModified: true } : q));
             };
 
             // 卡片模式中更新题目（同步更新 questions 和 studyQueue）
             const handleStudyUpdate = (updatedQ) => {
-                setQuestions(prev => prev.map(q => q.id === updatedQ.id ? updatedQ : q));
-                setStudyQueue(prev => prev.map(q => q.id === updatedQ.id ? updatedQ : q));
+                const markedQ = { ...updatedQ, userModified: true };
+                setQuestions(prev => prev.map(q => q.id === updatedQ.id ? markedQ : q));
+                setStudyQueue(prev => prev.map(q => q.id === updatedQ.id ? markedQ : q));
             };
 
             // 卡片模式中删除题目（同步删除并调整 currentIndex）
             const handleStudyDelete = (id) => {
                 const idxInQueue = studyQueue.findIndex(q => q.id === id);
+                const qToDelete = studyQueue.find(q => q.id === id);
+                if (qToDelete) {
+                    const sig = `${qToDelete.course}-${qToDelete.chapter}-${qToDelete.title.trim()}`;
+                    setDeletedSignatures(prev => new Set(prev).add(sig));
+                }
                 setQuestions(prev => prev.filter(q => q.id !== id));
                 setStudyQueue(prev => {
                     const newQueue = prev.filter(q => q.id !== id);
@@ -798,7 +841,14 @@
 
             const requestDeleteSingle = (id) => {
                 if (!id) { showAlert("错误", "ID缺失"); return; }
-                showConfirm("删除题目", "确定要删除吗？", () => setQuestions(prev => prev.filter(q => q.id !== id)), 'danger');
+                showConfirm("删除题目", "确定要删除吗？", () => {
+                    const qToDelete = questions.find(q => q.id === id);
+                    if (qToDelete) {
+                        const sig = `${qToDelete.course}-${qToDelete.chapter}-${qToDelete.title.trim()}`;
+                        setDeletedSignatures(prev => new Set(prev).add(sig));
+                    }
+                    setQuestions(prev => prev.filter(q => q.id !== id));
+                }, 'danger');
             };
 
             const handleQuestionShuffleChange = (newValue) => {
@@ -1063,6 +1113,15 @@
                         toggleWrong={(id) => setWrongQuestionIds(prev => { const n = new Set(prev); if (n.has(id)) n.delete(id); else n.add(id); return n; })}
                         addWrong={(id) => setWrongQuestionIds(prev => new Set(prev).add(id))}
                         onUpdateQuestion={updateQuestion}
+                        onDeleteQuestion={(id) => {
+                            const qToDelete = studyQueue.find(q => q.id === id);
+                            if (qToDelete) {
+                                const sig = `${qToDelete.course}-${qToDelete.chapter}-${qToDelete.title.trim()}`;
+                                setDeletedSignatures(prev => new Set(prev).add(sig));
+                            }
+                            setQuestions(prev => prev.filter(q => q.id !== id));
+                            setStudyQueue(prev => prev.filter(q => q.id !== id));
+                        }}
                         onBack={() => { setStudyMode('quiz'); setView('home'); }}
                         onSwitchToCard={() => { setStudyMode('quiz'); setCurrentIndex(0); setShowAnswer(false); setSelectedOption(null); setSelectedMultiOptions(new Set()); }}
                         isRecite={scrollReciteMode}
@@ -1521,6 +1580,9 @@
                                         <div key={key} className="flex items-center space-x-2"><span className="font-bold w-6 text-center bg-white border rounded shadow-sm">{key}</span><input className="flex-1 border rounded p-2 text-sm focus:ring-1 focus:ring-teal-500 outline-none" value={editFormData.options[key]} onChange={e => setEditFormData({...editFormData, options: {...editFormData.options, [key]: e.target.value}})} /></div>
                                     ))}
                                 </div>
+                                {(editFormData.type?.includes('记忆') || editFormData.type?.includes('解释') || editFormData.type?.includes('简答') || editFormData.type?.includes('填空') || editFormData.type?.includes('计算') || editFormData.type?.includes('论述')) && (
+                                    <div><label className="text-xs font-bold text-gray-500 uppercase">答案解析/详细答案</label><textarea className="w-full border rounded-lg p-3 text-sm focus:ring-2 focus:ring-teal-500 outline-none" rows={4} placeholder="输入主观题的详细答案..." value={editFormData.answerText || ''} onChange={e => setEditFormData({...editFormData, answerText: e.target.value})} /></div>
+                                )}
                             </div>
                             <div className="flex justify-end space-x-3 mt-6 border-t pt-4">
                                 <button onClick={() => setShowEditModal(false)} className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg">取消</button>
@@ -1557,6 +1619,9 @@
                                         <div key={key} className="flex items-center space-x-2"><span className="font-bold w-6 text-center bg-white border rounded shadow-sm">{key}</span><input className="flex-1 border rounded p-2 text-sm focus:ring-1 focus:ring-teal-500 outline-none" value={formData.options[key]} onChange={e => handleOptionChange(key, e.target.value)} /></div>
                                     ))}
                                 </div>
+                                {(formData.type?.includes('记忆') || formData.type?.includes('解释') || formData.type?.includes('简答') || formData.type?.includes('填空') || formData.type?.includes('计算') || formData.type?.includes('论述')) && (
+                                    <div><label className="text-xs font-bold text-gray-500 uppercase">答案解析/详细答案</label><textarea className="w-full border rounded-lg p-3 text-sm focus:ring-2 focus:ring-teal-500 outline-none" rows={4} placeholder="输入主观题的详细答案..." value={formData.answerText || ''} onChange={e => handleChange('answerText', e.target.value)} /></div>
+                                )}
                             </div>
                             <div className="flex justify-end space-x-3 mt-6 border-t pt-4">
                                 <button onClick={() => setEditingQuestion(null)} className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg">取消</button>
@@ -1593,7 +1658,7 @@
         }
 
         // --- 5b. 滚动模式组件 ---
-        function ScrollStudy({ questions, course, chapter, wrongIds, toggleWrong, addWrong, onUpdateQuestion, onBack, onSwitchToCard, isRecite }) {
+        function ScrollStudy({ questions, course, chapter, wrongIds, toggleWrong, addWrong, onUpdateQuestion, onDeleteQuestion, onBack, onSwitchToCard, isRecite }) {
             const [filterType, setFilterType] = useState('全部');
             const [filterProb, setFilterProb] = useState('全部');
             const [expandedIds, setExpandedIds] = useState(() => isRecite ? new Set(questions.map(q => q.id)) : new Set());
@@ -1847,6 +1912,7 @@
                                         <div className="flex items-center justify-between mb-3">
                                             <span className="text-xs bg-teal-100 text-teal-700 px-2 py-0.5 rounded font-bold">编辑模式</span>
                                             <div className="flex gap-2">
+                                                <button onClick={() => { if (confirm('确定要删除这道题吗？')) { onDeleteQuestion && onDeleteQuestion(q.id); setEditingId(null); setEditData(null); } }} className="text-xs px-3 py-1 border border-red-200 rounded-lg text-red-500 hover:bg-red-50 font-bold">删除</button>
                                                 <button onClick={cancelEdit} className="text-xs px-3 py-1 border border-gray-200 rounded-lg text-gray-500 hover:bg-gray-50">取消</button>
                                                 <button onClick={saveEdit} className="text-xs px-3 py-1 bg-teal-600 text-white rounded-lg hover:bg-teal-700 font-bold">保存</button>
                                             </div>
@@ -1860,11 +1926,14 @@
                                                 </div>
                                             ))}
                                         </div>
-                                        <div className="flex gap-3">
+                                        <div className="flex gap-3 mb-2">
                                             <div className="flex-1"><label className="text-xs text-gray-500">正确答案</label><input className="w-full border border-gray-200 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-teal-500 outline-none" value={editData.answer} onChange={e => setEditData({...editData, answer: e.target.value.toUpperCase()})} /></div>
                                             <div className="flex-1"><label className="text-xs text-gray-500">章节</label><input className="w-full border border-gray-200 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-teal-500 outline-none" value={editData.chapter} onChange={e => setEditData({...editData, chapter: e.target.value})} /></div>
                                             <div className="flex-1"><label className="text-xs text-gray-500">速记</label><input className="w-full border border-gray-200 rounded px-2 py-1 text-sm focus:ring-1 focus:ring-teal-500 outline-none" value={editData.mnemonic || ''} onChange={e => setEditData({...editData, mnemonic: e.target.value})} /></div>
                                         </div>
+                                        {(editData.type?.includes('记忆') || editData.type?.includes('解释') || editData.type?.includes('简答') || editData.type?.includes('填空') || editData.type?.includes('计算') || editData.type?.includes('论述')) && (
+                                            <div><label className="text-xs text-gray-500">答案解析/详细答案</label><textarea className="w-full border border-gray-200 rounded-lg p-2 text-sm focus:ring-2 focus:ring-teal-500 outline-none" rows={3} placeholder="输入主观题的详细答案..." value={editData.answerText || ''} onChange={e => setEditData({...editData, answerText: e.target.value})} /></div>
+                                        )}
                                     </div>
                                 );
                             }
@@ -1881,6 +1950,7 @@
                                         <div className="flex gap-1">
                                             <button onClick={() => toggleWrong(q.id)} className={`p-1 rounded transition ${wrongIds.has(q.id) ? 'text-red-500' : 'text-gray-300 hover:text-gray-400'}`}><Icons.AlertCircle className="w-4 h-4" /></button>
                                             <button onClick={() => startEdit(q)} className="p-1 text-gray-300 hover:text-teal-600 rounded transition" title="编辑"><Icons.Edit className="w-4 h-4" /></button>
+                                            <button onClick={() => { if (confirm('确定要删除这道题吗？')) onDeleteQuestion && onDeleteQuestion(q.id); }} className="p-1 text-gray-300 hover:text-red-500 rounded transition" title="删除"><Icons.Trash2 className="w-4 h-4" /></button>
                                         </div>
                                     </div>
                                     <h3 className="text-base font-medium text-gray-800 mb-3 leading-relaxed">{q.title}</h3>
