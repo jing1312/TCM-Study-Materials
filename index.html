@@ -1924,6 +1924,7 @@ return (
         function ScrollStudy({ questions, course, chapter, wrongIds, toggleWrong, addWrong, onUpdateQuestion, onDeleteQuestion, onBack, onSwitchToCard, isRecite }) {
             const [filterType, setFilterType] = useState('全部');
             const [filterProb, setFilterProb] = useState('全部');
+  const [editingId, setEditingId] = useState(null);
             const [expandedIds, setExpandedIds] = useState(() => isRecite ? new Set(questions.map(q => q.id)) : new Set());
             const [answeredMap, setAnsweredMap] = useState({}); // q.id -> 选中选项字母（答题后锁定）
             const [editData, setEditData] = useState(null);
@@ -1976,7 +1977,7 @@ return (
                 } else {
                     const isCorrect = optionKey === q.answer;
                     setUserAnswers(p => ({ ...p, [qid]: { selected: optionKey, answered: true } }));
-                    setExpandedIds(p => { const n = new Set(p); n.add(qid); return n; });
+        // 答题后不自动展开，保持多列布局
                     if (!isCorrect && addWrong) addWrong(qid);
                 }
             };
@@ -1987,7 +1988,7 @@ return (
                 const userAns = Array.from(prev.selected || []).sort().join('');
                 const correctAns = q.answer.split('').sort().join('');
                 setUserAnswers(p => ({ ...p, [qid]: { ...prev, answered: true } }));
-                setExpandedIds(p => { const n = new Set(p); n.add(qid); return n; });
+        // 答题后不自动展开，保持多列布局
                 if (userAns !== correctAns && addWrong) addWrong(qid);
             };
 
