@@ -28,6 +28,15 @@
         .scroll-sidebar.collapsed { transform: translateX(-220px); width: 220px; }
         .scroll-main { margin-left: 220px; flex: 1; padding: 20px; min-width: 0; transition: margin-left .25s ease; }
         .scroll-main.full { margin-left: 0; }
+        /* 滚动模式题目网格：多行多列自适应布局 */
+        .scroll-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 16px; align-items: start; }
+        /* 编辑模式（含长文本框）与展开答案时会变高，强制占满整行，避免错位 */
+        .scroll-q-card { align-self: start; }
+        .scroll-q-card.grid-full, .scroll-q-card.editing { grid-column: 1 / -1; }
+        /* 列数快捷档位（由工具栏切换） */
+        .scroll-grid.cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .scroll-grid.cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        .scroll-grid.cols-1 { grid-template-columns: 1fr; }
         .sidebar-toggle { position: fixed; top: 72px; left: 220px; z-index: 45; width: 28px; height: 28px; border-radius: 0 8px 8px 0; background: #fff; border: 1px solid #e5e7eb; border-left: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 14px; color: #64748b; transition: left .25s ease, background .15s; box-shadow: 2px 0 6px rgba(0,0,0,.05); }
         .sidebar-toggle:hover { background: #f0fdfa; color: #0d9488; }
         .sidebar-toggle.collapsed { left: 0; }
@@ -63,6 +72,8 @@
             .sidebar-toggle { display: flex; position: relative; top: auto; left: auto; width: 100%; height: 32px; border-radius: 0; border: 1px solid #e5e7eb; border-top: none; justify-content: center; background: #f9fafb; box-shadow: none; font-size: 12px; }
             .sidebar-toggle.collapsed { left: auto; }
             .scroll-q-card { padding: 12px; }
+            /* 移动端：网格强制单列，保持单列滚动体验 */
+            .scroll-grid, .scroll-grid.cols-2, .scroll-grid.cols-3 { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -1928,6 +1939,8 @@
             const [editData, setEditData] = useState(null);
             const [showAllAnswers, setShowAllAnswers] = useState(isRecite);
             const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth > 768);
+            // 题目网格列数：auto=自适应(默认), 1=单列, 2=两列, 3=三列
+            const [gridCols, setGridCols] = useState('auto');
             // 答题状态：{ qid: { selected: Set|string, answered: bool } }
             const [userAnswers, setUserAnswers] = useState({});
 
@@ -2158,15 +2171,31 @@
                                 <span className="text-sm text-gray-500">{course} · {chapter} · <strong>{filtered.length}</strong>题</span>
                             </div>
                             <div className="flex items-center gap-2">
+                                {/* 列数切换：自动 / 单列 / 双列 / 三列 */}
+                                <div className="hidden md:flex items-center bg-white border border-gray-200 rounded-full p-0.5">
+                                    {[
+                                        { v: 'auto', label: '自动' },
+                                        { v: '1', label: '1列' },
+                                        { v: '2', label: '2列' },
+                                        { v: '3', label: '3列' },
+                                    ].map(opt => (
+                                        <button key={opt.v} onClick={() => setGridCols(opt.v)}
+                                            className={`text-xs px-2.5 py-1 rounded-full transition ${gridCols === opt.v ? 'bg-teal-600 text-white font-bold' : 'text-gray-500 hover:text-teal-600'}`}
+                                            title={`切换为${opt.label}`}>{opt.label}</button>
+                                    ))}
+                                </div>
                                 <button onClick={toggleAll} className={`text-xs px-3 py-1.5 rounded-full border transition ${showAllAnswers ? 'bg-teal-50 border-teal-300 text-teal-700' : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50'}`}>{showAllAnswers ? '收起全部' : '展开全部'}</button>
                             </div>
                         </div>
 
+                        <div className={`scroll-grid ${gridCols === 'auto' ? '' : 'cols-' + gridCols}`}>
                         {filtered.map((q, idx) => {
                             const isExpanded = expandedIds.has(q.id) || showAllAnswers;
                             const isEditing = editingId === q.id;
                             const isMulti = q.type && (q.type.includes('多') || q.type.includes('Multi'));
                             const isRecall = !!q.isRecall || (q.type && q.type.includes('记忆'));
+                            // 多列模式下，编辑态 / 展开答案态会变高，强制占满整行避免错位
+                            const needFullRow = isEditing || isExpanded;
 
                             if (isEditing && editData) {
                                 return (
@@ -2201,7 +2230,7 @@
                             }
 
                             return (
-                                <div key={q.id} id={'sq-' + q.id} data-qid={q.id} className="scroll-q-card">
+                                <div key={q.id} id={'sq-' + q.id} data-qid={q.id} className={`scroll-q-card ${needFullRow ? 'grid-full' : ''}`}>
                                     <div className="flex items-start justify-between">
                                         <div className="flex items-center gap-2 mb-2">
                                             <span className="font-mono text-xs bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded">{idx + 1}</span>
@@ -2276,6 +2305,7 @@
                                 </div>
                             );
                         })}
+                        </div>
                     </div>
                 </div>
             );
