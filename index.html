@@ -1926,7 +1926,6 @@ return (
             const [filterProb, setFilterProb] = useState('全部');
   const [editingId, setEditingId] = useState(null);
             const [expandedIds, setExpandedIds] = useState(() => isRecite ? new Set(questions.map(q => q.id)) : new Set());
-            const [answeredMap, setAnsweredMap] = useState({}); // q.id -> 选中选项字母（答题后锁定）
             const [editData, setEditData] = useState(null);
             const [showAllAnswers, setShowAllAnswers] = useState(isRecite);
             const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth > 768);
